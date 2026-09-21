@@ -37,6 +37,17 @@ def _run_cc_bridge(args: list[str], *, cwd: Path) -> subprocess.CompletedProcess
             continue
         if name.startswith(('CC_BRIDGE_CALLER_', 'CODEX_', 'CLAUDE_', 'GEMINI_', 'OPENCODE_', 'DROID_')):
             env.pop(name, None)
+    # Ensure subprocess can find user-installed packages even when HOME has
+    # been replaced by the test fixture (conftest monkeypatches HOME).
+    if 'PYTHONPATH' not in env:
+        existing_pythonpath = sys.path
+        # Take only entries that look like site-packages dirs
+        extra = [
+            p for p in existing_pythonpath
+            if 'site-packages' in p or 'dist-packages' in p
+        ]
+        if extra:
+            env['PYTHONPATH'] = os.pathsep.join(extra)
     return subprocess.run(
         [sys.executable, str(_repo_root() / 'cc_bridge.py'), *args],
         cwd=str(cwd),
