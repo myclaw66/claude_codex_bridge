@@ -6,7 +6,7 @@
 **نسّق Codex وClaude وGemini وغيرهم من وكلاء CLI ضمن سير عمل مرئي وقابل للتحكم والتدخل المباشر**
 
 <p>
-  <img src="https://img.shields.io/badge/version-8.6.6-orange.svg" alt="version">
+  <img src="https://img.shields.io/badge/version-8.7.1-orange.svg" alt="version">
   <img src="https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20WSL-lightgrey.svg" alt="platform">
   <img src="https://img.shields.io/badge/providers-16%20CLI%20families-0B7285.svg" alt="providers">
 </p>
@@ -184,7 +184,7 @@ cc-bridge update mobile
 
 يتضمن CC_BRIDGE 8.6.6 مصدر Flutter الخاص بـ CC_BRIDGE Mobile داخل [`mobile/`](../mobile/) وينشر Android APK عبر GitHub Releases:
 
-- [تنزيل CC_BRIDGE Mobile v8.6.6 APK](https://github.com/SeemSeam/claude_codex_bridge/releases/download/v8.6.6/cc-bridge-mobile-v8.6.6.apk)
+- [تنزيل CC_BRIDGE Mobile v8.7.1 APK](https://github.com/SeemSeam/claude_codex_bridge/releases/download/v8.7.1/cc-bridge-mobile-v8.6.6.apk)
 - مصدر التطبيق: [`mobile/app`](../mobile/app)
 - مصدر gateway الخادم: [`lib/mobile_gateway`](../lib/mobile_gateway)
 
@@ -247,7 +247,7 @@ cc-bridge update rich
 - WeChat: `seemseam-com`
 
 <p align="center">
-  <img src="../assets/weixin.png?v=da517368" alt="مجموعة WeChat" width="240">
+  <img src="../assets/weixin.png?v=5d912c6b" alt="مجموعة WeChat" width="240">
 </p>
 
 <a id="community"></a>
@@ -263,6 +263,15 @@ cc-bridge update rich
 ## ملاحظات الإصدار
 
 <details open>
+<summary><b>v8.7.1</b></summary>
+
+[English / 简体中文 — v8.7.1](../docs/releases/v8.7.1.md)
+
+[v8.7.0](../docs/releases/v8.7.0.md) · [v8.6.19](../docs/releases/v8.6.19.md)
+
+</details>
+
+<details>
 <summary><b>v8.4.0</b> - Mobile Relay مشفر واقتران مبسط وهوية مشروع ثابتة وإعادة اتصال Codex</summary>
 
 - يضيف Relay مشفراً من طرف إلى طرف ودعوات أحادية الاستخدام وتدفقات متعددة ووضعاً رسمياً أو مستضافاً ذاتياً.

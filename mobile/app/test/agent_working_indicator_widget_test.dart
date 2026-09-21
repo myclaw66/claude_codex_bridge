@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:cc_bridge_mobile/features/project_home/agent_window_switchers.dart';
-import 'package:cc_bridge_mobile/features/project_home/project_list.dart';
-import 'package:cc_bridge_mobile/features/project_home/wide_agent_column.dart';
-import 'package:cc_bridge_mobile/models/cc_bridge_agent.dart';
-import 'package:cc_bridge_mobile/models/cc_bridge_project.dart';
-import 'package:cc_bridge_mobile/models/cc_bridge_project_view.dart';
-import 'package:cc_bridge_mobile/models/cc_bridge_window.dart';
+import 'package:cc-bridge_mobile/features/project_home/agent_window_switchers.dart';
+import 'package:cc-bridge_mobile/features/project_home/project_list.dart';
+import 'package:cc-bridge_mobile/features/project_home/wide_agent_column.dart';
+import 'package:cc-bridge_mobile/models/cc-bridge_agent.dart';
+import 'package:cc-bridge_mobile/models/cc-bridge_project.dart';
+import 'package:cc-bridge_mobile/models/cc-bridge_project_view.dart';
+import 'package:cc-bridge_mobile/models/cc-bridge_window.dart';
+import 'package:cc-bridge_mobile/widgets/working_attention_beat.dart';
+import 'package:cc-bridge_mobile/widgets/working_status_style.dart';
 
 void main() {
   testWidgets('agent switcher highlights source-working agents with a border', (
@@ -45,8 +47,10 @@ void main() {
       find.byKey(const ValueKey('agent-working')),
     );
 
-    expect(idle.side, isNull);
-    expect(working.side?.color, colorScheme.tertiary);
+    // The selected idle chip shows the selection border; its neutral fill and
+    // idle text stay visible underneath.
+    expect(idle.side?.color, colorScheme.primary);
+    expect(working.side?.color, workingStatusAccent(colorScheme));
     expect(working.side?.width, 1.6);
     expect(
       find.byKey(const ValueKey('agent-unread-star-working')),
@@ -73,15 +77,17 @@ void main() {
           ),
         ),
       );
-
       expect(
         find.byKey(const ValueKey('project-working-row-proj')),
         findsOneWidget,
       );
+      // The beat strip and the 6px left stripe were removed; the row keeps a
+      // single tinted border so working decoration is not redundant.
       expect(
         find.byKey(const ValueKey('project-working-row-beat-proj')),
-        findsOneWidget,
+        findsNothing,
       );
+      expect(find.byType(WorkingAttentionBeat), findsNothing);
       expect(
         find.byKey(const ValueKey('project-unread-star-proj')),
         findsOneWidget,
@@ -111,11 +117,9 @@ void main() {
       expect(
         rowDecorations.any((decoration) {
           final border = decoration.border;
-          return border is Border &&
-              border.left.width == 6 &&
-              border.left.color == accent;
+          return border is Border && border.left.width == 6;
         }),
-        isTrue,
+        isFalse,
       );
       expect(projectWorkingRowTint(colorScheme), isNot(Colors.transparent));
       expect(
@@ -194,8 +198,11 @@ void main() {
       final idleShape = idleTile.shape as RoundedRectangleBorder;
       final workingShape = workingTile.shape as RoundedRectangleBorder;
 
-      expect(idleShape.side, BorderSide.none);
-      expect(workingShape.side.color, colorScheme.tertiary);
+      // Selected idle tile keeps the primary selection border over the
+      // neutral state fill.
+      expect(idleShape.side.color, colorScheme.primary);
+      expect(idleShape.side.width, 1.6);
+      expect(workingShape.side.color, workingStatusAccent(colorScheme));
       expect(workingShape.side.width, 1.6);
     },
   );

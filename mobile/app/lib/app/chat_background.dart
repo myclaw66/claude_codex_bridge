@@ -255,6 +255,7 @@ class CcBridgeChatBackgroundScope extends InheritedWidget {
     required this.onChoose,
     required this.onClear,
     required this.onSurfaceOpacityChanged,
+    this.onSaveImage,
     required super.child,
     super.key,
   });
@@ -263,6 +264,8 @@ class CcBridgeChatBackgroundScope extends InheritedWidget {
   final Future<void> Function() onChoose;
   final Future<void> Function() onClear;
   final Future<void> Function(double opacity) onSurfaceOpacityChanged;
+  final Future<void> Function(CcbChatBackgroundSelection selection)?
+  onSaveImage;
 
   static CcBridgeChatBackgroundScope? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<CcBridgeChatBackgroundScope>();

@@ -31,7 +31,7 @@ CC_BRIDGE_MOBILE_PAIRING_QR_OUTPUT_ENV = "CC_BRIDGE_MOBILE_PAIRING_QR_OUTPUT"
 MAX_INLINE_TERMINAL_QR_COLUMNS = 100
 DEFAULT_CC_BRIDGE_MOBILE_APP_DOWNLOAD_URL = (
     "https://github.com/SeemSeam/claude_codex_bridge/releases/download/"
-    "v8.6.17/cc_bridge-mobile-v8.6.17.apk"
+    "v8.7.1/ccb-mobile-v8.7.1.apk"
 )
 TAILSCALE_LINUX_INSTALL_COMMAND = (
     "sh",

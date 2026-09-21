@@ -3,7 +3,7 @@
 ## 1. Purpose
 
 This document defines the non-drifting authentication and account-state
-boundary for every provider process managed by CC_BRIDGE.
+boundary for every provider process managed by CCB.
 
 Provider-specific session contracts may narrow this contract, but they must not
 weaken it. The user's provider state is inheritance input only. Agent-scoped
@@ -13,16 +13,16 @@ managed state is the only mutable authority selected by a managed process.
 
 When authentication inheritance is enabled:
 
-- CC_BRIDGE may read an allowlisted credential, account, or auth-selection artifact
+- CCB may read an allowlisted credential, account, or auth-selection artifact
   from the real user provider home or an external OS credential service.
-- CC_BRIDGE may materialize an independent agent-scoped representation before
+- CCB may materialize an independent agent-scoped representation before
   process launch.
 - A managed provider may refresh, replace, or delete only its managed
   representation.
-- CC_BRIDGE and the managed provider must never write, rename, delete, chmod, or
+- CCB and the managed provider must never write, rename, delete, chmod, or
   reconcile the source artifact from the managed representation.
 - A managed logout must not log out the provider in the user's shell, IDE,
-  another CC_BRIDGE agent, or another project.
+  another CCB agent, or another project.
 
 The flow is strictly:
 
@@ -43,13 +43,13 @@ credential or route.
 Authority is resolved per dimension in this order:
 
 1. explicit Agent-local API, token, URL, route, or Provider profile state from
-   `.cc-bridge/cc-bridge.config`;
+   `.ccb/ccb.config`;
 2. current external Provider state for dimensions not owned explicitly; and
 3. no credential or route when neither source supplies that dimension.
 
 An explicit dimension must not be shadowed by ambient shell or Provider-home
 state, and explicit failure must not fall back to ambient authority. A fully
-stopped CC_BRIDGE/backend start reads a new external snapshot from the environment,
+stopped CCB/backend start reads a new external snapshot from the environment,
 Provider home, and supported read-only credential services inherited by that
 new backend process. It does not hot-mutate a running Provider generation.
 
@@ -61,11 +61,11 @@ permission, parse, or credential-service error blocks the new generation and
 must not be reclassified as logout or used to delete the last projection.
 
 Provider authority and conversation identity are separate. Each Agent keeps a
-stable CC_BRIDGE conversation id and an ordered authority-generation history. The
+stable CCB conversation id and an ordered authority-generation history. The
 same proven authority may use Provider-native resume. A changed or unknown
 authority must retain the old native transcript and binding as historical
 evidence but may resume it only when the Provider-specific contract proves
-compatibility. Otherwise CC_BRIDGE starts a linked continuation and leaves the old
+compatibility. Otherwise CCB starts a linked continuation and leaves the old
 transcript discoverable by the Provider's native history surface. This is not
 permission to claim automatic transcript import when the Provider has no
 qualified import mechanism.
@@ -86,14 +86,14 @@ They must not be:
   roots, or provider-specific global home;
 - placed in a shared or rebuildable cache.
 
-Before materializing inherited state, CC_BRIDGE must detach a recognized legacy
+Before materializing inherited state, CCB must detach a recognized legacy
 destination alias without traversing or deleting its source. Source symlinks are
 not credential sources. A destination symlink or hard link is broken before
-CC_BRIDGE writes the projection, including when the current source artifact is
+CCB writes the projection, including when the current source artifact is
 missing.
 
 Mixed files such as provider config containing both plugin/config and login
-fields must use an explicit allowlist. CC_BRIDGE copies only the fields required for
+fields must use an explicit allowlist. CCB copies only the fields required for
 the selected inheritance policy and keeps the result inside the managed
 boundary.
 
@@ -122,11 +122,11 @@ Provider runtime roots inherited from the caller environment are contamination,
 not launch authority. `WSLENV` may forward only managed values selected by the
 launcher.
 
-When CC_BRIDGE itself is invoked from a managed provider pane, daemon and tmux
+When CCB itself is invoked from a managed provider pane, daemon and tmux
 control-plane children must remove the pane's provider session markers, managed
 roots, credential-store switches, and injected API authority. They must recover
 the real source user `HOME` and any XDG roots that pointed into managed provider
-state. Nonstandard managed homes are identified by CC_BRIDGE caller/session markers,
+state. Nonstandard managed homes are identified by CCB caller/session markers,
 not only by path shape. If the operating-system account home cannot be resolved,
 startup fails closed instead of treating the managed home as an inheritance
 source. A managed process environment is never a reverse inheritance source.
@@ -139,12 +139,12 @@ For managed Claude, any key exported by `agents.<name>.env` must be removed
 from the inherited `~/.claude/settings.json` `env` projection before launch.
 An explicit Agent or Provider-profile `ANTHROPIC_BASE_URL` likewise suppresses
 the inherited settings route. This prevents Claude's settings layer from
-shadowing the higher-priority CC_BRIDGE authority while leaving unrelated inherited
+shadowing the higher-priority CCB authority while leaving unrelated inherited
 settings intact.
 
 A user-authored provider command wrapper that resets a protected root or
-credential-store switch after CC_BRIDGE constructs the command is an explicit escape
-from managed isolation. CC_BRIDGE must not add such an escape itself, and diagnostics
+credential-store switch after CCB constructs the command is an explicit escape
+from managed isolation. CCB must not add such an escape itself, and diagnostics
 should report the external override without reading its secrets.
 
 ## 5. OS Credential Services
@@ -157,44 +157,67 @@ The shared keyring reader exposes read operations only:
 
 It does not expose set or delete operations.
 
-Claude is the sole current exception that needs a writable OS credential
-representation on macOS. CC_BRIDGE may:
-
-- read the user's ordinary Claude services as source authority;
-- write or delete only an agent-derived service name of the form
-  `Claude Code-credentials-<agent-home-hash>` or its custom-OAuth equivalent;
-- refuse the operation if the derived name equals any external source service.
+On macOS, every managed Claude and AGY home receives an owner-only Keychain
+database. Its generated `com.apple.security.plist` contains only that database
+as the default and search list; CCB never attaches the user's login Keychain.
+For inherited Claude auth, CCB reads the external credential and seeds only the
+agent-derived service in this private database. Local credential writes are
+pinned to that database. This storage boundary does not prove remote OAuth
+refresh/revocation isolation: a copied rotating token is not independent
+authority, and Provider-specific qualification remains required. With
+`inherit_auth=false`, CCB does not copy external rotating or opaque OAuth; the
+user logs in once inside the managed Provider session instead.
 
 Managed Claude must set `CLAUDE_CONFIG_DIR` and
-`CLAUDE_SECURESTORAGE_CONFIG_DIR` to its private `.claude` directory and disable
-both interactive login and logout commands. It must never copy
-`com.apple.security.plist`, link `Library/Keychains`, or add/delete the user's
-ordinary Claude Keychain services.
+`CLAUDE_SECURESTORAGE_CONFIG_DIR` to its private `.claude` directory. Inherited
+auth keeps interactive login and logout disabled. With `inherit_auth=false`,
+startup clears ambient Claude OAuth/API token and token-descriptor inputs plus
+inherited login/logout-disable flags; those commands remain enabled and can
+reach only the Agent-private Keychain. Agent-explicit environment values are
+applied after the ambient cleanup.
+CCB must never copy the user's `com.apple.security.plist` or link
+`Library/Keychains` to the user's Keychains.
 
 Gemini, Cursor, and Droid may read known external keyring entries only to
 materialize provider-supported files inside their private managed homes. Their
 managed processes are then forced to file storage and never select the source
-keyring. If conversion is unavailable or invalid, CC_BRIDGE leaves that managed
+keyring. If conversion is unavailable or invalid, CCB leaves that managed
 provider unauthenticated instead of attaching the global credential backend.
 
-AGY `1.1.13` exposes no public token-storage switch. Before every managed AGY
-launch, CC_BRIDGE therefore refreshes AGY's own recent-keyring-failure marker at
-`<managed-home>/.gemini/antigravity-cli/cache/antigravity-keyring-unavailable`.
-AGY then selects its file token store immediately instead of attempting the OS
-keyring first. The marker is an owner-only regular file under the private
-managed home; CC_BRIDGE must detach any legacy link at that path and must never read,
-create, or refresh the corresponding path in the source user home.
+Managed AGY projects the external `gemini` / `antigravity` Keychain item
+one-way into its private default Keychain when available. If that source item
+is absent, it keeps inherited auth in its private file store and refreshes the
+recent-keyring-failure marker. With `inherit_auth=false`, CCB removes that marker
+so AGY can use the private Keychain for independent login. CCB records the
+selected auth mode inside the private managed home. A
+transition to independent auth fails closed while old managed auth files or a
+projected private-Keychain item remain, so a previous inherited projection
+cannot become the new Agent authority. Once
+independent mode is established, later starts preserve Provider-written auth
+files. Re-enabling inheritance from independent mode requires an explicit
+stopped authority transition and must not overwrite that private login.
+Inherited file paths and private Keychain items have a private provenance
+record; confirmed source absence removes only recorded projections. Source
+read errors, empty Keychain credentials, and private Keychain preparation errors
+block launch. They must not silently select stale file credentials instead.
+In inherited mode with confirmed absence of a source Keychain item, CCB
+refreshes the marker at
+`<managed-home>/.gemini/antigravity-cli/cache/antigravity-keyring-unavailable`
+so AGY selects its file token store immediately. The marker is an owner-only
+regular file under the private managed home and must never be read from or
+written into the source user home.
 
 ## 6. Built-In Provider Requirements
 
 | Provider | Managed account authority | Required isolation behavior |
 | --- | --- | --- |
-| Claude | private `.claude` files plus an agent-namespaced macOS service | private `HOME`/Claude roots; disable login/logout; external services read-only |
+| Claude | private `.claude` files and Agent-private macOS Keychain | inherited auth is seeded one-way and disables login/logout; independent auth can reach only the private Keychain |
 | Codex | private `CODEX_HOME` auth/config/sidecars | private session and SQLite roots; WSL `USERPROFILE` pinned |
 | Gemini | private `.gemini` OAuth/account/encrypted files | `GEMINI_FORCE_FILE_STORAGE=true` and `GEMINI_FORCE_ENCRYPTED_FILE_STORAGE=true`; external keyring read-only migration |
 | OpenCode | private XDG data/config/state and structured storage roots | auth/account files are one-way copies; storage/log writers stay private |
 | Droid | private `<managed-home>/.factory` v2 auth files | `FACTORY_DISABLE_KEYRING=true`; known keyring v2 material is converted to a private key file |
 | AGY | private `.gemini` and `.antigravity` trees | no source symlink or Windows junction; allowlisted file copies only; refresh the private AGY keyring-bypass marker before launch |
+| AGY (macOS) | private `.gemini` and `.antigravity` trees plus Agent-private Keychain | inherited auth is projected one-way with private file fallback; independent auth may use only the private Keychain |
 | Qwen | private `QWEN_HOME` OAuth/account files | both Qwen file-storage switches enabled |
 | Cursor | private platform-specific `cursor/auth.json` | `AGENT_CLI_CREDENTIAL_STORE=file`; macOS token services are read-only import sources |
 | Copilot | private `COPILOT_HOME` auth-bearing config and secret trees | `COPILOT_DISABLE_KEYTAR=1`; private cache root |
@@ -228,20 +251,20 @@ Provider isolation tests must cover the applicable boundaries:
   source fixture is unchanged;
 - prove destination symlinks, hard links, or junctions are detached without
   changing their source;
-- prove OS credential import uses read-only source operations and any Claude
-  write/delete targets only an agent-derived service;
+- prove inherited and independent macOS modes resolve only the Agent-private
+  default/search list, and leave the user's Keychain configuration unchanged;
 - prove visible and headless launches select managed roots and file-storage
   switches;
 - prove WSL launches pin managed Windows-facing roots;
 - prove auth files and secret fields are absent from diagnostics exports.
-- prove explicit CC_BRIDGE API/route authority suppresses competing ambient
+- prove explicit CCB API/route authority suppresses competing ambient
   credential and route state;
 - prove a new stopped launch observes changed external state while source
   bytes, mode, and timestamps remain unchanged;
 - prove `unknown_error` preserves the prior managed projection and blocks the
   new launch rather than acting as logout;
 - prove same-authority resume and incompatible linked continuation retain one
-  stable CC_BRIDGE conversation id and keep historical native transcripts visible.
+  stable CCB conversation id and keep historical native transcripts visible.
 
 Tests must not validate this contract by logging in to or logging out of a real
 user account.

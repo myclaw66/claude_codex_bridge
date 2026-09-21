@@ -15,14 +15,14 @@ Current active incidents:
   [repair plan](topics/issues-345-348-repair.md) for current scope and gates.
 
 - Claude-backed `ask` jobs can visibly finish in the provider session, emit
-  `assistant_chunk` with `stop_reason = "end_turn"`, but not reach CC_BRIDGE
+  `assistant_chunk` with `stop_reason = "end_turn"`, but not reach CCB
   `terminal=true` until the 900-second reliability timeout.
 - Codex-backed workers can consume the mailbox `task_request` while the
-  pane-backed Codex session never records the active `CC_BRIDGE_REQ_ID`, eventually
+  pane-backed Codex session never records the active `CCB_REQ_ID`, eventually
   failing with `codex_prompt_delivery_failed / delivery_anchor_missing`.
 - Codex native subagents can fork the parent conversation, inherit the same
-  `CC_BRIDGE_REQ_ID`, and emit a separate `task_complete`; that child rollout and
-  child result must never become the CC_BRIDGE target agent's caller-visible reply.
+  `CCB_REQ_ID`, and emit a separate `task_complete`; that child rollout and
+  child result must never become the CCB target agent's caller-visible reply.
 
 ## Authority
 
@@ -45,8 +45,12 @@ does not override provider/session contracts.
 
 ## Related Plans
 
-- [../cc-bridge-maintenance-heartbeat/README.md](../cc-bridge-maintenance-heartbeat/README.md)
-- [../cc-bridge-maintenance-heartbeat/topics/ask-runtime-health-mechanism.md](../cc-bridge-maintenance-heartbeat/topics/ask-runtime-health-mechanism.md)
+- [Empty-result caller notices](../inter-agent-comm-reliability/topics/empty-result-caller-notice.md):
+  2026-09-18 planned policy replaces automatic empty-result recovery with a
+  caller inspection notice; preserves exact terminal evidence and attribution.
+
+- [../ccb-maintenance-heartbeat/README.md](../ccb-maintenance-heartbeat/README.md)
+- [../ccb-maintenance-heartbeat/topics/ask-runtime-health-mechanism.md](../ccb-maintenance-heartbeat/topics/ask-runtime-health-mechanism.md)
 
 ## Scope
 
@@ -63,8 +67,8 @@ In scope:
   `delivery_anchor_missing` diagnostics, native subagent session/turn fencing,
   and maintenance heartbeat visibility.
 - Follow-up planning, deferred to later slices, for
-  provider-finished-but-CC_BRIDGE-not-terminal suspicion evidence used by
-  maintenance heartbeat and `cc-bridge_self`.
+  provider-finished-but-CCB-not-terminal suspicion evidence used by
+  maintenance heartbeat and `ccb_self`.
 
 Out of scope for the first repair slice:
 
@@ -75,4 +79,4 @@ Out of scope for the first repair slice:
 - Reclassifying timeout-with-reply from `incomplete` to `completed`.
 - Automatically resending Codex prompts when no anchor is observed.
 - Changing ask submit-only CLI semantics.
-- Mutating live `.cc-bridge` runtime state during validation.
+- Mutating live `.ccb` runtime state during validation.

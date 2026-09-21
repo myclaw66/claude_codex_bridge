@@ -2086,7 +2086,8 @@ def test_cc_bridge_opencode_real_adapter_blackbox_pane_dead_fails_degraded(monke
         job_id = _extract_accepted_job_id(stdout, target='demo')
 
         pend = _wait_for_phase2_status(project_root, job_id, 'failed', timeout=5.0)
-        assert 'reply: \n' in pend or pend.rstrip().endswith('reply:')
+        assert 'ccb screen demo' in pend
+        assert f'ccb trace {job_id}' in pend
         assert 'completion_reason: pane_dead' in pend
         assert 'completion_confidence: degraded' in pend
 
@@ -2353,7 +2354,8 @@ def test_cc_bridge_droid_real_adapter_blackbox_pane_dead_fails_degraded(monkeypa
         job_id = _extract_accepted_job_id(stdout, target='demo')
 
         pend = _wait_for_phase2_status(project_root, job_id, 'failed', timeout=5.0)
-        assert 'reply: \n' in pend or pend.rstrip().endswith('reply:')
+        assert 'ccb screen demo' in pend
+        assert f'ccb trace {job_id}' in pend
         assert 'completion_reason: pane_dead' in pend
         assert 'completion_confidence: degraded' in pend
 
@@ -3273,6 +3275,8 @@ def test_cc_bridge_two_named_codex_agents_concurrent_ask_isolated(monkeypatch, t
     monkeypatch.setattr(codex_adapter_module, 'get_backend_for_session', lambda data: FakeBackend())
     monkeypatch.setattr(codex_adapter_module, 'CodexLogReader', FakeReader)
     app = CcbdApp(project_root)
+    # Pre-claim inspection must resolve the same fake transport as the sender.
+    monkeypatch.setattr('terminal_runtime.get_backend_for_session', lambda data: FakeBackend())
     _freeze_job_ids(app, monkeypatch, *request_ids)
     monkeypatch.setattr(app.health_monitor, 'check_all', lambda: {})
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
@@ -3495,6 +3499,8 @@ def test_cc_bridge_two_named_codex_agents_recover_after_cc_bridge_daemon_restart
     monkeypatch.setattr(codex_adapter_module, 'get_backend_for_session', lambda data: FakeBackend())
     monkeypatch.setattr(codex_adapter_module, 'CodexLogReader', FakeReader)
     app1 = CcbdApp(project_root)
+    # Pre-claim inspection must resolve the same fake transport as the sender.
+    monkeypatch.setattr('terminal_runtime.get_backend_for_session', lambda data: FakeBackend())
     _freeze_job_ids(app1, monkeypatch, *request_ids)
     thread1 = threading.Thread(target=app1.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread1.start()
@@ -3686,6 +3692,8 @@ def test_cc_bridge_two_named_claude_agents_concurrent_ask_isolated(monkeypatch, 
     monkeypatch.setattr(claude_adapter_module, 'get_backend_for_session', lambda data: FakeBackend())
     monkeypatch.setattr(claude_adapter_module, 'ClaudeLogReader', FakeReader)
     app = CcbdApp(project_root)
+    # Pre-claim inspection must resolve the same fake transport as the sender.
+    monkeypatch.setattr('terminal_runtime.get_backend_for_session', lambda data: FakeBackend())
     _freeze_job_ids(app, monkeypatch, *request_ids)
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()

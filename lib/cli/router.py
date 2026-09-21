@@ -104,6 +104,7 @@ def print_start_help(*, file=None) -> None:
               cc_bridge ask <agent> [from <sender>] <message>
               cc_bridge followup <job_id> --message <text>
               cc_bridge doctor
+              cc_bridge screen <agent> [--lines 120] [--json]
 
             Diagnostics-only control-plane status:
               cc_bridge ping <agent|cc_bridge_daemon>
@@ -309,6 +310,13 @@ _COMMAND_HELP = {
           cc_bridge inbox --detail <agent_name>   Expand inbox-item detail for one agent.
           Prefer `cc_bridge pend --inbox [--detail] <agent>` as the converged observer entrypoint.
           Use `cc_bridge trace <id>` for lineage when needed.
+    """,
+    "screen": """
+        usage: cc_bridge screen <agent> [--lines 0..1000] [--json]
+
+        Read-only tmux text capture of the named agent in the mounted project.
+        Default: visible screen. --lines N adds up to N scrollback lines.
+        No daemon startup, key input, focus change, or log fallback.
     """,
     "logs": """
         usage: cc_bridge logs <agent>

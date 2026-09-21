@@ -7,7 +7,7 @@ import 'package:open_filex/open_filex.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-const cc_bridgeMobileDefaultVersion = '8.6.17+8060017';
+const cc_bridgeMobileDefaultVersion = '8.7.1+8070001';
 const cc_bridgeMobileDefaultApkDownloadUrl =
     'https://github.com/SeemSeam/claude_codex_bridge/releases/latest';
 const cc_bridgeMobileReleaseApiUrl =

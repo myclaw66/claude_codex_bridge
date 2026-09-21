@@ -4,7 +4,7 @@ from dataclasses import replace
 from types import SimpleNamespace
 
 import pytest
-from completion.models import CompletionSourceKind
+from completion.models import CompletionConfidence, CompletionDecision, CompletionSourceKind, CompletionStatus
 from provider_backends.claude.execution import ClaudeProviderAdapter
 from provider_backends.claude.execution_runtime.polling import (
     _orphaned_exact_hook,
@@ -245,10 +245,10 @@ def test_poll_submission_processes_events_until_turn_boundary(monkeypatch) -> No
 
 
 def test_poll_submission_recovers_anchored_round_result_from_idle_pane(monkeypatch) -> None:
-    submission = replace(_submission(), agent_name="cc_bridge_round_reviewer")
+    submission = replace(_submission(), agent_name="ccb_round_reviewer")
     batches = iter(
         [
-            ([{"role": "user", "text": "CC_BRIDGE_REQ_ID: job_1"}], {"cursor": 1}),
+            ([{"role": "user", "text": "CCB_REQ_ID: job_1"}], {"cursor": 1}),
             ([], {"cursor": 2}),
         ]
     )
@@ -258,8 +258,8 @@ def test_poll_submission_recovers_anchored_round_result_from_idle_pane(monkeypat
             assert pane_id == "%1"
             assert lines == 2000
             return (
-                "CC_BRIDGE_REQ_ID:\n  job_old\n● round result: blocked\n"
-                "CC_BRIDGE_REQ_ID:\n  job_1\nround result: blocked\n"
+                "CCB_REQ_ID:\n  job_old\n● round result: blocked\n"
+                "CCB_REQ_ID:\n  job_1\nround result: blocked\n"
                 "Thinking...\n● round result: pass\n"
                 "╭──────────╮\n│ >        │\n╰──────────╯\n? for shortcuts\n"
             )
@@ -299,10 +299,10 @@ def test_poll_submission_recovers_anchored_round_result_from_idle_pane(monkeypat
 
 
 def test_poll_submission_does_not_use_round_result_while_pane_is_busy(monkeypatch) -> None:
-    submission = replace(_submission(), agent_name="cc_bridge_round_reviewer")
+    submission = replace(_submission(), agent_name="ccb_round_reviewer")
     batches = iter(
         [
-            ([{"role": "user", "text": "CC_BRIDGE_REQ_ID: job_1"}], {"cursor": 1}),
+            ([{"role": "user", "text": "CCB_REQ_ID: job_1"}], {"cursor": 1}),
             ([], {"cursor": 2}),
         ]
     )
@@ -310,7 +310,7 @@ def test_poll_submission_does_not_use_round_result_while_pane_is_busy(monkeypatc
     class Backend:
         def get_pane_content(self, pane_id: str, lines: int = 120) -> str:
             assert lines == 2000
-            return "CC_BRIDGE_REQ_ID: job_1\n● round result: pass\nesc to interrupt"
+            return "CCB_REQ_ID: job_1\n● round result: pass\nesc to interrupt"
 
     prepared = SimpleNamespace(reader=object(), backend=Backend(), pane_id="%1")
     monkeypatch.setattr(
@@ -341,10 +341,10 @@ def test_poll_submission_does_not_use_round_result_while_pane_is_busy(monkeypatc
 
 
 def test_poll_submission_does_not_treat_unmarked_prompt_result_as_assistant_output(monkeypatch) -> None:
-    submission = replace(_submission(), agent_name="cc_bridge_round_reviewer")
+    submission = replace(_submission(), agent_name="ccb_round_reviewer")
     batches = iter(
         [
-            ([{"role": "user", "text": "CC_BRIDGE_REQ_ID: job_1"}], {"cursor": 1}),
+            ([{"role": "user", "text": "CCB_REQ_ID: job_1"}], {"cursor": 1}),
             ([], {"cursor": 2}),
         ]
     )
@@ -353,7 +353,7 @@ def test_poll_submission_does_not_treat_unmarked_prompt_result_as_assistant_outp
         def get_pane_content(self, pane_id: str, lines: int = 120) -> str:
             assert lines == 2000
             return (
-                "CC_BRIDGE_REQ_ID: job_1\nround result: blocked\n"
+                "CCB_REQ_ID: job_1\nround result: blocked\n"
                 "╭──────────╮\n│ >        │\n╰──────────╯\n? for shortcuts\n"
             )
 
@@ -446,7 +446,7 @@ def test_poll_submission_reply_delivery_defers_before_ready_timeout(monkeypatch)
             "state": {},
             "mode": "active",
             "pane_id": "%1",
-            "prompt_text": "CC_BRIDGE_REPLY from=agent2 reply=rep_1",
+            "prompt_text": "CCB_REPLY from=agent2 reply=rep_1",
             "prompt_sent": False,
             "reply_delivery_complete_on_dispatch": True,
             "reply_delivery_require_ready": True,
@@ -507,7 +507,7 @@ def test_poll_submission_reply_delivery_defers_before_ready_timeout(monkeypatch)
     assert sent == []
 
 
-def test_poll_submission_reply_delivery_dispatches_after_ready_timeout(monkeypatch) -> None:
+def test_poll_submission_reply_delivery_dispatches_after_ready_timeout_and_holds(monkeypatch) -> None:
     submission = ProviderSubmission(
         job_id="job_reply",
         agent_name="agent1",
@@ -520,7 +520,7 @@ def test_poll_submission_reply_delivery_dispatches_after_ready_timeout(monkeypat
             "state": {},
             "mode": "active",
             "pane_id": "%1",
-            "prompt_text": "CC_BRIDGE_REPLY from=agent2 reply=rep_1",
+            "prompt_text": "CCB_REPLY from=agent2 reply=rep_1",
             "prompt_sent": False,
             "reply_delivery_complete_on_dispatch": True,
             "reply_delivery_require_ready": True,
@@ -548,23 +548,32 @@ def test_poll_submission_reply_delivery_dispatches_after_ready_timeout(monkeypat
     )
     monkeypatch.setattr(
         "provider_backends.claude.execution_runtime.polling.poll_exact_hook",
-        lambda submission, now: (_ for _ in ()).throw(AssertionError("hook should not run")),
+        lambda submission, now: None,
+    )
+    monkeypatch.setattr(
+        "provider_backends.claude.execution_runtime.polling._orphaned_exact_hook",
+        lambda submission, prepared, now: None,
     )
     monkeypatch.setattr(
         "provider_backends.claude.execution_runtime.polling.ensure_active_pane_alive",
-        lambda submission, backend, pane_id, now: (_ for _ in ()).throw(AssertionError("liveness should not run")),
+        lambda submission, backend, pane_id, now: None,
+    )
+    monkeypatch.setattr(
+        "provider_backends.claude.execution_runtime.polling.read_events",
+        lambda reader, state: ([], state),
     )
 
     result = poll_submission(None, submission, now="2026-04-06T00:00:01Z")
 
+    # The bounded ready-wait send is transport only: the delivery stays held
+    # (no terminal decision) until the attributed turn-end evidence arrives.
     assert isinstance(result, ProviderPollResult)
-    assert result.decision is not None
-    assert result.decision.reason == "reply_delivery_sent"
+    assert result.decision is None
     assert result.submission.runtime_state["prompt_sent"] is True
-    assert sent == [("%1", "CC_BRIDGE_REPLY from=agent2 reply=rep_1")]
+    assert sent == [("%1", "CCB_REPLY from=agent2 reply=rep_1")]
 
 
-def test_poll_submission_reply_delivery_completes_after_dispatch(monkeypatch) -> None:
+def test_poll_submission_reply_delivery_completes_at_attributed_turn_end(monkeypatch) -> None:
     submission = ProviderSubmission(
         job_id="job_reply",
         agent_name="agent1",
@@ -577,8 +586,10 @@ def test_poll_submission_reply_delivery_completes_after_dispatch(monkeypatch) ->
             "state": {},
             "mode": "active",
             "pane_id": "%1",
-            "prompt_text": "CC_BRIDGE_REPLY from=agent2 reply=rep_1",
-            "prompt_sent": False,
+            "prompt_text": "CCB_REPLY from=agent2 reply=rep_1",
+            "prompt_sent": True,
+            "prompt_sent_at": "2026-04-06T00:00:01Z",
+            "anchor_seen": True,
             "reply_delivery_complete_on_dispatch": True,
             "reply_delivery_require_ready": True,
             "request_anchor": "job_reply",
@@ -598,6 +609,20 @@ def test_poll_submission_reply_delivery_completes_after_dispatch(monkeypatch) ->
             sent.append((pane_id, text))
 
     prepared = SimpleNamespace(reader=object(), backend=ReadyBackend(), pane_id="%1")
+    hook_decision = CompletionDecision(
+        terminal=True,
+        status=CompletionStatus.COMPLETED,
+        reason="hook_stop",
+        confidence=CompletionConfidence.EXACT,
+        reply="",
+        anchor_seen=True,
+        reply_started=False,
+        reply_stable=True,
+        provider_turn_ref="job_reply",
+        source_cursor=None,
+        finished_at="2026-04-06T00:00:05Z",
+        diagnostics={"reply_delivery": True},
+    )
 
     monkeypatch.setattr(
         "provider_backends.claude.execution_runtime.polling.prepare_active_poll_without_liveness",
@@ -605,20 +630,22 @@ def test_poll_submission_reply_delivery_completes_after_dispatch(monkeypatch) ->
     )
     monkeypatch.setattr(
         "provider_backends.claude.execution_runtime.polling.poll_exact_hook",
-        lambda submission, now: (_ for _ in ()).throw(AssertionError("hook should not run")),
-    )
-    monkeypatch.setattr(
-        "provider_backends.claude.execution_runtime.polling.ensure_active_pane_alive",
-        lambda submission, backend, pane_id, now: (_ for _ in ()).throw(AssertionError("liveness should not run")),
+        lambda submission, now: ProviderPollResult(
+            submission=submission,
+            items=(),
+            decision=hook_decision,
+        ),
     )
 
-    result = poll_submission(None, submission, now="2026-04-06T00:00:01Z")
+    result = poll_submission(None, submission, now="2026-04-06T00:00:05Z")
 
+    # Sending never completes the delivery by itself; the attributed Stop
+    # hook for this delivery's anchor is the turn-end evidence.
     assert isinstance(result, ProviderPollResult)
     assert result.decision is not None
-    assert result.decision.reason == "reply_delivery_sent"
-    assert result.submission.runtime_state["prompt_sent"] is True
-    assert sent == [("%1", "CC_BRIDGE_REPLY from=agent2 reply=rep_1")]
+    assert result.decision.terminal is True
+    assert result.decision.reason == "hook_stop"
+    assert sent == []
 
 
 def test_looks_ready_accepts_nbsp_prompt_line() -> None:
@@ -673,7 +700,7 @@ def test_claude_export_runtime_state_preserves_reply_delivery_flags() -> None:
             "prompt_enqueue_uuid": "queue-1",
             "prompt_activation_uuid": "queue-1",
             "completion_dir": "/tmp/completion",
-            "prompt_text": "CC_BRIDGE_REPLY from=agent2 reply=rep_1",
+            "prompt_text": "CCB_REPLY from=agent2 reply=rep_1",
             "prompt_sent": False,
             "prompt_sent_at": None,
             "reply_delivery_complete_on_dispatch": True,
