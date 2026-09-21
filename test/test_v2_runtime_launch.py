@@ -376,7 +376,7 @@ def test_codex_home_overrides_repairs_required_skills_without_full_refresh(
     )
 
     skills_dir = Path(overrides['CODEX_HOME']) / 'skills'
-    for skill_name in ('ask', 'ccb-clear', 'ccb-diagnose', 'reconnect'):
+    for skill_name in ('ask', 'cc-bridge-clear', 'cc-bridge-diagnose', 'reconnect'):
         assert (skills_dir / skill_name / 'SKILL.md').is_file()
 
 
@@ -2305,7 +2305,7 @@ def test_native_cli_launcher_builds_provider_state_payload(
         assert payload['qoder_headless_permission_mode'] == 'dont_ask'
         assert 'QODER_HOME=' not in start_cmd
         assert (state_dir / 'home' / 'skills' / 'ask' / 'SKILL.md').is_file()
-        assert (state_dir / 'home' / 'skills' / 'ccb-clear' / 'SKILL.md').is_file()
+        assert (state_dir / 'home' / 'skills' / 'cc-bridge-clear' / 'SKILL.md').is_file()
     elif provider == 'grok':
         assert visible_parts == [
             default_executable,
@@ -2318,7 +2318,7 @@ def test_native_cli_launcher_builds_provider_state_payload(
         assert payload['grok_skill_permissions_enabled'] is False
         assert payload['grok_auto_permission_enabled'] is False
         assert (state_dir / 'home' / '.grok' / 'skills' / 'ask' / 'SKILL.md').is_file()
-        assert (state_dir / 'home' / '.grok' / 'skills' / 'ccb-clear' / 'SKILL.md').is_file()
+        assert (state_dir / 'home' / '.grok' / 'skills' / 'cc-bridge-clear' / 'SKILL.md').is_file()
     elif provider == 'pi':
         extension_path = Path(payload['pi_completion_extension'])
         completion_event_log = Path(payload['pi_completion_event_log'])
@@ -2429,7 +2429,7 @@ def test_native_cli_launcher_builds_provider_state_payload(
         assert settings['general']['enableAutoUpdate'] is False
         assert settings['general']['enableAutoUpdateNotification'] is False
         assert (state_dir / 'home' / 'skills' / 'ask' / 'SKILL.md').is_file()
-        assert (state_dir / 'home' / 'skills' / 'ccb-clear' / 'SKILL.md').is_file()
+        assert (state_dir / 'home' / 'skills' / 'cc-bridge-clear' / 'SKILL.md').is_file()
     else:
         assert visible_parts == [default_executable, '--demo']
 
@@ -2538,7 +2538,7 @@ def test_qoder_launcher_respects_explicit_config_and_permission_options(
     assert payload['qoder_auto_permission_enabled'] is True
     assert payload['qoder_headless_permission_mode'] == 'plan'
     assert (plan.workspace_path / 'custom-qoder' / 'skills' / 'ask' / 'SKILL.md').is_file()
-    assert (plan.workspace_path / 'custom-qoder' / 'skills' / 'ccb-clear' / 'SKILL.md').is_file()
+    assert (plan.workspace_path / 'custom-qoder' / 'skills' / 'cc-bridge-clear' / 'SKILL.md').is_file()
 
 
 def test_qoderclicn_launcher_uses_one_managed_root_and_merges_update_settings(
@@ -2816,7 +2816,7 @@ def test_grok_launcher_keeps_control_skills_when_optional_inheritance_is_off(
     assert prepared['grok_skill_permissions_enabled'] is True
     assert prepared['grok_auto_permission_enabled'] is True
     assert (managed_home / '.grok' / 'skills' / 'ask' / 'SKILL.md').is_file()
-    assert (managed_home / '.grok' / 'skills' / 'ccb-clear' / 'SKILL.md').is_file()
+    assert (managed_home / '.grok' / 'skills' / 'cc-bridge-clear' / 'SKILL.md').is_file()
 
 
 def test_ensure_agent_runtime_falls_back_when_created_pane_is_too_small(monkeypatch, tmp_path: Path) -> None:

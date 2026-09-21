@@ -865,7 +865,7 @@ def test_materialize_kimi_skills_preserves_unmarked_packaged_target(
     monkeypatch,
 ) -> None:
     packaged = tmp_path / 'packaged-kimi-skills'
-    for skill_name in ('ask', 'cc_bridge-clear', 'cc_bridge-compact', 'cc_bridge-diagnose'):
+    for skill_name in ('ask', 'cc-bridge-clear', 'cc-bridge-compact', 'cc-bridge-diagnose'):
         (packaged / skill_name).mkdir(parents=True)
         (packaged / skill_name / 'SKILL.md').write_text(f'{skill_name}\n', encoding='utf-8')
     state_dir = tmp_path / 'provider-state' / 'kimi'
@@ -887,9 +887,9 @@ def test_materialize_kimi_skills_preserves_unmarked_packaged_target(
     assert inherited_dir in active_dirs
     assert (inherited_dir / 'user-skill' / 'SKILL.md').read_text(encoding='utf-8') == 'user\n'
     assert (inherited_dir / 'ask' / 'SKILL.md').is_file()
-    assert (inherited_dir / 'cc_bridge-clear' / 'SKILL.md').is_file()
-    assert (inherited_dir / 'cc_bridge-compact' / 'SKILL.md').is_file()
-    assert (inherited_dir / 'cc_bridge-diagnose' / 'SKILL.md').is_file()
+    assert (inherited_dir / 'cc-bridge-clear' / 'SKILL.md').is_file()
+    assert (inherited_dir / 'cc-bridge-compact' / 'SKILL.md').is_file()
+    assert (inherited_dir / 'cc-bridge-diagnose' / 'SKILL.md').is_file()
     assert not Path(f'{inherited_dir}.cc_bridge-projection.json').exists()
 
 
