@@ -7,7 +7,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from ccbd.api_models import DeliveryScope, JobRecord, JobStatus, MessageEnvelope
+from cc_bridge_daemon.api_models import DeliveryScope, JobRecord, JobStatus, MessageEnvelope
 from provider_backends.native_cli_support import NativeCliExecutionRequest
 from provider_backends.native_cli_support.home import materialize_native_login_state
 from provider_backends.omp.launcher import (
@@ -81,14 +81,14 @@ def test_omp_visible_launch_uses_provider_state_session_dir(tmp_path: Path) -> N
     _materialize_completion_extension(
         prepared,
         runtime_dir=runtime_dir,
-        launch_session_id="ccb-omp-launch",
+        launch_session_id="cc_bridge-omp-launch",
     )
 
     assert _omp_visible_args(prepared) == (
         "--session-dir",
         str(tmp_path / "provider-state" / "sessions"),
         "--extension",
-        str(runtime_dir / "completion" / "ccb-omp-completion.ts"),
+        str(runtime_dir / "completion" / "cc_bridge-omp-completion.ts"),
         "--approval-mode",
         "yolo",
     )
@@ -99,11 +99,11 @@ def test_omp_visible_launch_uses_provider_state_session_dir(tmp_path: Path) -> N
         "PI_CODING_AGENT_SESSION_DIR": str(
             tmp_path / "provider-state" / "sessions"
         ),
-        "CCB_OMP_COMPLETION_EVENTS": str(
+        "CC_BRIDGE_OMP_COMPLETION_EVENTS": str(
             prepared["omp_completion_event_log"]
         ),
-        "CCB_OMP_DISPATCH_EVENTS": str(prepared["omp_dispatch_event_log"]),
-        "CCB_OMP_COMPOSER_SOCKET": str(prepared["omp_draft_guard_socket"]),
+        "CC_BRIDGE_OMP_DISPATCH_EVENTS": str(prepared["omp_dispatch_event_log"]),
+        "CC_BRIDGE_OMP_COMPOSER_SOCKET": str(prepared["omp_draft_guard_socket"]),
     }
     for key in (
         "omp_completion_extension",
@@ -120,8 +120,8 @@ def test_omp_extension_normalizes_only_final_agent_end_to_settled() -> None:
     assert "event?.willContinue === true" in source
     assert "if (!willContinue)" in source
     assert 'appendEvent("agent_settled"' in source
-    assert "CCB_OMP_COMPLETION_EVENTS" in source
-    assert "CCB_OMP_DISPATCH_EVENTS" in source
+    assert "CC_BRIDGE_OMP_COMPLETION_EVENTS" in source
+    assert "CC_BRIDGE_OMP_DISPATCH_EVENTS" in source
 
 
 def test_omp_headless_launch_uses_same_private_agent_and_session_roots(
@@ -186,9 +186,9 @@ def test_omp_projects_required_ccb_skills_when_optional_inheritance_is_disabled(
     )
 
     skills_root = target_home / ".omp" / "agent" / "skills"
-    for skill_name in ("ask", "ccb-clear", "ccb-compact", "ccb-diagnose"):
+    for skill_name in ("ask", "cc-bridge-clear", "cc-bridge-compact", "cc-bridge-diagnose"):
         skill_file = skills_root / skill_name / "SKILL.md"
-        marker = skills_root / f"{skill_name}.ccb-projection.json"
+        marker = skills_root / f"{skill_name}.cc_bridge-projection.json"
         assert skill_file.is_file()
         assert marker.is_file()
         assert f"name: {skill_name}" in skill_file.read_text(encoding="utf-8")

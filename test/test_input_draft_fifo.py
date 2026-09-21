@@ -2,7 +2,7 @@ from types import MethodType
 
 import pytest
 
-from ccbd.api_models import JobStatus
+from cc_bridge_daemon.api_models import JobStatus
 from provider_execution import draft_guard
 from provider_execution.service import ExecutionService
 from test_input_draft_guard import Target

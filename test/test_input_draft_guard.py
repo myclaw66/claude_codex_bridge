@@ -259,7 +259,7 @@ def test_draft_wait_is_not_execution_timeout_and_send_restarts_progress():
 
 
 def test_tracker_does_not_count_draft_wait_as_provider_time():
-    from ccbd.services.dispatcher_runtime.polling_service import _ingest_update_items
+    from cc_bridge_daemon.services.dispatcher_runtime.polling_service import _ingest_update_items
     events = []
     tracker = SimpleNamespace(finish=lambda job: events.append(('finish', job)),
                               current=lambda job: None,

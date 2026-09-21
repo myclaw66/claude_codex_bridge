@@ -13,15 +13,15 @@ import pytest
 
 from agents.models import AgentRuntime, AgentState, AgentRestoreState, RestoreMode
 from agents.store import AgentRuntimeStore
-from ccbd.api_models import DeliveryScope, MessageEnvelope
-from ccbd.app import CcbdApp
-from ccbd.app_runtime.lifecycle import hot_loop_work_pending
-from ccbd.services.dispatcher import JobDispatcher
-from ccbd.services.registry import AgentRegistry
-from ccbd.services.lifecycle import build_lifecycle
-from ccbd.services.project_namespace_state import ProjectNamespaceEvent, ProjectNamespaceState
-from ccbd.socket_client import CcbdClient, CcbdClientError
-from ccbd.socket_server import CcbdSocketServer
+from cc_bridge_daemon.api_models import DeliveryScope, MessageEnvelope
+from cc_bridge_daemon.app import CcbdApp
+from cc_bridge_daemon.app_runtime.lifecycle import hot_loop_work_pending
+from cc_bridge_daemon.services.dispatcher import JobDispatcher
+from cc_bridge_daemon.services.registry import AgentRegistry
+from cc_bridge_daemon.services.lifecycle import build_lifecycle
+from cc_bridge_daemon.services.project_namespace_state import ProjectNamespaceEvent, ProjectNamespaceState
+from cc_bridge_daemon.socket_client import CcbdClient, CcbdClientError
+from cc_bridge_daemon.socket_server import CcbdSocketServer
 from completion.models import CompletionConfidence, CompletionDecision, CompletionStatus
 from message_bureau import AttemptStore, MessageStore
 from message_bureau.reply_payloads import delivery_job_id_from_payload
@@ -48,8 +48,8 @@ def _single_agent_config_text(agent_name: str, provider: str) -> str:
 
 def _prepare_project(project_root: Path, config_text: str):
     project_root.mkdir()
-    config_dir = project_root / '.ccb'
-    _write(config_dir / 'ccb.config', config_text)
+    config_dir = project_root / '.cc-bridge'
+    _write(config_dir / 'cc_bridge.config', config_text)
     return ProjectContext(
         cwd=project_root,
         project_root=project_root,
@@ -85,7 +85,7 @@ def _wait_for(path: Path, timeout: float = 10.0) -> None:
             if path.suffix != '.sock':
                 return
             try:
-                payload = CcbdClient(path, timeout_s=1.0).ping('ccbd')
+                payload = CcbdClient(path, timeout_s=1.0).ping('cc_bridge_daemon')
                 diagnostics = payload.get('diagnostics')
                 stage = diagnostics.get('startup_stage') if isinstance(diagnostics, dict) else None
                 if stage in {None, '', 'mounted'}:
@@ -194,9 +194,9 @@ def test_ccbd_socket_roundtrip_and_shutdown(tmp_path: Path) -> None:
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     ping = client.ping('codex')
     assert ping['agent_name'] == 'codex'
     assert ping['provider'] == 'codex'
@@ -291,8 +291,8 @@ def test_ccbd_socket_get_and_watch_resolve_callback_root_final_reply(tmp_path: P
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
 
     parent_job_id = client.submit(
         MessageEnvelope(
@@ -370,10 +370,10 @@ def test_ccbd_control_plane_metrics_record_queue_wait_and_handler_durations(tmp_
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
-    client.ping('ccbd')
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
+    client.ping('cc_bridge_daemon')
     submit = client.submit(
         MessageEnvelope(
             project_id=ctx.project_id,
@@ -425,7 +425,7 @@ def test_ccbd_heartbeat_records_step_metrics_without_background_worker(tmp_path:
             owner_pid=app.pid,
             owner_daemon_instance_id=app.daemon_instance_id,
             config_signature=str(app.config_identity.get('config_signature') or '').strip() or None,
-            socket_path=app.paths.ccbd_socket_path,
+            socket_path=app.paths.cc_bridge_daemon_socket_path,
         )
     )
     monkeypatch.setattr(app.mount_manager, 'refresh_heartbeat', lambda **kwargs: app.lease)
@@ -451,7 +451,7 @@ def test_ccbd_bootstrap_arms_job_heartbeat_reaper(tmp_path: Path) -> None:
     # positive terminal_notice_count so a wedged (no-progress) 'ask' job is
     # eventually terminated instead of starving its mailbox queue forever.
     # If this drifts back to None the 2026-07-09 comm stall class reappears.
-    from ccbd.app_runtime.bootstrap import JOB_HEARTBEAT_TERMINAL_NOTICE_COUNT
+    from cc_bridge_daemon.app_runtime.bootstrap import JOB_HEARTBEAT_TERMINAL_NOTICE_COUNT
 
     project_root = tmp_path / 'repo-heartbeat-reaper-armed'
     _prepare_project(project_root, _single_agent_config_text('codex', 'codex'))
@@ -469,14 +469,14 @@ def test_ccbd_socket_bad_client_does_not_block_later_ping(tmp_path: Path) -> Non
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
     bad = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     try:
-        bad.connect(str(app.paths.ccbd_socket_path))
+        bad.connect(str(app.paths.cc_bridge_daemon_socket_path))
         time.sleep(0.1)
 
-        ping = CcbdClient(app.paths.ccbd_socket_path, timeout_s=1.5).ping('ccbd')
+        ping = CcbdClient(app.paths.cc_bridge_daemon_socket_path, timeout_s=1.5).ping('cc_bridge_daemon')
 
         assert ping['project_id'] == app.project_id
     finally:
@@ -512,7 +512,7 @@ def test_ccbd_socket_shutdown_does_not_remove_replaced_socket_path(tmp_path: Pat
 
 
 def test_socket_server_uses_larger_listen_backlog(tmp_path: Path, monkeypatch) -> None:
-    socket_path = tmp_path / 'ccbd.sock'
+    socket_path = tmp_path / 'cc_bridge_daemon.sock'
     listen_backlogs: list[int] = []
 
     class _FakeSocket:
@@ -528,8 +528,8 @@ def test_socket_server_uses_larger_listen_backlog(tmp_path: Path, monkeypatch) -
         def close(self) -> None:
             pass
 
-    monkeypatch.setattr('ccbd.control_plane_transport.unix.socket.socket', lambda *args, **kwargs: _FakeSocket())
-    monkeypatch.setattr('ccbd.control_plane_transport.unix.bound_socket_identity', lambda path: (1, 2))
+    monkeypatch.setattr('cc_bridge_daemon.control_plane_transport.unix.socket.socket', lambda *args, **kwargs: _FakeSocket())
+    monkeypatch.setattr('cc_bridge_daemon.control_plane_transport.unix.bound_socket_identity', lambda path: (1, 2))
 
     server = CcbdSocketServer(socket_path)
     server.listen()
@@ -539,7 +539,7 @@ def test_socket_server_uses_larger_listen_backlog(tmp_path: Path, monkeypatch) -
 
 
 def test_socket_server_bounds_accepted_connection_queue(tmp_path: Path) -> None:
-    socket_path = tmp_path / 'ccbd.sock'
+    socket_path = tmp_path / 'cc_bridge_daemon.sock'
     server = CcbdSocketServer(socket_path)
     closed: list[int] = []
 
@@ -550,7 +550,7 @@ def test_socket_server_bounds_accepted_connection_queue(tmp_path: Path) -> None:
         def close(self) -> None:
             closed.append(self.index)
 
-    import ccbd.socket_server_runtime.loop as socket_loop
+    import cc_bridge_daemon.socket_server_runtime.loop as socket_loop
 
     for index in range(140):
         socket_loop.enqueue_connection(server, _Conn(index))
@@ -560,7 +560,7 @@ def test_socket_server_bounds_accepted_connection_queue(tmp_path: Path) -> None:
 
 
 def test_socket_worker_drops_stale_queued_connection(tmp_path: Path, monkeypatch) -> None:
-    socket_path = tmp_path / 'ccbd.sock'
+    socket_path = tmp_path / 'cc_bridge_daemon.sock'
     server = CcbdSocketServer(socket_path)
     closed: list[str] = []
     handled: list[str] = []
@@ -569,7 +569,7 @@ def test_socket_worker_drops_stale_queued_connection(tmp_path: Path, monkeypatch
         def close(self) -> None:
             closed.append('closed')
 
-    import ccbd.socket_server_runtime.loop as socket_loop
+    import cc_bridge_daemon.socket_server_runtime.loop as socket_loop
 
     monkeypatch.setattr(socket_loop.time, 'monotonic', lambda: 10.5)
     server._connection_queue.put_nowait((_Conn(), 8.0))
@@ -583,7 +583,7 @@ def test_socket_worker_drops_stale_queued_connection(tmp_path: Path, monkeypatch
 
 
 def test_socket_server_timeout_after_shutdown_does_not_run_tick(tmp_path: Path) -> None:
-    socket_path = tmp_path / 'ccbd.sock'
+    socket_path = tmp_path / 'cc_bridge_daemon.sock'
     server = CcbdSocketServer(socket_path)
     tick_calls: list[str] = []
 
@@ -609,7 +609,7 @@ def test_socket_server_timeout_after_shutdown_does_not_run_tick(tmp_path: Path) 
 
 def test_socket_server_propagates_worker_tick_errors() -> None:
     with tempfile.TemporaryDirectory(prefix='ccb-sock-', dir=str(Path(tempfile.gettempdir()))) as temp_dir:
-        server = CcbdSocketServer(Path(temp_dir) / 'ccbd.sock')
+        server = CcbdSocketServer(Path(temp_dir) / 'cc_bridge_daemon.sock')
 
         try:
             with pytest.raises(RuntimeError, match='tick boom'):
@@ -629,8 +629,8 @@ def test_ccbd_stop_all_does_not_run_post_shutdown_heartbeat(tmp_path: Path) -> N
     app = CcbdApp(project_root)
     destroy_events: list[str] = []
     app.project_namespace.ensure = lambda: SimpleNamespace(  # type: ignore[method-assign]
-        tmux_socket_path=str(app.paths.ccbd_tmux_socket_path),
-        tmux_session_name=app.paths.ccbd_tmux_session_name,
+        tmux_socket_path=str(app.paths.cc_bridge_daemon_tmux_socket_path),
+        tmux_session_name=app.paths.cc_bridge_daemon_tmux_session_name,
         namespace_epoch=1,
     )
     app.project_namespace.destroy = (  # type: ignore[method-assign]
@@ -640,9 +640,9 @@ def test_ccbd_stop_all_does_not_run_post_shutdown_heartbeat(tmp_path: Path) -> N
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     started = client.start(agent_names=('demo',), restore=False, auto_permission=False)
     assert started['started'] == ['demo']
     assert app.start_policy_store.load() is not None
@@ -672,8 +672,8 @@ def test_ccbd_stop_all_does_not_scan_project_processes_during_rpc(tmp_path: Path
     _prepare_project(project_root, _single_agent_config_text('demo', 'fake'))
     app = CcbdApp(project_root)
     app.project_namespace.ensure = lambda: SimpleNamespace(  # type: ignore[method-assign]
-        tmux_socket_path=str(app.paths.ccbd_tmux_socket_path),
-        tmux_session_name=app.paths.ccbd_tmux_session_name,
+        tmux_socket_path=str(app.paths.cc_bridge_daemon_tmux_socket_path),
+        tmux_session_name=app.paths.cc_bridge_daemon_tmux_session_name,
         namespace_epoch=1,
     )
     app.project_namespace.destroy = lambda **kwargs: SimpleNamespace(destroyed=True, namespace_epoch=1)  # type: ignore[method-assign]
@@ -698,15 +698,15 @@ def test_ccbd_stop_all_does_not_scan_project_processes_during_rpc(tmp_path: Path
         captured['collect_project_process_candidates_fn'] = collect_project_process_candidates_fn
 
     monkeypatch.setattr(
-        'ccbd.stop_flow_runtime.pid_cleanup._terminate_runtime_pids_impl',
+        'cc_bridge_daemon.stop_flow_runtime.pid_cleanup._terminate_runtime_pids_impl',
         _capture_terminate_runtime_pids,
     )
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     started = client.start(agent_names=('demo',), restore=False, auto_permission=False)
     assert started['started'] == ['demo']
 
@@ -723,17 +723,17 @@ def test_ccbd_stop_all_force_terminalizes_running_jobs_before_restart_restore(tm
     _prepare_project(project_root, _single_agent_config_text('demo', 'fake'))
     app = CcbdApp(project_root)
     app.project_namespace.ensure = lambda: SimpleNamespace(  # type: ignore[method-assign]
-        tmux_socket_path=str(app.paths.ccbd_tmux_socket_path),
-        tmux_session_name=app.paths.ccbd_tmux_session_name,
+        tmux_socket_path=str(app.paths.cc_bridge_daemon_tmux_socket_path),
+        tmux_session_name=app.paths.cc_bridge_daemon_tmux_session_name,
         namespace_epoch=1,
     )
     app.project_namespace.destroy = lambda **kwargs: SimpleNamespace(destroyed=True, namespace_epoch=1)  # type: ignore[method-assign]
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     started = client.start(agent_names=('demo',), restore=False, auto_permission=False)
     assert started['started'] == ['demo']
 
@@ -808,7 +808,7 @@ def test_ccbd_socket_rejects_mutating_requests_while_lifecycle_stopping(
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
     app.lifecycle_store.save(
         build_lifecycle(
@@ -821,12 +821,12 @@ def test_ccbd_socket_rejects_mutating_requests_while_lifecycle_stopping(
             owner_pid=app.pid,
             owner_daemon_instance_id=app.daemon_instance_id,
             config_signature=str(app.config_identity.get('config_signature') or '').strip() or None,
-            socket_path=app.paths.ccbd_socket_path,
+            socket_path=app.paths.cc_bridge_daemon_socket_path,
             shutdown_intent='kill',
         )
     )
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
 
     ping = client.ping('codex')
     assert ping['agent_name'] == 'codex'
@@ -868,7 +868,7 @@ def test_ccbd_heartbeat_skips_maintenance_steps_while_lifecycle_stopping(tmp_pat
             owner_pid=app.pid,
             owner_daemon_instance_id=app.daemon_instance_id,
             config_signature=str(app.config_identity.get('config_signature') or '').strip() or None,
-            socket_path=app.paths.ccbd_socket_path,
+            socket_path=app.paths.cc_bridge_daemon_socket_path,
             shutdown_intent='stop_all',
         )
     )
@@ -913,7 +913,7 @@ def test_ccbd_heartbeat_skips_maintenance_while_start_lock_held(tmp_path: Path, 
             owner_pid=app.pid,
             owner_daemon_instance_id=app.daemon_instance_id,
             config_signature=str(app.config_identity.get('config_signature') or '').strip() or None,
-            socket_path=app.paths.ccbd_socket_path,
+            socket_path=app.paths.cc_bridge_daemon_socket_path,
         )
     )
     monkeypatch.setattr(app.mount_manager, 'refresh_heartbeat', lambda **kwargs: app.lease)
@@ -961,10 +961,10 @@ def test_ccbd_heartbeat_skips_heavy_idle_maintenance_between_full_ticks(tmp_path
             owner_pid=app.pid,
             owner_daemon_instance_id=app.daemon_instance_id,
             config_signature=str(app.config_identity.get('config_signature') or '').strip() or None,
-            socket_path=app.paths.ccbd_socket_path,
+            socket_path=app.paths.cc_bridge_daemon_socket_path,
         )
     )
-    monkeypatch.setattr('ccbd.app_runtime.lifecycle.monotonic', lambda: 100.0)
+    monkeypatch.setattr('cc_bridge_daemon.app_runtime.lifecycle.monotonic', lambda: 100.0)
     app._last_full_heartbeat_at = 95.0
     monkeypatch.setattr(app.mount_manager, 'refresh_heartbeat', lambda **kwargs: app.lease)
     monkeypatch.setattr(
@@ -994,12 +994,12 @@ def test_ccbd_heartbeat_runs_heavy_maintenance_for_active_execution(tmp_path: Pa
             owner_pid=app.pid,
             owner_daemon_instance_id=app.daemon_instance_id,
             config_signature=str(app.config_identity.get('config_signature') or '').strip() or None,
-            socket_path=app.paths.ccbd_socket_path,
+            socket_path=app.paths.cc_bridge_daemon_socket_path,
         )
     )
     calls: list[str] = []
     app.execution_service._active['job_1'] = object()
-    monkeypatch.setattr('ccbd.app_runtime.lifecycle.monotonic', lambda: 100.0)
+    monkeypatch.setattr('cc_bridge_daemon.app_runtime.lifecycle.monotonic', lambda: 100.0)
     app._last_full_heartbeat_at = 99.0
     monkeypatch.setattr(app.mount_manager, 'refresh_heartbeat', lambda **kwargs: app.lease)
     monkeypatch.setattr(app.health_monitor, 'check_all', lambda: calls.append('health'))
@@ -1045,7 +1045,7 @@ def test_ccbd_full_idle_heartbeat_does_not_rewrite_last_seen_only_runtime_state(
             owner_pid=app.pid,
             owner_daemon_instance_id=app.daemon_instance_id,
             config_signature=str(app.config_identity.get('config_signature') or '').strip() or None,
-            socket_path=app.paths.ccbd_socket_path,
+            socket_path=app.paths.cc_bridge_daemon_socket_path,
         )
     )
     app.registry.upsert(
@@ -1057,7 +1057,7 @@ def test_ccbd_full_idle_heartbeat_does_not_rewrite_last_seen_only_runtime_state(
         )
     )
     save_count = app.registry._runtime_store.save_count
-    monkeypatch.setattr('ccbd.app_runtime.lifecycle.monotonic', lambda: 100.0)
+    monkeypatch.setattr('cc_bridge_daemon.app_runtime.lifecycle.monotonic', lambda: 100.0)
     app._last_full_heartbeat_at = 0.0
     monkeypatch.setattr(app.mount_manager, 'refresh_heartbeat', lambda **kwargs: app.lease)
 
@@ -1079,8 +1079,8 @@ def test_ping_namespace_summary(tmp_path: Path) -> None:
         ProjectNamespaceState(
             project_id=ctx.project_id,
             namespace_epoch=4,
-            tmux_socket_path=str(app.paths.ccbd_tmux_socket_path),
-            tmux_session_name=app.paths.ccbd_tmux_session_name,
+            tmux_socket_path=str(app.paths.cc_bridge_daemon_tmux_socket_path),
+            tmux_session_name=app.paths.cc_bridge_daemon_tmux_session_name,
             layout_version=1,
             ui_attachable=True,
             last_started_at='2026-04-03T00:05:00Z',
@@ -1092,8 +1092,8 @@ def test_ping_namespace_summary(tmp_path: Path) -> None:
             project_id=ctx.project_id,
             occurred_at='2026-04-03T00:05:00Z',
             namespace_epoch=4,
-            tmux_socket_path=str(app.paths.ccbd_tmux_socket_path),
-            tmux_session_name=app.paths.ccbd_tmux_session_name,
+            tmux_socket_path=str(app.paths.cc_bridge_daemon_tmux_socket_path),
+            tmux_session_name=app.paths.cc_bridge_daemon_tmux_session_name,
         )
     )
     app.persist_start_policy(auto_permission=True)
@@ -1101,14 +1101,14 @@ def test_ping_namespace_summary(tmp_path: Path) -> None:
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
-    ping = client.ping('ccbd')
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
+    ping = client.ping('cc_bridge_daemon')
 
     assert ping['namespace_epoch'] == 4
-    assert ping['namespace_tmux_socket_path'] == str(app.paths.ccbd_tmux_socket_path)
-    assert ping['namespace_tmux_session_name'] == app.paths.ccbd_tmux_session_name
+    assert ping['namespace_tmux_socket_path'] == str(app.paths.cc_bridge_daemon_tmux_socket_path)
+    assert ping['namespace_tmux_session_name'] == app.paths.cc_bridge_daemon_tmux_session_name
     assert ping['namespace_last_event_kind'] == 'namespace_created'
     assert ping['start_policy_auto_permission'] is True
     assert ping['start_policy_recovery_restore'] is True
@@ -1130,16 +1130,16 @@ def test_start_persists_policy(tmp_path: Path, monkeypatch) -> None:
                 'project_root': str(project_root),
                 'project_id': app.project_id,
                 'started': ['demo'],
-                'socket_path': str(app.paths.ccbd_socket_path),
+                'socket_path': str(app.paths.cc_bridge_daemon_socket_path),
             }
         ),
     )
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     started = client.start(agent_names=('demo',), restore=False, auto_permission=True)
 
     assert started['started'] == ['demo']
@@ -1170,9 +1170,9 @@ def test_ccbd_attach_and_restore_roundtrip(tmp_path: Path) -> None:
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     attached = client.attach(
         agent_name='codex',
         workspace_path=str(app.paths.workspace_path('codex')),
@@ -1214,9 +1214,9 @@ def test_ccbd_attach_only_runtime_is_not_eagerly_mounted_without_start_policy(tm
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     attached = client.attach(
         agent_name='demo',
         workspace_path=str(app.paths.workspace_path('demo')),
@@ -1267,7 +1267,7 @@ def test_ccbd_missing_runtime_is_proactively_mounted_when_start_policy_exists(tm
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
     deadline = time.time() + 2.0
     while time.time() < deadline and not mounted:
@@ -1280,7 +1280,7 @@ def test_ccbd_missing_runtime_is_proactively_mounted_when_start_policy_exists(tm
     assert runtime.session_ref == 'demo-session-id'
     assert runtime.binding_source.value == 'provider-session'
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     client.shutdown()
     thread.join(timeout=2)
     assert not thread.is_alive()
@@ -1313,9 +1313,9 @@ def test_ccbd_queue_reports_registered_agent_mailboxes(tmp_path: Path) -> None:
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     submit = client.submit(
         MessageEnvelope(
             project_id=ctx.project_id,
@@ -1379,9 +1379,9 @@ def test_ccbd_trace_returns_attempt_reply_and_mailbox_events(tmp_path: Path) -> 
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     submit = client.submit(
         MessageEnvelope(
             project_id=ctx.project_id,
@@ -1444,9 +1444,9 @@ def test_ccbd_inbox_and_ack_roundtrip_reply_delivery(tmp_path: Path) -> None:
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     submit = client.submit(
         MessageEnvelope(
             project_id=ctx.project_id,
@@ -1505,9 +1505,9 @@ def test_ccbd_socket_rejects_cmd_sender(tmp_path: Path) -> None:
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     with pytest.raises(CcbdClientError, match='unknown sender agent: cmd'):
         client.submit(
             MessageEnvelope(
@@ -1548,9 +1548,9 @@ def test_ccbd_resubmit_creates_new_message_record_with_origin(tmp_path: Path) ->
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     submit = client.submit(
         MessageEnvelope(
             project_id=ctx.project_id,
@@ -1601,9 +1601,9 @@ def test_ccbd_retry_creates_new_attempt_under_existing_message(tmp_path: Path) -
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     submit = client.submit(
         MessageEnvelope(
             project_id=ctx.project_id,
@@ -1658,17 +1658,17 @@ def test_ccbd_socket_ignores_client_disconnect_during_response(tmp_path: Path) -
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    sock.connect(str(app.paths.ccbd_socket_path))
+    sock.connect(str(app.paths.cc_bridge_daemon_socket_path))
     sock.sendall((json.dumps({'api_version': 2, 'op': 'ping', 'request': {'target': 'ccbd'}}) + '\n').encode('utf-8'))
     sock.close()
 
     time.sleep(0.1)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
-    ping = client.ping('ccbd')
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
+    ping = client.ping('cc_bridge_daemon')
     assert ping['mount_state'] == 'mounted'
 
     client.shutdown()
@@ -1693,9 +1693,9 @@ def test_ccbd_attach_without_provider_binding_does_not_synthesize_refs(tmp_path:
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     attached = client.attach(
         agent_name='codex',
         workspace_path=str(app.paths.workspace_path('codex')),
@@ -1724,9 +1724,9 @@ def test_ccbd_attach_empty_binding_fields_clear_previous_refs(tmp_path: Path) ->
 
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     client.attach(
         agent_name='codex',
         workspace_path=str(app.paths.workspace_path('codex')),
@@ -1766,7 +1766,7 @@ def test_ccbd_socket_codex_protocol_turn_completes_via_tracker(monkeypatch, tmp_
     fixed_req_id = 'job_codex1'
     sent: list[tuple[str, str]] = []
     project_root = tmp_path / 'repo-codex'
-    _write(project_root / '.ccb' / 'ccb.config', _single_agent_config_text('demo', 'codex'))
+    _write(project_root / '.cc-bridge' / 'cc_bridge.config', _single_agent_config_text('demo', 'codex'))
 
     class FakeBackend:
         def send_text(self, pane_id: str, text: str) -> None:
@@ -1847,9 +1847,9 @@ def test_ccbd_socket_codex_protocol_turn_completes_via_tracker(monkeypatch, tmp_
     app.paths.workspace_path('demo').mkdir(parents=True, exist_ok=True)
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     attached = client.attach(
         agent_name='demo',
         workspace_path=str(app.paths.workspace_path('demo')),
@@ -1902,7 +1902,7 @@ def test_ccbd_socket_codex_protocol_turn_handles_interrupted_abort(monkeypatch, 
     fixed_req_id = 'job_codex2'
     sent: list[tuple[str, str]] = []
     project_root = tmp_path / 'repo-codex-abort'
-    _write(project_root / '.ccb' / 'ccb.config', _single_agent_config_text('demo', 'codex'))
+    _write(project_root / '.cc-bridge' / 'cc_bridge.config', _single_agent_config_text('demo', 'codex'))
 
     class FakeBackend:
         def send_text(self, pane_id: str, text: str) -> None:
@@ -1967,9 +1967,9 @@ def test_ccbd_socket_codex_protocol_turn_handles_interrupted_abort(monkeypatch, 
     app.paths.workspace_path('demo').mkdir(parents=True, exist_ok=True)
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     client.attach(
         agent_name='demo',
         workspace_path=str(app.paths.workspace_path('demo')),
@@ -2019,7 +2019,7 @@ def test_ccbd_socket_claude_session_boundary_completes_via_tracker(monkeypatch, 
     fixed_req_id = 'job_claude1'
     sent: list[tuple[str, str]] = []
     project_root = tmp_path / 'repo-claude'
-    _write(project_root / '.ccb' / 'ccb.config', _single_agent_config_text('demo', 'claude'))
+    _write(project_root / '.cc-bridge' / 'cc_bridge.config', _single_agent_config_text('demo', 'claude'))
 
     class FakeBackend:
         def send_text(self, pane_id: str, text: str) -> None:
@@ -2068,9 +2068,9 @@ def test_ccbd_socket_claude_session_boundary_completes_via_tracker(monkeypatch, 
     app.paths.workspace_path('demo').mkdir(parents=True, exist_ok=True)
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     attached = client.attach(
         agent_name='demo',
         workspace_path=str(app.paths.workspace_path('demo')),
@@ -2122,7 +2122,7 @@ def test_ccbd_socket_claude_turn_duration_completion_without_done_marker(monkeyp
     fixed_req_id = 'job_claude2'
     sent: list[tuple[str, str]] = []
     project_root = tmp_path / 'repo-claude-td'
-    _write(project_root / '.ccb' / 'ccb.config', _single_agent_config_text('demo', 'claude'))
+    _write(project_root / '.cc-bridge' / 'cc_bridge.config', _single_agent_config_text('demo', 'claude'))
 
     class FakeBackend:
         def send_text(self, pane_id: str, text: str) -> None:
@@ -2171,9 +2171,9 @@ def test_ccbd_socket_claude_turn_duration_completion_without_done_marker(monkeyp
     app.paths.workspace_path('demo').mkdir(parents=True, exist_ok=True)
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     client.attach(
         agent_name='demo',
         workspace_path=str(app.paths.workspace_path('demo')),
@@ -2215,7 +2215,7 @@ def test_ccbd_socket_gemini_session_snapshot_completes_via_tracker(monkeypatch, 
     fixed_req_id = 'job_gemini1'
     sent: list[tuple[str, str]] = []
     project_root = tmp_path / 'repo-gemini'
-    _write(project_root / '.ccb' / 'ccb.config', _single_agent_config_text('demo', 'gemini'))
+    _write(project_root / '.cc-bridge' / 'cc_bridge.config', _single_agent_config_text('demo', 'gemini'))
 
     class FakeBackend:
         def send_text(self, pane_id: str, text: str) -> None:
@@ -2267,9 +2267,9 @@ def test_ccbd_socket_gemini_session_snapshot_completes_via_tracker(monkeypatch, 
     app.paths.workspace_path('demo').mkdir(parents=True, exist_ok=True)
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     attached = client.attach(
         agent_name='demo',
         workspace_path=str(app.paths.workspace_path('demo')),
@@ -2318,7 +2318,7 @@ def test_ccbd_socket_gemini_long_silence_and_session_rotate_do_not_finish_early(
 
     fixed_req_id = 'job_geminirotate'
     project_root = tmp_path / 'repo-gemini-rotate'
-    _write(project_root / '.ccb' / 'ccb.config', _single_agent_config_text('demo', 'gemini'))
+    _write(project_root / '.cc-bridge' / 'cc_bridge.config', _single_agent_config_text('demo', 'gemini'))
 
     class FakeBackend:
         def send_text(self, pane_id: str, text: str) -> None:
@@ -2373,9 +2373,9 @@ def test_ccbd_socket_gemini_long_silence_and_session_rotate_do_not_finish_early(
     app.paths.workspace_path('demo').mkdir(parents=True, exist_ok=True)
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     client.attach(
         agent_name='demo',
         workspace_path=str(app.paths.workspace_path('demo')),
@@ -2425,7 +2425,7 @@ def test_ccbd_socket_gemini_tool_call_progress_does_not_finish_on_first_round(mo
 
     fixed_req_id = 'job_geminitoolwait'
     project_root = tmp_path / 'repo-gemini-toolwait'
-    _write(project_root / '.ccb' / 'ccb.config', _single_agent_config_text('demo', 'gemini'))
+    _write(project_root / '.cc-bridge' / 'cc_bridge.config', _single_agent_config_text('demo', 'gemini'))
 
     class FakeBackend:
         def send_text(self, pane_id: str, text: str) -> None:
@@ -2491,9 +2491,9 @@ def test_ccbd_socket_gemini_tool_call_progress_does_not_finish_on_first_round(mo
     app.paths.workspace_path('demo').mkdir(parents=True, exist_ok=True)
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     client.attach(
         agent_name='demo',
         workspace_path=str(app.paths.workspace_path('demo')),
@@ -2545,7 +2545,7 @@ def test_ccbd_socket_gemini_rotate_clears_stale_reply_preview(monkeypatch, tmp_p
 
     fixed_req_id = 'job_geminipreview'
     project_root = tmp_path / 'gpr'
-    _write(project_root / '.ccb' / 'ccb.config', _single_agent_config_text('demo', 'gemini'))
+    _write(project_root / '.cc-bridge' / 'cc_bridge.config', _single_agent_config_text('demo', 'gemini'))
 
     class FakeBackend:
         def send_text(self, pane_id: str, text: str) -> None:
@@ -2608,9 +2608,9 @@ def test_ccbd_socket_gemini_rotate_clears_stale_reply_preview(monkeypatch, tmp_p
     app.paths.workspace_path('demo').mkdir(parents=True, exist_ok=True)
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     client.attach(
         agent_name='demo',
         workspace_path=str(app.paths.workspace_path('demo')),
@@ -2665,7 +2665,7 @@ def test_ccbd_socket_opencode_completed_reply_uses_session_boundary_tracker(monk
     fixed_req_id = 'job_opencode1'
     sent: list[tuple[str, str]] = []
     project_root = tmp_path / 'repo-opencode'
-    _write(project_root / '.ccb' / 'ccb.config', _single_agent_config_text('demo', 'opencode'))
+    _write(project_root / '.cc-bridge' / 'cc_bridge.config', _single_agent_config_text('demo', 'opencode'))
 
     class FakeBackend:
         def send_text(self, pane_id: str, text: str) -> None:
@@ -2711,9 +2711,9 @@ def test_ccbd_socket_opencode_completed_reply_uses_session_boundary_tracker(monk
     app.paths.workspace_path('demo').mkdir(parents=True, exist_ok=True)
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     client.attach(
         agent_name='demo',
         workspace_path=str(app.paths.workspace_path('demo')),
@@ -2754,7 +2754,7 @@ def test_ccbd_socket_opencode_pane_dead_becomes_failed_degraded(monkeypatch, tmp
 
     fixed_req_id = 'job_opencodedead'
     project_root = tmp_path / 'repo-opencode-dead'
-    _write(project_root / '.ccb' / 'ccb.config', _single_agent_config_text('demo', 'opencode'))
+    _write(project_root / '.cc-bridge' / 'cc_bridge.config', _single_agent_config_text('demo', 'opencode'))
 
     class DeadBackend:
         def send_text(self, pane_id: str, text: str) -> None:
@@ -2792,9 +2792,9 @@ def test_ccbd_socket_opencode_pane_dead_becomes_failed_degraded(monkeypatch, tmp
     app.paths.workspace_path('demo').mkdir(parents=True, exist_ok=True)
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     client.attach(
         agent_name='demo',
         workspace_path=str(app.paths.workspace_path('demo')),
@@ -2835,7 +2835,7 @@ def test_ccbd_socket_droid_legacy_completion_via_tracker(monkeypatch, tmp_path: 
     fixed_req_id = 'job_droid1'
     sent: list[tuple[str, str]] = []
     project_root = tmp_path / 'repo-droid'
-    _write(project_root / '.ccb' / 'ccb.config', _single_agent_config_text('demo', 'droid'))
+    _write(project_root / '.cc-bridge' / 'cc_bridge.config', _single_agent_config_text('demo', 'droid'))
 
     class FakeBackend:
         def send_text(self, pane_id: str, text: str) -> None:
@@ -2886,9 +2886,9 @@ def test_ccbd_socket_droid_legacy_completion_via_tracker(monkeypatch, tmp_path: 
     app.paths.workspace_path('demo').mkdir(parents=True, exist_ok=True)
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     client.attach(
         agent_name='demo',
         workspace_path=str(app.paths.workspace_path('demo')),
@@ -2929,7 +2929,7 @@ def test_ccbd_socket_droid_pane_dead_becomes_failed_degraded(monkeypatch, tmp_pa
 
     fixed_req_id = 'job_droiddead'
     project_root = tmp_path / 'repo-droid-dead'
-    _write(project_root / '.ccb' / 'ccb.config', _single_agent_config_text('demo', 'droid'))
+    _write(project_root / '.cc-bridge' / 'cc_bridge.config', _single_agent_config_text('demo', 'droid'))
 
     class DeadBackend:
         def send_text(self, pane_id: str, text: str) -> None:
@@ -2973,9 +2973,9 @@ def test_ccbd_socket_droid_pane_dead_becomes_failed_degraded(monkeypatch, tmp_pa
     app.paths.workspace_path('demo').mkdir(parents=True, exist_ok=True)
     thread = threading.Thread(target=app.serve_forever, kwargs={'poll_interval': 0.05}, daemon=True)
     thread.start()
-    _wait_for(app.paths.ccbd_socket_path)
+    _wait_for(app.paths.cc_bridge_daemon_socket_path)
 
-    client = CcbdClient(app.paths.ccbd_socket_path)
+    client = CcbdClient(app.paths.cc_bridge_daemon_socket_path)
     client.attach(
         agent_name='demo',
         workspace_path=str(app.paths.workspace_path('demo')),

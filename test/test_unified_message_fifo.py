@@ -13,11 +13,11 @@ from agents.models import (
     RuntimeMode,
     WorkspaceMode,
 )
-from ccbd.api_models import DeliveryScope, JobStatus, MessageEnvelope
-from ccbd.services.dispatcher import JobDispatcher
-from ccbd.services.dispatcher_runtime.polling_service import _validate_provider_completion_decision
-from ccbd.services.dispatcher_runtime.reply_delivery import prepare_reply_deliveries
-from ccbd.services.registry import AgentRegistry
+from cc_bridge_daemon.api_models import DeliveryScope, JobStatus, MessageEnvelope
+from cc_bridge_daemon.services.dispatcher import JobDispatcher
+from cc_bridge_daemon.services.dispatcher_runtime.polling_service import _validate_provider_completion_decision
+from cc_bridge_daemon.services.dispatcher_runtime.reply_delivery import prepare_reply_deliveries
+from cc_bridge_daemon.services.registry import AgentRegistry
 from completion.models import (
     CompletionConfidence,
     CompletionDecision,

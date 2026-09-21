@@ -4,9 +4,9 @@ from types import SimpleNamespace
 import pytest
 
 from completion.models import CompletionDecision, CompletionStatus, CompletionConfidence
-from ccbd.api_models import JobStatus
-from ccbd.services.dispatcher_runtime.finalization_runtime import message_bureau
-from ccbd.services.dispatcher_runtime.finalization_retry_runtime.policy import is_retryable_failure
+from cc_bridge_daemon.api_models import JobStatus
+from cc_bridge_daemon.services.dispatcher_runtime.finalization_runtime import message_bureau
+from cc_bridge_daemon.services.dispatcher_runtime.finalization_retry_runtime.policy import is_retryable_failure
 
 
 def decision(status=CompletionStatus.FAILED, reply='provider error', reason='api_error'):
