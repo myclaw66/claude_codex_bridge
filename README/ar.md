@@ -184,7 +184,7 @@ cc-bridge update mobile
 
 يتضمن CC_BRIDGE 8.6.6 مصدر Flutter الخاص بـ CC_BRIDGE Mobile داخل [`mobile/`](../mobile/) وينشر Android APK عبر GitHub Releases:
 
-- [تنزيل CC_BRIDGE Mobile v8.7.1 APK](https://github.com/SeemSeam/claude_codex_bridge/releases/download/v8.7.1/cc-bridge-mobile-v8.6.6.apk)
+- [تنزيل CC_BRIDGE Mobile v8.7.1 APK](https://github.com/SeemSeam/claude_codex_bridge/releases/download/v8.7.1/ccb-mobile-v8.7.1.apk)
 - مصدر التطبيق: [`mobile/app`](../mobile/app)
 - مصدر gateway الخادم: [`lib/mobile_gateway`](../lib/mobile_gateway)
 

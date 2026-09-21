@@ -1,5 +1,4 @@
 {
-{
   "name": "@seemseam/cc-bridge",
   "version": "8.7.1",
   "description": "Lightweight multi-agent TUI and stable cross-provider collaboration layer for Codex, Claude, Gemini, Grok, Kimi, and other CLI agents.",
