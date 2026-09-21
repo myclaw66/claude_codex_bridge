@@ -284,7 +284,7 @@ def test_cursor_reply_delivery_sends_raw_body_and_holds_until_turn_end(
         now="2026-08-11T00:00:00Z",
     )
     result = adapter.poll(submission, now="2026-08-11T00:00:01Z")
-    assert backend.sent == [("%9", "CCB_REQ_ID: job_cursor_pane_1\n\nvisible request\n")]
+    assert backend.sent == [("%9", "CC_BRIDGE_REQ_ID: job_cursor_pane_1\n\nvisible request\n")]
     # Sending is transport only: the delivery holds until the anchored
     # transcript turn ends.
     assert result is None or result.decision is None

@@ -701,7 +701,7 @@ def test_pi_reply_delivery_dispatches_and_holds_until_agent_settled(
     held = adapter.poll(submission, now="2026-07-29T00:00:01Z")
 
     assert backend.sent[0][0] == "%9"
-    assert f"CCB_REQ_ID: {req_id}" in backend.sent[0][1]
+    assert f"CC_BRIDGE_REQ_ID: {req_id}" in backend.sent[0][1]
     # Sending is transport only: the delivery holds until the anchored
     # agent_settled turn end.
     assert held is None or held.decision is None

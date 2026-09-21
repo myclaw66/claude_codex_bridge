@@ -306,7 +306,7 @@ def test_grok_reply_delivery_dispatches_and_holds_until_anchored_turn_end(
     result = adapter.poll(submission, now='2026-07-13T00:00:01Z')
 
     assert backend.sent[0][0] == '%9'
-    assert 'CCB_REQ_ID: job_grok_pane_1' in backend.sent[0][1]
+    assert 'CC_BRIDGE_REQ_ID: job_grok_pane_1' in backend.sent[0][1]
     # Sending is transport only: no terminal decision at dispatch.
     assert result is None or result.decision is None
 

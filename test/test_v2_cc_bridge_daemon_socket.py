@@ -1790,7 +1790,7 @@ def test_ccbd_socket_codex_protocol_turn_completes_via_tracker(monkeypatch, tmp_
             self._events = [
                 {
                     'role': 'user',
-                    'text': f'CCB_REQ_ID: {fixed_req_id}\n\nprompt',
+                    'text': f'CC_BRIDGE_REQ_ID: {fixed_req_id}\n\nprompt',
                     'entry_type': 'response_item',
                     'payload_type': 'message',
                     'timestamp': '2026-03-18T00:00:00Z',
@@ -1879,7 +1879,7 @@ def test_ccbd_socket_codex_protocol_turn_completes_via_tracker(monkeypatch, tmp_
     assert completed['completion_confidence'] == 'exact'
     assert sent and sent[0][0] == '%1'
     assert fixed_req_id in sent[0][1]
-    assert 'CCB_DONE:' not in sent[0][1]
+    assert 'CC_BRIDGE_DONE:' not in sent[0][1]
 
     watch = client.watch(job_id)
     assert watch['terminal'] is True
@@ -1926,7 +1926,7 @@ def test_ccbd_socket_codex_protocol_turn_handles_interrupted_abort(monkeypatch, 
             self._events = [
                 {
                     'role': 'user',
-                    'text': f'CCB_REQ_ID: {fixed_req_id}\n\nprompt',
+                    'text': f'CC_BRIDGE_REQ_ID: {fixed_req_id}\n\nprompt',
                     'entry_type': 'response_item',
                     'payload_type': 'message',
                     'timestamp': '2026-03-18T00:00:00Z',
@@ -1998,7 +1998,7 @@ def test_ccbd_socket_codex_protocol_turn_handles_interrupted_abort(monkeypatch, 
     assert cancelled['completion_confidence'] == 'exact'
     assert sent and sent[0][0] == '%1'
     assert fixed_req_id in sent[0][1]
-    assert 'CCB_DONE:' not in sent[0][1]
+    assert 'CC_BRIDGE_DONE:' not in sent[0][1]
 
     watch = client.watch(job_id)
     assert watch['terminal'] is True
@@ -2042,9 +2042,9 @@ def test_ccbd_socket_claude_session_boundary_completes_via_tracker(monkeypatch, 
         def __init__(self, *args, **kwargs) -> None:
             del args, kwargs
             self._events = [
-                ('user', f'CCB_REQ_ID: {fixed_req_id}\n\nprompt'),
+                ('user', f'CC_BRIDGE_REQ_ID: {fixed_req_id}\n\nprompt'),
                 ('assistant', 'partial'),
-                ('assistant', f'final\nCCB_DONE: {fixed_req_id}'),
+                ('assistant', f'final\nCC_BRIDGE_DONE: {fixed_req_id}'),
             ]
 
         def set_preferred_session(self, session_path) -> None:
@@ -2145,7 +2145,7 @@ def test_ccbd_socket_claude_turn_duration_completion_without_done_marker(monkeyp
         def __init__(self, *args, **kwargs) -> None:
             del args, kwargs
             self._events = [
-                {'role': 'user', 'text': f'CCB_REQ_ID: {fixed_req_id}\n\nprompt', 'entry_type': 'user'},
+                {'role': 'user', 'text': f'CC_BRIDGE_REQ_ID: {fixed_req_id}\n\nprompt', 'entry_type': 'user'},
                 {'role': 'assistant', 'text': 'final without done', 'entry_type': 'assistant', 'uuid': 'assistant-1'},
                 {'role': 'system', 'text': '', 'entry_type': 'system', 'subtype': 'turn_duration', 'parent_uuid': 'assistant-1'},
             ]
@@ -2857,9 +2857,9 @@ def test_ccbd_socket_droid_legacy_completion_via_tracker(monkeypatch, tmp_path: 
         def __init__(self, *args, **kwargs) -> None:
             del args, kwargs
             self._events = [
-                ('user', f'CCB_REQ_ID: {fixed_req_id}\n\nprompt'),
+                ('user', f'CC_BRIDGE_REQ_ID: {fixed_req_id}\n\nprompt'),
                 ('assistant', 'partial'),
-                ('assistant', f'final\nCCB_DONE: {fixed_req_id}'),
+                ('assistant', f'final\nCC_BRIDGE_DONE: {fixed_req_id}'),
             ]
 
         def set_preferred_session(self, session_path) -> None:

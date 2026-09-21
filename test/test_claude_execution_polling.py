@@ -248,7 +248,7 @@ def test_poll_submission_recovers_anchored_round_result_from_idle_pane(monkeypat
     submission = replace(_submission(), agent_name="ccb_round_reviewer")
     batches = iter(
         [
-            ([{"role": "user", "text": "CCB_REQ_ID: job_1"}], {"cursor": 1}),
+            ([{"role": "user", "text": "CC_BRIDGE_REQ_ID: job_1"}], {"cursor": 1}),
             ([], {"cursor": 2}),
         ]
     )
@@ -258,8 +258,8 @@ def test_poll_submission_recovers_anchored_round_result_from_idle_pane(monkeypat
             assert pane_id == "%1"
             assert lines == 2000
             return (
-                "CCB_REQ_ID:\n  job_old\n● round result: blocked\n"
-                "CCB_REQ_ID:\n  job_1\nround result: blocked\n"
+                "CC_BRIDGE_REQ_ID:\n  job_old\n● round result: blocked\n"
+                "CC_BRIDGE_REQ_ID:\n  job_1\nround result: blocked\n"
                 "Thinking...\n● round result: pass\n"
                 "╭──────────╮\n│ >        │\n╰──────────╯\n? for shortcuts\n"
             )
@@ -302,7 +302,7 @@ def test_poll_submission_does_not_use_round_result_while_pane_is_busy(monkeypatc
     submission = replace(_submission(), agent_name="ccb_round_reviewer")
     batches = iter(
         [
-            ([{"role": "user", "text": "CCB_REQ_ID: job_1"}], {"cursor": 1}),
+            ([{"role": "user", "text": "CC_BRIDGE_REQ_ID: job_1"}], {"cursor": 1}),
             ([], {"cursor": 2}),
         ]
     )
@@ -310,7 +310,7 @@ def test_poll_submission_does_not_use_round_result_while_pane_is_busy(monkeypatc
     class Backend:
         def get_pane_content(self, pane_id: str, lines: int = 120) -> str:
             assert lines == 2000
-            return "CCB_REQ_ID: job_1\n● round result: pass\nesc to interrupt"
+            return "CC_BRIDGE_REQ_ID: job_1\n● round result: pass\nesc to interrupt"
 
     prepared = SimpleNamespace(reader=object(), backend=Backend(), pane_id="%1")
     monkeypatch.setattr(
@@ -344,7 +344,7 @@ def test_poll_submission_does_not_treat_unmarked_prompt_result_as_assistant_outp
     submission = replace(_submission(), agent_name="ccb_round_reviewer")
     batches = iter(
         [
-            ([{"role": "user", "text": "CCB_REQ_ID: job_1"}], {"cursor": 1}),
+            ([{"role": "user", "text": "CC_BRIDGE_REQ_ID: job_1"}], {"cursor": 1}),
             ([], {"cursor": 2}),
         ]
     )
@@ -353,7 +353,7 @@ def test_poll_submission_does_not_treat_unmarked_prompt_result_as_assistant_outp
         def get_pane_content(self, pane_id: str, lines: int = 120) -> str:
             assert lines == 2000
             return (
-                "CCB_REQ_ID: job_1\nround result: blocked\n"
+                "CC_BRIDGE_REQ_ID: job_1\nround result: blocked\n"
                 "╭──────────╮\n│ >        │\n╰──────────╯\n? for shortcuts\n"
             )
 
