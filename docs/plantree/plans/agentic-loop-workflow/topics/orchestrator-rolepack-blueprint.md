@@ -47,7 +47,7 @@ Accepted:
 Rejected or kept out of V1:
 
 - Direct `.cc-bridge/cc-bridge.config` edits.
-- Direct `cc-bridge reload`, kill, restart, or pane manipulation.
+- Direct `cc_bridge reload`, kill, restart, or pane manipulation.
 - Direct writes to `.cc-bridge/runtime/loops/*` authority files.
 - Provider session/auth reads.
 - Background watcher behavior inside the role.
@@ -109,8 +109,8 @@ The role memory should state:
 - It can draft artifacts and semantic recommendations only.
 - CC_BRIDGE scripts own authoritative writes.
 - `loop_runner` owns phase transitions, ask submission policy, runtime-capacity
-  request execution, and conversion of role output into `cc-bridge loop` or
-  `cc-bridge plan` state.
+  request execution, and conversion of role output into `cc_bridge loop` or
+  `cc_bridge plan` state.
 - V1 assumes fixed configured agents; dynamic load/unload is only represented
   by a structured request.
 - Non-converged branches are frozen and returned as partial packages. They are

@@ -15,13 +15,13 @@ The workflow-loop design can proceed, but not directly to a long-running
 daemon or full autonomous planner/execution cycle.
 
 The next implementation slice should remove the manual bridge between a ready
-task packet and one `cc-bridge loop run-once` round:
+task packet and one `cc_bridge loop run-once` round:
 
 ```bash
-cc-bridge plan task-bind-loop
-cc-bridge plan task-import-round
-cc-bridge loop run-once --task-id
-cc-bridge loop runner --once
+cc_bridge plan task-bind-loop
+cc_bridge plan task-import-round
+cc_bridge loop run-once --task-id
+cc_bridge loop runner --once
 ```
 
 ## Accepted Findings
@@ -46,17 +46,17 @@ cc-bridge loop runner --once
 Minimum behavior:
 
 1. Bind one ready task to one loop with per-task locking.
-2. Run one execution round through `cc-bridge loop run-once --task-id`.
+2. Run one execution round through `cc_bridge loop run-once --task-id`.
 3. Import the round checker result as one of:
    `round_pass`, `round_partial`, `round_replan`, or `round_blocker`.
 4. Map round result to task status and clear `current_loop`.
-5. Return `idle` when `cc-bridge loop runner --once` finds no ready task.
+5. Return `idle` when `cc_bridge loop runner --once` finds no ready task.
 
 ## Deferred
 
 - Long-running loop runner daemon.
 - Planner auto-activation from `draft`, `partial`, or `replan_required`.
-- `cc-bridge question` clarification command family.
+- `cc_bridge question` clarification command family.
 - Failure-signature dedup beyond simple counters.
 - Multi-task or multi-plan parallel execution.
 - Full lease/heartbeat recovery; V1 may start with per-task lock plus explicit

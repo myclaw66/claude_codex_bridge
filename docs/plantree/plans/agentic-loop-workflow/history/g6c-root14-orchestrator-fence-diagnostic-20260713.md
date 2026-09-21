@@ -12,7 +12,7 @@ Read when: reviewing the Orchestrator output contract or preparing root15
   authority checks, restart/idempotence coverage, and the Gemini cc-bridge-daemon-restart
   repair.
 - The current source suite passed `4792` tests with `2` skipped before launch.
-- The fresh project used the source worktree's explicit `cc-bridge_test`, inherited
+- The fresh project used the source worktree's explicit `cc_bridge_test`, inherited
   real provider environment, a root-local Role store, and five visible idle
   resident panes.
 - The generated Frontdesk request contained all five route/terminal pairs,

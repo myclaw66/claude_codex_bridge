@@ -8,7 +8,7 @@ Define the profile and capacity substrate for dynamic execution nodes:
 
 1. `loop.role_profiles` in `.cc-bridge/cc-bridge.config`, where users declare which
    role/provider/model/thinking/workspace combinations are allowed.
-2. A `cc-bridge loop capacity` script protocol that can ensure, inspect, and release
+2. A `cc_bridge loop capacity` script protocol that can ensure, inspect, and release
    concrete node capacity by profile name and count.
 
 This document originally described an `orchestrator-capacity` skill. The
@@ -16,7 +16,7 @@ current preferred design is topology-driven:
 
 ```text
 orchestrator proposes topology
-  -> cc-bridge loop topology commits desired state
+  -> cc_bridge loop topology commits desired state
   -> topology reconciler uses role profiles, capacity, lifecycle, and layout
 ```
 
@@ -40,10 +40,10 @@ Separate source policy from runtime instances.
 orchestrator-topology skill
   proposes graph nodes, edges, artifacts, and release gates
 
-cc-bridge loop topology commit/reconcile
+cc_bridge loop topology commit/reconcile
   validates graph intent and commits desired topology
 
-cc-bridge loop capacity ensure/release/status
+cc_bridge loop capacity ensure/release/status
   remains a lower-level substrate for creating or releasing concrete profile
   instances when the reconciler needs it
 
@@ -152,7 +152,7 @@ compatibility flows.
 ### Ensure
 
 ```bash
-cc-bridge loop capacity ensure \
+cc_bridge loop capacity ensure \
   --loop-id loop_123 \
   --profile coder=2 \
   --profile checker=2 \
@@ -200,7 +200,7 @@ Example output:
 ### Status
 
 ```bash
-cc-bridge loop capacity status --loop-id loop_123 --json
+cc_bridge loop capacity status --loop-id loop_123 --json
 ```
 
 Responsibilities:
@@ -213,7 +213,7 @@ Responsibilities:
 ### Release
 
 ```bash
-cc-bridge loop capacity release \
+cc_bridge loop capacity release \
   --loop-id loop_123 \
   --idle-only \
   --lifetime current_round \
@@ -230,7 +230,7 @@ Responsibilities:
 
 ## Runtime Authority Model
 
-`cc-bridge loop capacity` owns all authoritative runtime writes. It may internally
+`cc_bridge loop capacity` owns all authoritative runtime writes. It may internally
 reuse existing reload machinery, but that is an implementation detail.
 
 Allowed implementation strategies:
@@ -256,14 +256,14 @@ an implementation contract of CC_BRIDGE, not an orchestrator choice.
 
 ## Topology Reconciler Contract
 
-`cc-bridge loop capacity` should be treated as a reconciler substrate. The
+`cc_bridge loop capacity` should be treated as a reconciler substrate. The
 orchestrator-facing skill should become `orchestrator-topology`, which calls
-`cc-bridge loop topology` commands and receives status from desired/observed
+`cc_bridge loop topology` commands and receives status from desired/observed
 topology state.
 
 Reconciler triggers:
 
-- After `cc-bridge loop topology commit --apply`.
+- After `cc_bridge loop topology commit --apply`.
 - Before dispatching work items when required topology targets may be missing.
 - After round drain or partial completion when generated agents can be
   released.
@@ -280,9 +280,9 @@ Inputs:
 
 Allowed actions:
 
-- reconciler may call `cc-bridge loop capacity ensure --json`
-- reconciler may call `cc-bridge loop capacity status --json`
-- reconciler may call `cc-bridge loop capacity release --json`
+- reconciler may call `cc_bridge loop capacity ensure --json`
+- reconciler may call `cc_bridge loop capacity status --json`
+- reconciler may call `cc_bridge loop capacity release --json`
 - reconciler writes observed topology and events
 - loop runner or orchestrator may use committed/observed ready agent names as
   `ask` targets
@@ -293,11 +293,11 @@ Allowed actions:
 
 Forbidden actions:
 
-- normal orchestrator workflow calling `cc-bridge loop capacity ensure/release`
+- normal orchestrator workflow calling `cc_bridge loop capacity ensure/release`
   directly after topology commands exist
 - edit `.cc-bridge/cc-bridge.config`
-- call raw `cc-bridge reload`
-- call raw `cc-bridge kill`
+- call raw `cc_bridge reload`
+- call raw `cc_bridge kill`
 - call raw `cc-bridge agent add --window` or `cc-bridge agent add --window-class`
 - kill tmux panes or provider processes
 - hand-pick `node-<loop-id>-<node-id>` or any other execution window name

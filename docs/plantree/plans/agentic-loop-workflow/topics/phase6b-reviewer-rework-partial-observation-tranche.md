@@ -30,7 +30,7 @@ References:
 - Any future execution must use a fresh external lab root, exact command
   shape, inherited current system provider environment, lab-local
   `AGENT_ROLES_STORE`, and explicit approval-to-run.
-- No source-wrapper, `cc-bridge_test`, provider, L0-L5, or runtime command is
+- No source-wrapper, `cc_bridge_test`, provider, L0-L5, or runtime command is
   authorized by this document.
 
 ## Candidate Tasks

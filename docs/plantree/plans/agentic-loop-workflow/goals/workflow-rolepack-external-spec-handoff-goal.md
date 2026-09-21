@@ -117,7 +117,7 @@ Source wrapper diagnose:
 cd /home/bfly/yunwei/test_ccb2
 HOME=/home/bfly/yunwei/test_ccb2/source_home \
 CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/source_home \
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose
 ```
 
 Result:
@@ -134,12 +134,12 @@ Install/config/capacity smoke project:
 
 Evidence:
 
-- `cc-bridge_test roles install` installed all eight workflow Roles from
+- `cc_bridge_test roles install` installed all eight workflow Roles from
   `/home/bfly/yunwei/agent-roles-spec` into the smoke Role store.
-- `cc-bridge_test config validate` loaded the project config with
+- `cc_bridge_test config validate` loaded the project config with
   `frontdesk`, `planner`, `clarification_broker`, `plan_reviewer`, and
   `orchestrator` as configured agents.
-- `cc-bridge_test loop capacity ensure --loop-id smoke --profile worker=1 --profile
+- `cc_bridge_test loop capacity ensure --loop-id smoke --profile worker=1 --profile
   code_reviewer=1 --json` returned `loop_capacity_status: ensured` with
   `agentroles.cc-bridge_worker` and `agentroles.cc-bridge_checker`; apply was correctly
   `deferred_until_start` because the smoke project was unmounted.
@@ -153,15 +153,15 @@ Evidence:
 ## Completion Audit
 
 - External Role source exists and is installable: proven by Agent Roles full
-  test suite and `cc-bridge_test roles install` smoke.
+  test suite and `cc_bridge_test roles install` smoke.
 - Planner artifact path is usable: proven by planner templates imported through
-  `cc-bridge plan task-artifact` and `cc-bridge question candidate-import`.
+  `cc_bridge plan task-artifact` and `cc_bridge question candidate-import`.
 - Clarification broker path is usable: proven by `user-batch-import`,
   `answer-import`, and corrected `normalized-import`.
 - Plan reviewer path is usable: proven by `review` artifact import and
   `task-status ready`.
 - Orchestrator capacity boundary is preserved: proven by role tests and
-  capacity smoke using `cc-bridge loop capacity ensure/status`, not direct runtime
+  capacity smoke using `cc_bridge loop capacity ensure/status`, not direct runtime
   edits.
 - Provider/ask projection is covered: proven by adapter provider declarations
   and Codex materialization smoke checking both `skills/ask/SKILL.md` and

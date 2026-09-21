@@ -42,7 +42,7 @@ Post-acceptance deployment readiness is a separate active gate at
 [topics/phase1-6-deployment-readiness-supervision-20260707.md](../topics/phase1-6-deployment-readiness-supervision-20260707.md).
 Current operator-facing acceptance policy: final deployment-readiness testing
 must be run from a real opened project under `/home/bfly/yunwei/test_ccb2`
-using `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`, with inherited system provider
+using `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`, with inherited system provider
 environment when testing real Codex/Claude behavior, a lab-local
 `AGENT_ROLES_STORE`, visible UI/pane state for user or supervisor inspection,
 and frontdesk-started handoff through planner/orchestrator. Scripted B7 rows
@@ -119,7 +119,7 @@ user's 2026-07-08 direction, workers/reviewers are no longer used for
 validation; only concrete code-modification tasks should be delegated.
 2026-07-08 talk2 self-run evidence: `talk2` directly executed the fresh
 real-provider L1-L4 frontdesk route-mix lane from
-`/home/bfly/yunwei/test_ccb2` with `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`,
+`/home/bfly/yunwei/test_ccb2` with `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`,
 inherited system provider environment, and lab-local `AGENT_ROLES_STORE`.
 Fresh root:
 `/home/bfly/yunwei/test_ccb2/deploy-l1-l4-frontdesk-sequence38-talk2-selfrun-20260708124814`.
@@ -175,14 +175,14 @@ tests pass.
 2026-07-08 P0 baseline freeze: talk2 recorded the deployment-readiness
 baseline in
 [history/phase1-6-deployment-readiness-p0-baseline-20260708.md](phase1-6-deployment-readiness-p0-baseline-20260708.md).
-The baseline fixes the explicit source `cc-bridge_test` path, test root, dirty
+The baseline fixes the explicit source `cc_bridge_test` path, test root, dirty
 worktree state, global role-store exclusion, current sequence38 B7 anchor, and
 fresh-root naming rules for P1/P2. This is setup evidence only; next production
 target is P1 dynamic lifecycle/busy-retain/UI/sidebar real-project validation.
 2026-07-08 P1 dynamic lifecycle pass: talk2 directly executed the P1 lane from
 `/home/bfly/yunwei/test_ccb2` against fresh visible root
 `/home/bfly/yunwei/test_ccb2/deploy-p1-dynamic-lifecycle-talk2-20260708161320`
-with `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`, inherited system provider
+with `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`, inherited system provider
 environment, and root-local `AGENT_ROLES_STORE`. B7:
 `/home/bfly/yunwei/test_ccb2/deploy-p1-dynamic-lifecycle-talk2-20260708161320/p1-dynamic-lifecycle-b7.md`
 returned `status: pass`. Evidence summary:
@@ -201,7 +201,7 @@ P2 frontdesk pressure is the next deployment-readiness lane.
 macro-intake pressure lane from `/home/bfly/yunwei/test_ccb2` against fresh
 visible root
 `/home/bfly/yunwei/test_ccb2/deploy-p2-frontdesk-pressure-talk2-20260708170920`
-with `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`, inherited system provider
+with `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`, inherited system provider
 environment, and root-local `AGENT_ROLES_STORE`. B7:
 `/home/bfly/yunwei/test_ccb2/deploy-p2-frontdesk-pressure-talk2-20260708170920/phase6b-real-provider-l1-l4-p2-frontdesk-pressure-talk2-20260708170920-b7.md`
 returned `Status: pass`. Evidence summary:
@@ -264,7 +264,7 @@ source/test files.
 [history/phase1-6-deployment-readiness-p5-packaging-gate-20260708.md](phase1-6-deployment-readiness-p5-packaging-gate-20260708.md).
 Verdict: `PASS_FOR_SOURCE_PACKAGING_GATE / RELEASE_NOT_PUBLISHED /
 PRODUCTION_DEFAULT_NOT_ENABLED`. P5 exposed and fixed two blockers without
-weakening production authority: deterministic `cc-bridge_test` fake provider smoke
+weakening production authority: deterministic `cc_bridge_test` fake provider smoke
 is allowed past frontdesk hard command-surface enforcement only under
 `CC_BRIDGE_TEST_ENTRYPOINT=1`, and fake worker smoke now writes declared workspace
 evidence so direct execution exercises script-owned project-root promotion
@@ -333,7 +333,7 @@ The fixed preview artifact
 present, and no forbidden mobile build entries. This still does not publish an
 official GitHub/npm release or enable production/default behavior.
 The installed-preview runtime closure gap is also covered: using the installed
-artifact's own `scripts/workflow_closure_smoke.py` and `cc-bridge_test`, talk2 ran a
+artifact's own `scripts/workflow_closure_smoke.py` and `cc_bridge_test`, talk2 ran a
 fresh deterministic workflow closure smoke at
 `/home/bfly/yunwei/test_ccb2/p5-installed-preview-smoke-talk2-202607082220`.
 Result JSON:
@@ -359,7 +359,7 @@ read-only gate at
 which classifies deployment readiness as `BLOCKED / NOT READY` until fresh
 opened-project evidence satisfies the gate. A runtime refresh is also blocked:
 `cc-bridge restart worker1` failed with `role_digest_changed_fresh_restart_unsupported`,
-and `cc-bridge reload --dry-run` returned `plan_class: no_change` /
+and `cc_bridge reload --dry-run` returned `plan_class: no_change` /
 `reload_namespace_patch_status: no_op`, so worker reruns must wait for an
 explicit CC_BRIDGE runtime rebuild/refresh decision or another proven way to restore
 reliable worker prompt delivery. `cc-bridge repair retry/resubmit` and extra worker
@@ -438,7 +438,7 @@ restored.
 Talk2 then ran a source-runtime real-provider route-mix probe directly from
 `/home/bfly/yunwei/test_ccb2` using fresh root
 `/home/bfly/yunwei/test_ccb2/deploy-l1-l4-frontdesk-sequence20-talk2-20260707230547`
-and `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`, inheriting the system provider
+and `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`, inheriting the system provider
 environment and using only a lab-local `AGENT_ROLES_STORE`. Positive evidence:
 frontdesk/codex auto-forwarded to planner/codex with `silence=true`; planner
 produced the required five-task route mix; L1 and L2 reached `done/pass`; both
@@ -539,7 +539,7 @@ Worker1 `job_df3c9451c8b5` is accepted as a focused source repair for the
 sequence16 rolepack/bootstrap and B7 evidence blocker. Source-test role
 installation now discovers source-checkout CC_BRIDGE draft RolePacks, passes the
 concrete role path to `agent-roles`, and the maintained sequence packet uses
-`cc-bridge_test roles install --skip-tools` plus `current/role.toml` and
+`cc_bridge_test roles install --skip-tools` plus `current/role.toml` and
 `install.json` validation instead of manual copies. Required draft RolePacks now
 use installer-valid `catalog.level = "experimental"`. The sequence driver also
 observes/reuses existing task records, while B7 reads round evidence from
@@ -595,7 +595,7 @@ import instructions; reviewer2 accepted that source repair in
 `job_dd92b30f6a59`. Reviewer2 approved L1-L4 repeat7 in
 `job_a9649f4a0e98`, and talk2 consumed it exactly once from
 `/home/bfly/yunwei/test_ccb2/phase6-real-lab-l1-l4-sequence7-20260704`.
-Repeat7 stopped at L1 `activate_orchestrator`: `cc-bridge_test loop runner --once`
+Repeat7 stopped at L1 `activate_orchestrator`: `cc_bridge_test loop runner --once`
 failed before provider ask submission with `ask is project-local; workspace or
 cwd resolved to another .cc-bridge project`. B7 is
 [history/phase6b-real-provider-l1-l4-repeat7-b7-20260704.md](phase6b-real-provider-l1-l4-repeat7-b7-20260704.md)
@@ -1049,7 +1049,7 @@ and
   and is classified as `test_design_failure`, not Phase 6B readiness: the
   command log stopped after `ask_a_orchestrator_compact`, A release and all
   variant B commands were missing, and the supervisor diagnosis is that
-  executing the frozen block through stdin piping allowed `cc-bridge_test ask` to
+  executing the frozen block through stdin piping allowed `cc_bridge_test ask` to
   inherit/consume the remaining script body. Post-B7 external cleanup returned
   `kill_status: ok` and `state: unmounted`.
 - Keep Phase 6B unclaimed after repeat2. Reviewer2 approved one repeat2 run in
@@ -1159,7 +1159,7 @@ and
   `release_blockers` classifies as `valid_non_success`; missing, vague, or
   unbounded blocker evidence remains a hard failure. Reviewer1 verified
   `py_compile`, `python -m pytest test/test_phase6_fake_matrix_smoke_script.py
-  -q` with 18 passing tests, and direct probes. No source-wrapper, `cc-bridge_test`,
+  -q` with 18 passing tests, and direct probes. No source-wrapper, `cc_bridge_test`,
   real-provider, L0, or L1-L4 commands were run. Residual risk:
   future B7 normalizers must emit blocker reason text matching the bounded
   marker vocabulary, or valid residue will still classify as `system_failure`.
@@ -1214,13 +1214,13 @@ and
 
 - Phase 1 mount topology schema split is formally accepted in the current
   worktree, but is not yet committed or default-enabled:
-  `cc-bridge loop topology` now writes `agent_mount_topology.desired.json`, accepts
+  `cc_bridge loop topology` now writes `agent_mount_topology.desired.json`, accepts
   `cc-bridge.loop.agent_mount_topology.v1`, reads legacy `agent_topology.*` files
   when new files are absent, rejects `edges`, `gates`, and `artifacts` by
   default, and keeps legacy graph dispatch behind explicit compatibility
   markers. This is not committed yet.
 - Phase 2 document anchors and activation state are landed in this worktree:
-  `cc-bridge plan task-artifact` accepts `task_packet`, `execution_contract`,
+  `cc_bridge plan task-artifact` accepts `task_packet`, `execution_contract`,
   and `orchestration_notes`; task records now carry
   machine-readable `status`, `next_owner`, `current_loop`, and
   `activation_reason`; `ready_for_orchestration` requires both
@@ -1234,7 +1234,7 @@ and
   task packet, execution contract, existing orchestration notes refs/compact
   content, and the allowed routes `direct_execution`, `needs_detail`,
   `macro_adjustment_request`, and `blocked`; it instructs route import through
-  `cc-bridge plan task-artifact --kind orchestration_notes --route <route>`.
+  `cc_bridge plan task-artifact --kind orchestration_notes --route <route>`.
 - Imported `orchestration_notes --route` now drives only the next runner
   decision: `needs_detail` activates `task_detailer` on demand and returns to
   orchestrator after detail packet artifacts exist; `direct_execution` runs the
@@ -1258,7 +1258,7 @@ and
   failures clear `running + current_loop`, and dynamic execution agents are
   released through the lifecycle path.
 - V1 planner brief + task_detailer detail-packet import slice:
-  `cc-bridge plan task-artifact` now accepts `brief`, `detail_design`,
+  `cc_bridge plan task-artifact` now accepts `brief`, `detail_design`,
   `detail_summary`, `detail_packet`, and `macro_adjustment_request`; planner
   bundles may import compact `brief.md` and macro task-packet artifacts only;
   task_detailer bundles may import task-scoped detail docs, a detail packet
@@ -1273,15 +1273,15 @@ and
   surfaces and forbidden detail imports; `macro_adjustment_request` remains
   request-only; and generic `task-artifact --kind round_summary` is rejected so
   round results must use script-owned `task-import-round`.
-- The previous `cc-bridge loop runner --once --consume-role-output` bundle-consume
+- The previous `cc_bridge loop runner --once --consume-role-output` bundle-consume
   path is legacy/disabled under Decision 020. Script-owned artifact imports and
-  explicit `cc-bridge plan task-status` transitions are the authority path.
+  explicit `cc_bridge plan task-status` transitions are the authority path.
 - The fake provider now supports deterministic workflow replies for planner,
   cc-bridge_task_detailer, plan-reviewer, and round-checker `round result: pass`
   smoke.
 - `scripts/workflow_closure_smoke.py` now includes the current pre-triage
   cc-bridge_task_detailer stage in the official fake-provider closure smoke.
-- `cc-bridge loop topology` now applies the CC_BRIDGE workflow window contract by default:
+- `cc_bridge loop topology` now applies the CC_BRIDGE workflow window contract by default:
   V1 resident `cc-bridge_frontdesk` and `cc-bridge_task_detailer` land in `cc-bridge-user`;
   V1 resident `cc-bridge_planner` and `cc-bridge_orchestrator` land in `cc-bridge-plan`;
   on-demand `cc-bridge_round_reviewer` also lands in `cc-bridge-plan` when round-review
@@ -1302,7 +1302,7 @@ and
   `worker`, `checker`, `round_checker`, `cc-bridge_worker`, `cc-bridge_checker`, and bare
   planner/orchestrator/detailer aliases before runtime reconciliation.
 - The previous topology-dispatch experiment is no longer a runner mainline:
-  `cc-bridge loop runner --once` selects tasks only through task document state,
+  `cc_bridge loop runner --once` selects tasks only through task document state,
   does not consult topology-dispatch discovery, and does not execute committed
   topology `ask` / `ask_after` edges.
 - Legacy `topology_dispatch.py` remains covered as bounded compatibility code,
@@ -1520,7 +1520,7 @@ published version is never guessed or reused.
   was absent. No runtime/provider/source-wrapper/L1-L4/L5/B7/cleanup/launch
   command was run.
 - Talk2 sequence12 self-review and runtime execution on 2026-07-05:
-  `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose` from
+  `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose` from
   `/home/bfly/yunwei/test_ccb2` passed; root and B7 path were absent before
   materialization; `init`, L1/L2 direct execution, L3 `needs_detail ->
   detail_ready`, L4 `macro_adjustment_request -> replan_required`, and L4
@@ -1620,7 +1620,7 @@ published version is never guessed or reused.
   runner in `job_7fb1ad254939`: B1 is closed; `phase6a_pass=false` remains
   correct for the single-case report; integrated matrix still remains.
 - Talk2 local re-validation after worker2 follow-up:
-  `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose` from
+  `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose` from
   `/home/bfly/yunwei/test_ccb2` passed with isolated `HOME` and
   `CC_BRIDGE_SOURCE_HOME`; source-wrapper `--run-busy-release --json --timeout 120
   --reset` wrote
@@ -1836,14 +1836,14 @@ published version is never guessed or reused.
 - Source-wrapper diagnose from `/home/bfly/yunwei/test_ccb2`:
   `HOME=/home/bfly/yunwei/test_ccb2/source_home
   CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/source_home
-  /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose`
+  /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose`
   -> wrapper/source checkout and allowed test root verified.
 - Source-wrapper topology validator smoke:
   `/home/bfly/yunwei/test_ccb2/topology-validator-smoke-20260702230740`
   rejected unknown edge type `direct_tmux_mutation` and legacy profile
-  `worker` with source `cc-bridge_test`, returning `validator_smoke_status=ok`.
+  `worker` with source `cc_bridge_test`, returning `validator_smoke_status=ok`.
 - Standalone single-window smoke from `/home/bfly/yunwei/test_ccb2`:
-  `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test layout dynamic-smoke --panes 6
+  `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test layout dynamic-smoke --panes 6
   --window-prefix cc-bridge-exec --json`
   -> `smoke_status=ok`, `layout_status=ok`, `dynamic_status=ok`,
   `cleanup_status=ok`, `event_count=11`.
@@ -1898,7 +1898,7 @@ published version is never guessed or reused.
 - Source-wrapper topology dispatch smoke from `/home/bfly/yunwei/test_ccb2`:
   `/home/bfly/yunwei/test_ccb2/topology-dispatch-smoke-20260702231020`.
   With isolated `HOME`, `CC_BRIDGE_SOURCE_HOME`, local fake role store, and
-  `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`, `loop topology propose`, `commit
+  `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`, `loop topology propose`, `commit
   --apply`, start, `plan task-bind-loop`, and `loop runner --once` completed.
   Runtime evidence showed `dispatch_status=ok` and ordered completed edges
   `coder-ask -> wf-coder-1`, `reviewer-ask -> wf-code-reviewer-1`, and

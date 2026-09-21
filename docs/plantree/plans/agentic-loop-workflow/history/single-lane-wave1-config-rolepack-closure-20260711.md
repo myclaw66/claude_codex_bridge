@@ -33,7 +33,7 @@ state.
 The repository gate exposed a separate cleanup defect: several process-level
 entrypoint tests left temporary pytest cc-bridge-daemon/tmux/provider processes after
 pytest reported success. `talk2` released each temporary project with its own
-source-test `cc-bridge_test ... kill` command and verified the workflow source tree
+source-test `cc_bridge_test ... kill` command and verified the workflow source tree
 remained clean. Automatic test-harness residue cleanup remains an E1/G5 gate;
 the green assertion count does not waive it.
 

@@ -60,5 +60,5 @@ Separating visual placement from semantic orchestration keeps boundaries clear:
   project-level `.cc-bridge/runtime/layout/windows.json`, loop-level
   `.cc-bridge/runtime/loops/<loop-id>/layout.json`, or both.
 - Whether the first public surface should be `cc-bridge layout ...`, `cc-bridge view ...`,
-  or hidden behind existing `cc-bridge loop capacity` commands.
+  or hidden behind existing `cc_bridge loop capacity` commands.
 - How much exact tmux geometry should be restored across restarts in V1.

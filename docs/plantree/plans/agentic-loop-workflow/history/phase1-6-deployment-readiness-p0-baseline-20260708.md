@@ -18,11 +18,11 @@ the next P1/P2/P3 runs.
 - Source root: `/home/bfly/yunwei/cc-bridge_source`
 - Active branch at freeze time: `workflow/agentic-loop-topology`
 - HEAD short id at freeze time: `f1bb7fd4`
-- Source wrapper to use: `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`
-- PATH `cc-bridge_test` observed separately at freeze time:
-  `/home/bfly/.local/share/codex-dual/cc-bridge_test`
+- Source wrapper to use: `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`
+- PATH `cc_bridge_test` observed separately at freeze time:
+  `/home/bfly/.local/share/codex-dual/cc_bridge_test`
 - Rule: production-readiness validation must call
-  `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test` explicitly, not bare `cc-bridge_test`.
+  `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test` explicitly, not bare `cc_bridge_test`.
 
 Current worktree is dirty. That is acceptable for source-lane validation, but
 P5 packaging must resolve or consciously carry every changed file before any
@@ -33,13 +33,13 @@ release/update claim.
 Command run from `/home/bfly/yunwei/test_ccb2`:
 
 ```bash
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose
 ```
 
 Observed result:
 
 ```text
-wrapper: /home/bfly/yunwei/cc-bridge_source/cc-bridge_test
+wrapper: /home/bfly/yunwei/cc-bridge_source/cc_bridge_test
 source_cc-bridge: /home/bfly/yunwei/cc-bridge_source/cc_bridge.py
 cwd: /home/bfly/yunwei/test_ccb2
 project_paths: <none>
@@ -134,7 +134,7 @@ must choose a new suffix and record the consumed root as historical.
 ## Execution Policy For Next Lanes
 
 - Run from `/home/bfly/yunwei/test_ccb2`.
-- Use `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test` explicitly.
+- Use `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test` explicitly.
 - For real-provider validation, inherit system provider environment; do not
   export lab-local `HOME` or `CC_BRIDGE_SOURCE_HOME`.
 - Use root-local `AGENT_ROLES_STORE`.
@@ -149,7 +149,7 @@ Reject any later evidence if:
 
 - it uses a reused root;
 - it uses `cc-bridge_source` as the runtime project;
-- it relies on bare `cc-bridge_test` from PATH;
+- it relies on bare `cc_bridge_test` from PATH;
 - role lookup uses `/home/bfly/.roles/installed`;
 - it starts from a supervisor-created route when the lane requires frontdesk
   intake;

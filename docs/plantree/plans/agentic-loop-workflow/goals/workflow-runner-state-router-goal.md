@@ -53,7 +53,7 @@ to infer meaning.
 
 In scope:
 
-- extend `cc-bridge loop runner --once --json` so it can route one committed task
+- extend `cc_bridge loop runner --once --json` so it can route one committed task
   state, not only `ready`;
 - add a task-selection helper that returns one actionable task and one action;
 - route `ready` to the existing execution bridge;
@@ -99,7 +99,7 @@ most one action.
 
 Planner activation does not mean the script writes new plans. The script
 creates a compact activation packet and asks the planner role to produce
-artifacts. The planner or plan steward must still use `cc-bridge plan` commands to
+artifacts. The planner or plan steward must still use `cc_bridge plan` commands to
 import artifacts and request status transitions.
 
 ## Planner Activation Packet
@@ -125,7 +125,7 @@ is essential for the current planning step.
 
 ## Stop And Budget Rules
 
-`cc-bridge loop runner --once` stops after one activation. It should return a
+`cc_bridge loop runner --once` stops after one activation. It should return a
 structured `next_action` instead of continuing recursively.
 
 V1 should enforce deterministic limits:
@@ -178,7 +178,7 @@ External smoke:
 cd /home/bfly/yunwei/test_ccb2
 HOME=/home/bfly/yunwei/test_ccb2/source_home \
 CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/source_home \
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project <smoke-project> loop runner --once --json
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project <smoke-project> loop runner --once --json
 ```
 
 The smoke must prove:
@@ -196,7 +196,7 @@ The smoke must prove:
 2. Add a task selector that returns `(task_id, action, reason)` from committed
    task state.
 3. Add a planner activation packet writer and ask adapter.
-4. Extend `cc-bridge loop runner --once` to route `draft`, `partial`, and
+4. Extend `cc_bridge loop runner --once` to route `draft`, `partial`, and
    `replan_required` to planner activation.
 5. Add paused/terminal/idle stop responses for clarification, blocked, done,
    cancelled, and no-task states.
@@ -223,8 +223,8 @@ First V1 slice landed in the current worktree.
 
 Implemented behavior:
 
-- `cc-bridge plan` artifact imports record actor/job provenance on each artifact;
-- `cc-bridge loop runner --once` selects one committed task status and routes it to
+- `cc_bridge plan` artifact imports record actor/job provenance on each artifact;
+- `cc_bridge loop runner --once` selects one committed task status and routes it to
   exactly one action;
 - `ready` still uses the existing execution bridge;
 - `draft`, `partial`, and `replan_required` write compact planner activation
@@ -239,7 +239,7 @@ Verification is recorded in
 
 Remaining V1 work:
 
-- `cc-bridge question` broker/frontdesk artifact surface;
+- `cc_bridge question` broker/frontdesk artifact surface;
 - planner artifact import/review follow-through after activation;
 - richer runtime provenance when managed provider sessions expose explicit
   job/actor environment;

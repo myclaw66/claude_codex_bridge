@@ -41,7 +41,7 @@ state needed for future planning, orchestration, clarification, or recovery.
 - `cc-bridge agent release` should apply role policy. For long-lived roles, the
   default result is park or hide. For short-lived round-owned roles, the
   default result can be unload after idle/evidence gates pass.
-- `cc-bridge loop capacity release` remains optimized for generated worker/checker
+- `cc_bridge loop capacity release` remains optimized for generated worker/checker
   agents.
 - Hard unload remains explicit, idle-gated, and operator-grade.
 - `remove` is policy resolution, not a synonym for kill. It must report the
@@ -49,7 +49,7 @@ state needed for future planning, orchestration, clarification, or recovery.
 - `kill` remains an explicit emergency/operator action requiring force,
   reason, and diagnostics. It is not available to normal role skills.
 - Skills used by `frontdesk`, planner, and orchestrator must not call raw
-  `tmux`, raw `cc-bridge reload`, raw `cc-bridge kill`, or provider process kills.
+  `tmux`, raw `cc_bridge reload`, raw `cc_bridge kill`, or provider process kills.
 
 ## Follow-Up
 

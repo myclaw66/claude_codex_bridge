@@ -4,7 +4,7 @@ Date: 2026-06-27
 
 ## Summary
 
-Landed the first `cc-bridge loop runner --once` state-router slice.
+Landed the first `cc_bridge loop runner --once` state-router slice.
 
 The router now selects one committed task state and performs exactly one
 deterministic action:
@@ -22,7 +22,7 @@ success. It routes by committed status and lets roles produce artifacts.
 
 ## Artifact Metadata
 
-`cc-bridge plan task-artifact` and `cc-bridge plan task-import-round` now record an
+`cc_bridge plan task-artifact` and `cc_bridge plan task-import-round` now record an
 `actor` object on imported artifacts.
 
 Fields:
@@ -102,7 +102,7 @@ External source-wrapper smokes from `/home/bfly/yunwei/test_ccb2`:
 
 ## Remaining Work
 
-- Add the V1 `cc-bridge question` command/artifact surface for broker/frontdesk
+- Add the V1 `cc_bridge question` command/artifact surface for broker/frontdesk
   clarification.
 - Extend planner follow-through: planner artifacts should be imported and
   reviewed through script-owned state before execution readiness.

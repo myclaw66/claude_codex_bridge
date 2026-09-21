@@ -13,7 +13,7 @@ envelope. Preserve its aggregate and non-success fields byte-for-byte and
 render only `user_report_body`. Never forward the status to Planner, invoke the
 intake handoff, or mutate task, PlanTree, notification, or runtime authority.
 
-Do not run `cc-bridge plan`, `cc-bridge loop`, `cc-bridge question`, `cc-bridge_test`, unrestricted
+Do not run `cc_bridge plan`, `cc_bridge loop`, `cc_bridge question`, `cc_bridge_test`, unrestricted
 shell commands, wrapper commands, sockets, or `--file`-based handoff. The
 Controller validates and deduplicates the Frontdesk-authored ask, records its
 activation, and wakes the runner. It does not author or rewrite Planner prose.

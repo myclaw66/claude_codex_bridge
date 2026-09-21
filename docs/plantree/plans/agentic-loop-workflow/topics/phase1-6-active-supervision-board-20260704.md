@@ -104,7 +104,7 @@ handoff aid. The acceptance verdict is recorded separately in
   rolepack/bootstrap and B7 evidence blocker. Source-test role installation now
   discovers source-checkout draft RolePacks, required draft manifests use
   installer-valid `catalog.level = "experimental"`, the maintained sequence
-  packet seeds roles via `cc-bridge_test roles install --skip-tools`, duplicate task
+  packet seeds roles via `cc_bridge_test roles install --skip-tools`, duplicate task
   creation is handled by observing/reusing existing task authority, and B7 can
   read round evidence from task-show artifact paths while keeping stale topology
   residue failing unless authoritative cleanup evidence says `kill_status: ok`
@@ -138,7 +138,7 @@ handoff aid. The acceptance verdict is recorded separately in
   sequence18 fresh root and its B7/rows/command-log paths do not exist on
   disk, and only the old sequence17 root is present. Worker3
   `job_89215d1865e5` exposed a separate harness blocker: the generated config
-  mounted only `bootstrap:codex`, so `cc-bridge_test ask frontdesk` failed with
+  mounted only `bootstrap:codex`, so `cc_bridge_test ask frontdesk` failed with
   `unknown agent: frontdesk`; role profiles alone do not create ask targets.
   Worker1 follow-up job `job_a0fac3efdb4c` produced a parameterized,
   non-stale runner with inspectable manifest paths and no provider timeout, but
@@ -161,7 +161,7 @@ handoff aid. The acceptance verdict is recorded separately in
   `codex_prompt_delivery_failed / delivery_anchor_missing` because the current
   provider log path points to an old donor root. Worker1 `job_c82254482242`
   plus talk2 local hardening now add the missing source/static resident
-  readiness guard: the runner parses `cc-bridge_test --project <project> ps`, and
+  readiness guard: the runner parses `cc_bridge_test --project <project> ps`, and
   `init` / `frontdesk-entry` fail with `resident_agents_not_ready` unless all
   five resident roles are live and `state=idle`. `degraded`, `busy`, and
   missing ps entries now block before any `ask frontdesk`. Verified:
@@ -352,7 +352,7 @@ handoff aid. The acceptance verdict is recorded separately in
   The run stopped at L1 because the real orchestrator provider followed the
   activation prompt and imported `orchestration_notes` itself. This violates
   the launch contract: route authority must come from supervisor/script-owned
-  imports, not provider-side `cc-bridge plan task-artifact`. B7 is
+  imports, not provider-side `cc_bridge plan task-artifact`. B7 is
   [../history/phase6b-real-provider-l1-l4-repeat6-b7-20260704.md](../history/phase6b-real-provider-l1-l4-repeat6-b7-20260704.md)
   with `Status: not_claimable`; cleanup returned `kill_status: ok`,
   `state: unmounted`.
@@ -516,7 +516,7 @@ Accept only if the callback and reviewer artifact prove:
 - provider map is `cc-bridge_round_reviewer -> claude`, all other required roles ->
   `codex`, and real-provider command shape inherits the current system provider
   environment with no lab-local `HOME` / `CC_BRIDGE_SOURCE_HOME` override;
-- no source-wrapper, `cc-bridge_test`, provider, L5, runtime, launch, or B7 command
+- no source-wrapper, `cc_bridge_test`, provider, L5, runtime, launch, or B7 command
   was run by worker3.
 
 ### Reviewer1 `job_e8459a2782cd` - Read-Only Coverage Audit
@@ -585,7 +585,7 @@ unapproved provider/runtime command:
   `detail_ready` as valid non-success.
 - Fixture generation/materialization is exact and lab-local, with paths and
   expected initial/final evidence surfaces.
-- Command shape uses `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test` from an external
+- Command shape uses `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test` from an external
   root, a materialized stdin-safe script, command logs, per-task evidence rows,
   and a B7 aggregation report path.
 - Every supervisor artifact that the command passes to
@@ -617,7 +617,7 @@ reply and reviewer artifact prove all of the following:
 
 - Verdict is planning/readiness acceptance or a concrete blocker. It must not
   request or grant launch approval, and it must not report any source-wrapper,
-  `cc-bridge_test`, provider, L0-L5, or runtime command.
+  `cc_bridge_test`, provider, L0-L5, or runtime command.
 - The packet remains separate from the frozen L1-L4 request unless a later
   launch-specific reviewer verdict explicitly combines them.
 - At least one concrete future observation path is present for the Phase 6B
@@ -658,7 +658,7 @@ acceptance. The callback and reviewer2 artifact satisfy the intended checks:
 
 - Verdict is static hardening acceptance or a concrete blocker. It must not
   request or grant launch approval, and it must not report any source-wrapper,
-  `cc-bridge_test`, provider, L0-L5, or runtime command.
+  `cc_bridge_test`, provider, L0-L5, or runtime command.
 - The L1-L4 embedded normalizer emits the declared `authority_checks.*`
   booleans:
   `topology_dispatch_absent`, `communication_edges_absent`,
@@ -710,7 +710,7 @@ the reviewer2 artifact and packet name all of the following:
   blocked/partial work marked `done`.
 
 Reject or hold the callback if worker1 reports running source-wrapper,
-`cc-bridge_test`, provider, L0/L1-L4/L5, runtime, or launch commands. If approval is
+`cc_bridge_test`, provider, L0/L1-L4/L5, runtime, or launch commands. If approval is
 granted, talk2 must perform a separate pre-run audit before executing anything.
 
 ## Worker1 Checkpoint/Resume Repair Callback Checklist
@@ -739,7 +739,7 @@ Before treating any approval as runnable, audit that the repaired packet:
   imports, no topology dispatch, and no provider-reply authority mutation;
 - includes static tests or extraction checks that would fail for the previous
   immediate-checkpoint-exit shape;
-- reports no source-wrapper, `cc-bridge_test`, provider, L0/L1-L4/L5, runtime, or
+- reports no source-wrapper, `cc_bridge_test`, provider, L0/L1-L4/L5, runtime, or
   launch command execution by worker1.
 
 If approval is granted, talk2 must still run a separate pre-run audit against
@@ -782,7 +782,7 @@ Before treating any approval as runnable, audit that the L5 packet:
   seeded lab-locally;
 - preserves script/supervisor-owned authority imports, no topology dispatch,
   no topology communication DSL, and no provider-reply authority parsing;
-- reports no source-wrapper, `cc-bridge_test`, provider, L0/L1-L4/L5, runtime, or
+- reports no source-wrapper, `cc_bridge_test`, provider, L0/L1-L4/L5, runtime, or
   launch command execution by worker2.
 
 If approval is granted, talk2 must still run a separate pre-run audit against
@@ -802,7 +802,7 @@ Before running any approved command, talk2 must verify:
 - the root is still absent or empty immediately before execution and lives
   under `/home/bfly/yunwei/test_ccb2`;
 - the command runs from `/home/bfly/yunwei/test_ccb2`, uses the absolute
-  `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test` wrapper, and materializes then runs a
+  `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test` wrapper, and materializes then runs a
   script with `bash "$SCRIPT"` rather than stdin piping;
 - provider environment matches the owner decision and approval: no lab-local
   `HOME` or `CC_BRIDGE_SOURCE_HOME` override for real-provider runs, current system

@@ -6,7 +6,7 @@ Date: 2026-06-24
 
 This goal records the first landed dynamic-capacity substrate. The current
 preferred workflow design is now topology-driven: `orchestrator` proposes a
-runtime workflow graph, `cc-bridge loop topology` commits desired state, and a
+runtime workflow graph, `cc_bridge loop topology` commits desired state, and a
 reconciler uses capacity/lifecycle/layout mechanisms to load, release, park,
 or reflow agents. See
 [../topics/runtime-workflow-graph-and-reconciler.md](../topics/runtime-workflow-graph-and-reconciler.md)
@@ -24,7 +24,7 @@ Land the first working orchestrator dynamic-capacity loop:
 4. `orchestrator` can assign work to the temporary pair, collect results, and
    release the pair after the loop round.
 5. The whole path is proven in the external source-test project
-   `/home/bfly/yunwei/test_ccb2` with `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`.
+   `/home/bfly/yunwei/test_ccb2` with `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`.
 
 This is an implementation and test goal. It must not be marked complete until
 the real source-test folder flow passes without using the globally installed
@@ -45,7 +45,7 @@ Implemented first slice in the current worktree:
 
 Implemented second slice in the current worktree:
 
-- `cc-bridge loop capacity ensure/status/release` is parsed as a normal phase2 CLI
+- `cc_bridge loop capacity ensure/status/release` is parsed as a normal phase2 CLI
   command.
 - JSON mode is implemented for script and skill use.
 - `ensure` resolves configured `loop.role_profiles`, validates counts against
@@ -69,7 +69,7 @@ Implemented third slice in the current worktree:
 - `release --idle-only` marks generated agents released, after which config
   loading no longer includes them.
 - If a daemon is mounted, `ensure` and `release` try to apply the overlay change
-  through the existing guarded `cc-bridge reload` path.
+  through the existing guarded `cc_bridge reload` path.
 - If no daemon is mounted, `ensure` records `apply_status =
   deferred_until_start`, so the next start can materialize the dynamic agents.
 - Reload failure rolls the loop capacity state back instead of leaving a broken
@@ -81,7 +81,7 @@ Implemented fourth slice in the current worktree:
   `drafts/agentroles.cc-bridge_orchestrator`.
 - The draft includes CC_BRIDGE adapter memory and the private
   `orchestrator-capacity` skill.
-- The skill allows only `cc-bridge loop capacity ensure/status/release --json`,
+- The skill allows only `cc_bridge loop capacity ensure/status/release --json`,
   uses returned names as ask targets, and forbids raw reload, raw kill, tmux,
   provider process mutation, direct config edits, and direct runtime-file
   writes.
@@ -102,7 +102,7 @@ Implemented fifth slice in the current worktree:
 
 Implemented sixth slice in the current worktree:
 
-- `cc-bridge loop run-once --loop-id <id> --task <text> [--json]` is implemented as
+- `cc_bridge loop run-once --loop-id <id> --task <text> [--json]` is implemented as
   the first deterministic loop-runner slice.
 - The command requests one `worker` and one `code_reviewer` from
   `loop.role_profiles`, uses returned generated names as ask targets, watches
@@ -156,28 +156,28 @@ cd /home/bfly/yunwei/test_ccb2
 HOME=/home/bfly/yunwei/test_ccb2/source_home \
 CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/source_home \
 AGENT_ROLES_STORE=/home/bfly/yunwei/test_ccb2/orchestrator-capacity-state-smoke/roles \
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project /home/bfly/yunwei/test_ccb2/orchestrator-capacity-state-smoke config validate
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project /home/bfly/yunwei/test_ccb2/orchestrator-capacity-state-smoke config validate
 HOME=/home/bfly/yunwei/test_ccb2/source_home \
 CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/source_home \
 AGENT_ROLES_STORE=/home/bfly/yunwei/test_ccb2/orchestrator-capacity-state-smoke/roles \
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project /home/bfly/yunwei/test_ccb2/orchestrator-capacity-state-smoke loop capacity ensure --loop-id round1 --profile worker=1 --profile code_reviewer=1 --json
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project /home/bfly/yunwei/test_ccb2/orchestrator-capacity-state-smoke loop capacity ensure --loop-id round1 --profile worker=1 --profile code_reviewer=1 --json
 HOME=/home/bfly/yunwei/test_ccb2/source_home \
 CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/source_home \
 AGENT_ROLES_STORE=/home/bfly/yunwei/test_ccb2/orchestrator-capacity-state-smoke/roles \
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project /home/bfly/yunwei/test_ccb2/orchestrator-capacity-state-smoke loop capacity status --loop-id round1 --json
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project /home/bfly/yunwei/test_ccb2/orchestrator-capacity-state-smoke loop capacity status --loop-id round1 --json
 HOME=/home/bfly/yunwei/test_ccb2/source_home \
 CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/source_home \
 AGENT_ROLES_STORE=/home/bfly/yunwei/test_ccb2/orchestrator-capacity-state-smoke/roles \
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project /home/bfly/yunwei/test_ccb2/orchestrator-capacity-state-smoke loop capacity release --loop-id round1 --idle-only --json
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project /home/bfly/yunwei/test_ccb2/orchestrator-capacity-state-smoke loop capacity release --loop-id round1 --idle-only --json
 HOME=/home/bfly/yunwei/test_ccb2/source_home \
 CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/source_home \
 AGENT_ROLES_STORE=/home/bfly/yunwei/test_ccb2/orchestrator-capacity-runtime-smoke/roles \
 CC_BRIDGE_NO_ATTACH=1 \
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project /home/bfly/yunwei/test_ccb2/orchestrator-capacity-runtime-smoke
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project /home/bfly/yunwei/test_ccb2/orchestrator-capacity-runtime-smoke
 HOME=/home/bfly/yunwei/test_ccb2/source_home \
 CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/source_home \
 AGENT_ROLES_STORE=/home/bfly/yunwei/test_ccb2/orchestrator-capacity-runtime-smoke/roles \
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project /home/bfly/yunwei/test_ccb2/orchestrator-capacity-runtime-smoke loop run-once --loop-id s5 --task 'run once smoke: worker summarizes task, reviewer checks it, orchestrator aggregates result' --timeout 30 --json
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project /home/bfly/yunwei/test_ccb2/orchestrator-capacity-runtime-smoke loop run-once --loop-id s5 --task 'run once smoke: worker summarizes task, reviewer checks it, orchestrator aggregates result' --timeout 30 --json
 python /home/bfly/yunwei/cc-bridge_source/scripts/orchestrator_capacity_semantic_smoke.py --test-root /home/bfly/yunwei/test_ccb2 --project-name orchestrator-capacity-real-provider-smoke --provider codex --prepare-only --json
 CC_BRIDGE_ORCH_SMOKE_RUN_REAL=1 \
 python /home/bfly/yunwei/cc-bridge_source/scripts/orchestrator_capacity_semantic_smoke.py --test-root /home/bfly/yunwei/test_ccb2 --project-name orchestrator-capacity-real-provider-smoke --provider codex --provider-home-mode source-home --loop-id rp1 --task 'For this CC_BRIDGE smoke, reply exactly with status: done and one short evidence line.' --timeout 180 --reset --run --json
@@ -190,7 +190,7 @@ python /home/bfly/yunwei/cc-bridge_source/scripts/orchestrator_capacity_semantic
 HOME=/home/bfly/yunwei/test_ccb2/source_home \
 CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/source_home \
 AGENT_ROLES_STORE=/home/bfly/yunwei/test_ccb2/orchestrator-capacity-real-provider-smoke/roles \
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project /home/bfly/yunwei/test_ccb2/orchestrator-capacity-real-provider-smoke config validate
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project /home/bfly/yunwei/test_ccb2/orchestrator-capacity-real-provider-smoke config validate
 ```
 
 Results on 2026-06-24:
@@ -249,7 +249,7 @@ Results on 2026-06-24:
     worker; final `ps` and `config validate` showed only `orchestrator`;
   - final `kill -f` unmounted the smoke daemon.
 - External deterministic run-once smoke on 2026-06-25 Asia/Shanghai:
-  - `cc-bridge_test --diagnose` confirmed the source wrapper and external test root;
+  - `cc_bridge_test --diagnose` confirmed the source wrapper and external test root;
   - project started with `CC_BRIDGE_NO_ATTACH=1` and only `orchestrator`;
   - `loop run-once --loop-id s5 --task ... --timeout 30 --json` returned
     `loop_run_status = ok`;
@@ -297,7 +297,7 @@ Results on 2026-06-24:
     `/home/bfly/yunwei/test_ccb2/orchestrator-capacity-real-provider-smoke`:
     `preflight_status = ok`, `provider_executable_found = true`,
     `source_home_exists = true`, `rolepack_source_exists = true`;
-  - the generated real-provider smoke project passed `cc-bridge_test config
+  - the generated real-provider smoke project passed `cc_bridge_test config
     validate` with `layout: orchestrator:codex`;
   - real Codex smoke with `--reset --run --provider-home-mode source-home`
     reached dynamic capacity and job dispatch but did not complete because the
@@ -398,7 +398,7 @@ Use a CC_BRIDGE-owned runtime capacity overlay over the existing guarded reload 
 
 Rationale:
 
-- Current CC_BRIDGE already supports explicit `cc-bridge reload` for append-only
+- Current CC_BRIDGE already supports explicit `cc_bridge reload` for append-only
   `add_agent` / `add_window` and idle `remove_agent`.
 - This lets the first loop capacity implementation reach real tmux/provider
   behavior without redesigning cc-bridge-daemon service-graph ownership first.
@@ -470,9 +470,9 @@ Files likely affected:
 Add:
 
 ```bash
-cc-bridge loop capacity ensure --loop-id <id> --profile worker=1 --profile code_reviewer=1 --json
-cc-bridge loop capacity status --loop-id <id> --json
-cc-bridge loop capacity release --loop-id <id> --idle-only --json
+cc_bridge loop capacity ensure --loop-id <id> --profile worker=1 --profile code_reviewer=1 --json
+cc_bridge loop capacity status --loop-id <id> --json
+cc_bridge loop capacity release --loop-id <id> --idle-only --json
 ```
 
 Required behavior:
@@ -529,8 +529,8 @@ user-authored durable project intent.
 Materialize or update `agentroles.cc-bridge_orchestrator` with:
 
 - `orchestrator-capacity` skill.
-- Skill reference for `cc-bridge loop capacity ensure/status/release`.
-- Negative instructions forbidding raw `cc-bridge reload`, raw `cc-bridge kill`, direct
+- Skill reference for `cc_bridge loop capacity ensure/status/release`.
+- Negative instructions forbidding raw `cc_bridge reload`, raw `cc_bridge kill`, direct
   config edits, direct runtime-file writes, arbitrary provider/model choices,
   and unbounded node creation.
 - Positive examples for requesting `worker + code_reviewer`.
@@ -538,10 +538,10 @@ Materialize or update `agentroles.cc-bridge_orchestrator` with:
 The skill must let `orchestrator`:
 
 1. decide desired profile counts from a work graph;
-2. call `cc-bridge loop capacity ensure`;
+2. call `cc_bridge loop capacity ensure`;
 3. use returned agent names as `ask` targets;
-4. call `cc-bridge loop capacity status` when progress is unclear;
-5. call `cc-bridge loop capacity release --idle-only` after round drain.
+4. call `cc_bridge loop capacity status` when progress is unclear;
+5. call `cc_bridge loop capacity release --idle-only` after round drain.
 
 ### 5. Task Dispatch Loop
 
@@ -569,7 +569,7 @@ Acceptance rules:
 Add the first bounded loop-runner entrypoint:
 
 ```bash
-cc-bridge loop run-once --loop-id <id> --task <text> [--worker-profile worker] [--reviewer-profile code_reviewer] [--orchestrator orchestrator] [--timeout 30] [--json]
+cc_bridge loop run-once --loop-id <id> --task <text> [--worker-profile worker] [--reviewer-profile code_reviewer] [--orchestrator orchestrator] [--timeout 30] [--json]
 ```
 
 Required behavior:
@@ -622,7 +622,7 @@ All source runtime validation must run from:
 cd /home/bfly/yunwei/test_ccb2
 HOME=/home/bfly/yunwei/test_ccb2/source_home \
 CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/source_home \
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test ...
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test ...
 ```
 
 Do not validate this feature from `/home/bfly/yunwei/cc-bridge_source`, and do not use
@@ -646,10 +646,10 @@ Pass targeted tests for:
 Pass targeted tests for:
 
 ```bash
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test loop capacity ensure --help
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test loop capacity status --help
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test loop capacity release --help
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test loop run-once --help
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test loop capacity ensure --help
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test loop capacity status --help
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test loop capacity release --help
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test loop run-once --help
 ```
 
 And JSON contract tests for:
@@ -683,11 +683,11 @@ Initial project config:
 
 Smoke steps:
 
-1. Run `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose`.
-2. Run `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test config validate` and confirm
+1. Run `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose`.
+2. Run `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test config validate` and confirm
    loop profiles are recognized.
-3. Start the project with `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`.
-4. Run `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test loop capacity ensure --loop-id loop-smoke-001 --profile worker=1 --profile code_reviewer=1 --json`.
+3. Start the project with `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`.
+4. Run `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test loop capacity ensure --loop-id loop-smoke-001 --profile worker=1 --profile code_reviewer=1 --json`.
 5. Confirm two generated agents enter the active project config and mount,
    appearing in project status/sidebar data.
 6. Ask `orchestrator` to perform a bounded task using the generated
@@ -696,12 +696,12 @@ Smoke steps:
 8. Confirm the code reviewer reviews the worker result and either passes or
    returns a concrete rework result.
 9. Confirm `orchestrator` aggregates the result.
-10. Run `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test loop capacity release --loop-id loop-smoke-001 --idle-only --json`.
+10. Run `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test loop capacity release --loop-id loop-smoke-001 --idle-only --json`.
 11. Confirm generated agents are removed or detached, while user-authored
     agents remain mounted.
 12. Restart the project and confirm released dynamic agents do not reappear as
     durable desired agents.
-13. Run `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test loop run-once --loop-id loop-smoke-002 --task "<bounded task>" --timeout 30 --json`.
+13. Run `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test loop run-once --loop-id loop-smoke-002 --task "<bounded task>" --timeout 30 --json`.
 14. Confirm the returned payload is `loop_run_status = ok`, includes generated
     worker/reviewer names, and includes worker/reviewer/aggregate job ids.
 15. Confirm `.cc-bridge/runtime/loops/loop-smoke-002/round.json`,
@@ -730,7 +730,7 @@ The real test folder must also prove:
 This goal is complete only when all are true:
 
 - `loop.role_profiles` grammar lands with docs and tests.
-- `cc-bridge loop capacity ensure/status/release` lands with JSON contracts.
+- `cc_bridge loop capacity ensure/status/release` lands with JSON contracts.
 - `agentroles.cc-bridge_orchestrator` includes the capacity skill.
 - `/home/bfly/yunwei/test_ccb2` real smoke proves dynamic
   `worker + code_reviewer` creation, task dispatch, review, aggregation, and

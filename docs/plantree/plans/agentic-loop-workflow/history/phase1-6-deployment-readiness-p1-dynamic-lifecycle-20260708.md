@@ -16,7 +16,7 @@ does not claim production/default enablement.
   `/home/bfly/yunwei/test_ccb2/deploy-p1-dynamic-lifecycle-talk2-20260708161320`
 - Project:
   `/home/bfly/yunwei/test_ccb2/deploy-p1-dynamic-lifecycle-talk2-20260708161320/p1-dynamic-lifecycle-real-provider-lab`
-- Command wrapper: `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`
+- Command wrapper: `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`
 - Provider home policy: inherited system environment.
 - Role store:
   `/home/bfly/yunwei/test_ccb2/deploy-p1-dynamic-lifecycle-talk2-20260708161320/roles`
@@ -58,7 +58,7 @@ P1 passed against a visible real opened project:
 - Loop runtime evidence:
   `p1-dynamic-lifecycle-real-provider-lab/.cc-bridge/runtime/loops/`
 - UI evidence:
-  `ui-evidence/cc-bridge_test-ps-after-auto-runner.txt`
+  `ui-evidence/cc_bridge_test-ps-after-auto-runner.txt`
   and `ui-evidence/tmux-list-panes-after-auto-runner.txt`
 - Busy retain evidence:
   `p1-busy-retain-real/topology-release-while-busy.json`

@@ -5,7 +5,7 @@ from typing import Any
 
 
 AGENT_ROLE_SCHEMA_PREFIX = 'agent-role/preview-'
-CC_BRIDGE_ADAPTER_SCHEMA_PREFIX = 'agent-role-adapter/cc_bridge-preview-'
+CC_BRIDGE_ADAPTER_SCHEMA_PREFIX = 'agent-role-adapter/cc-bridge-preview-'
 
 
 def is_agent_role_manifest(manifest: dict[str, Any]) -> bool:
@@ -39,7 +39,7 @@ def translate_agent_role_manifest(
 
 
 def _load_cc_bridge_adapter(root: Path, *, read_toml) -> dict[str, Any]:
-    path = Path(root) / 'adapters' / 'cc_bridge' / 'adapter.toml'
+    path = Path(root) / 'adapters' / 'cc-bridge' / 'adapter.toml'
     if not path.is_file():
         return {}
     adapter = read_toml(path)
@@ -66,7 +66,7 @@ def _translate_compatibility(*, adapter: dict[str, Any]) -> dict[str, Any]:
     if not providers:
         recommended = str(adapter.get('recommended_provider') or '').strip()
         providers = [recommended] if recommended else []
-    compatibility: dict[str, Any] = {'hosts': ['cc_bridge']}
+    compatibility: dict[str, Any] = {'hosts': ['cc-bridge']}
     if providers:
         compatibility['providers'] = providers
     return compatibility
@@ -112,13 +112,13 @@ def _translate_activation(manifest: dict[str, Any], *, adapter: dict[str, Any]) 
 
 def _translate_adapters(manifest: dict[str, Any], *, adapter: dict[str, Any]) -> dict[str, Any]:
     adapters = dict(manifest.get('adapters') or {})
-    cc_bridge = dict(adapters.get('cc_bridge') or {})
+    cc_bridge = dict(adapters.get('cc-bridge') or {})
     for key in ('display_name', 'command_surface'):
         value = str(adapter.get(key) or '').strip()
         if value:
             cc_bridge[key] = value
     if cc_bridge:
-        adapters['cc_bridge'] = cc_bridge
+        adapters['cc-bridge'] = cc_bridge
     return adapters
 
 

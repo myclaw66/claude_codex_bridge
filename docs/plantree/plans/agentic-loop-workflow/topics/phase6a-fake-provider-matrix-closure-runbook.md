@@ -166,7 +166,7 @@ Verification expected:
 Stop before or during the closure run if any condition is true:
 
 - run would start from `/home/bfly/yunwei/cc-bridge_source` as a live runtime root;
-- `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose` fails from the external
+- `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose` fails from the external
   test root;
 - `HOME` or `CC_BRIDGE_SOURCE_HOME` is not isolated to the source-wrapper test home;
 - any required case is still `not_implemented` or `missing_evidence`;
@@ -195,14 +195,14 @@ export CC_BRIDGE_PHASE6_MATRIX_TEST_ROOT=/home/bfly/yunwei/test_ccb2
 Run diagnose before any matrix command:
 
 ```bash
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose
 ```
 
 Required environment evidence:
 
 - current working directory is not `/home/bfly/yunwei/cc-bridge_source`;
 - `HOME` and `CC_BRIDGE_SOURCE_HOME` match the isolated source home;
-- `cc-bridge_test --diagnose` reports the external source test root is allowed;
+- `cc_bridge_test --diagnose` reports the external source test root is allowed;
 - no real provider credentials are required or used;
 - accepted RolePacks are installed through the source-wrapper project setup,
   not from the live source checkout runtime state.
@@ -258,7 +258,7 @@ cd /home/bfly/yunwei/test_ccb2
 export HOME=/home/bfly/yunwei/test_ccb2/source_home
 export CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/source_home
 
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose
 
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 project_name="phase6-fake-matrix-${stamp}"
@@ -269,7 +269,7 @@ python /home/bfly/yunwei/cc-bridge_source/scripts/phase6_fake_matrix_smoke.py \
   --test-root /home/bfly/yunwei/test_ccb2 \
   --project-name "${project_name}" \
   --provider fake \
-  --cc-bridge-test /home/bfly/yunwei/cc-bridge_source/cc-bridge_test \
+  --cc-bridge-test /home/bfly/yunwei/cc-bridge_source/cc_bridge_test \
   --timeout 120 \
   --reset \
   --run \
@@ -307,7 +307,7 @@ Closure command requirements:
 
 - runs all eight required cases in one evidence report;
 - writes JSON report, JSONL rows, and Markdown history report;
-- uses `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`;
+- uses `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`;
 - runs from `/home/bfly/yunwei/test_ccb2` with isolated `HOME` and
   `CC_BRIDGE_SOURCE_HOME`;
 - includes `smoke-busy-release` through the implemented runner.
@@ -407,7 +407,7 @@ The busy-release case must prove:
 Triangulate cleanup with:
 
 ```bash
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project <case-project> ps
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project <case-project> ps
 cat <case-project>/.cc-bridge/cc-bridge.config
 cat <case-project>/.cc-bridge/runtime/loops/<loop-id>/agent_mount_topology.observed.json
 rg -n "topology_dispatch|edges|gates|artifacts|consume-role-output" <case-project>/.cc-bridge/runtime/loops/<loop-id>
@@ -422,7 +422,7 @@ a live runtime project.
 Hand this package to reviewer1/reviewer2:
 
 - exact command transcript or command list, including cwd and environment;
-- `cc-bridge_test --diagnose` output;
+- `cc_bridge_test --diagnose` output;
 - source check outputs for `py_compile`, focused pytest, and `git diff --check`;
 - `phase6_fake_matrix_report.json`;
 - `phase6_fake_matrix_rows.jsonl`;
@@ -484,8 +484,8 @@ Scope:
 
 Required evidence:
 - exact source-wrapper command transcript with cwd, HOME, CC_BRIDGE_SOURCE_HOME, and
-  cc-bridge_test path;
-- cc-bridge_test --diagnose output from /home/bfly/yunwei/test_ccb2;
+  cc_bridge_test path;
+- cc_bridge_test --diagnose output from /home/bfly/yunwei/test_ccb2;
 - local source checks and git diff --check output;
 - phase6_fake_matrix_report.json and phase6_fake_matrix_rows.jsonl;
 - generated Markdown matrix history report;

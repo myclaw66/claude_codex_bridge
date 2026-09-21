@@ -505,12 +505,12 @@ behavior, then add worktree integration, then fanout.
 - Event overlap evidence for parallel workers.
 - Restart recovery and injected provider/reviewer/release failures.
 - Source-wrapper runs only from `/home/bfly/yunwei/test_ccb2` with current
-  `cc-bridge_test` and an isolated fake-provider environment.
+  `cc_bridge_test` and an isolated fake-provider environment.
 
 ### T7 Visible Real-Provider Flow
 
 - Fresh opened Git projects under `/home/bfly/yunwei/test_ccb2`.
-- Current source `cc-bridge_test`, inherited system provider environment, lab-local
+- Current source `cc_bridge_test`, inherited system provider environment, lab-local
   Role store, and visible UI/sidebar/panes.
 - Frontdesk receives ordinary user requests; no explicit routing/group-count
   instructions.

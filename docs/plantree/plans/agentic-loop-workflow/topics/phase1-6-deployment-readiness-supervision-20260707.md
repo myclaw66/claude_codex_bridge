@@ -18,14 +18,14 @@ cleanup work together under realistic use.
 ## Operator-Facing Acceptance Standard
 
 Deployment readiness must be proven from a real opened project that the user or
-supervisor can inspect. A script may materialize the root, start `cc-bridge_test`,
+supervisor can inspect. A script may materialize the root, start `cc_bridge_test`,
 drive checkpoint commands, and normalize evidence, but the final acceptance
 cannot rely only on hidden background script output.
 
 Required shape for future acceptance runs:
 
 - Run from `/home/bfly/yunwei/test_ccb2` using
-  `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`.
+  `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`.
 - Use a fresh test project root under `/home/bfly/yunwei/test_ccb2`, not
   `cc-bridge_source` and not a reused consumed root.
 - For real-provider acceptance, inherit the current system provider
@@ -98,7 +98,7 @@ Self-run validation queue:
    directly ran fresh root
    `/home/bfly/yunwei/test_ccb2/deploy-l1-l4-frontdesk-sequence38-talk2-selfrun-20260708124814`
    from `/home/bfly/yunwei/test_ccb2` with
-   `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`, inherited provider environment,
+   `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`, inherited provider environment,
    and root-local `AGENT_ROLES_STORE`. B7 report:
    `/home/bfly/yunwei/test_ccb2/deploy-l1-l4-frontdesk-sequence38-talk2-selfrun-20260708124814/phase6b-real-provider-l1-l4-sequence38-talk2-selfrun-20260708124814-b7.md`
    reports `Status: pass`. Frontdesk handed off to planner, planner produced
@@ -125,7 +125,7 @@ Self-run validation queue:
    directly ran fresh root
    `/home/bfly/yunwei/test_ccb2/deploy-p1-dynamic-lifecycle-talk2-20260708161320`
    from `/home/bfly/yunwei/test_ccb2` with
-   `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`, inherited provider environment,
+   `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`, inherited provider environment,
    and root-local `AGENT_ROLES_STORE`. B7 report:
    `/home/bfly/yunwei/test_ccb2/deploy-p1-dynamic-lifecycle-talk2-20260708161320/p1-dynamic-lifecycle-b7.md`
    reports `status: pass`. Three real direct-execution rounds, including L3
@@ -137,7 +137,7 @@ Self-run validation queue:
    lane**. `talk2` directly ran fresh root
    `/home/bfly/yunwei/test_ccb2/deploy-p2-frontdesk-pressure-talk2-20260708170920`
    from `/home/bfly/yunwei/test_ccb2` with
-   `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`, inherited provider environment,
+   `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`, inherited provider environment,
    and root-local `AGENT_ROLES_STORE`. B7 report:
    `/home/bfly/yunwei/test_ccb2/deploy-p2-frontdesk-pressure-talk2-20260708170920/phase6b-real-provider-l1-l4-p2-frontdesk-pressure-talk2-20260708170920-b7.md`
    reports `Status: pass`. One natural-language frontdesk macro-intake
@@ -154,7 +154,7 @@ Self-run validation queue:
 Historical target shape for the completed L1-L4 lane:
 
 - Use a fresh opened project under
-   `/home/bfly/yunwei/test_ccb2`, `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`,
+   `/home/bfly/yunwei/test_ccb2`, `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`,
    inherited provider environment, and root-local `AGENT_ROLES_STORE`. Start
    from frontdesk intake and prove planner/orchestrator route mix for
    `direct_execution`, `needs_detail`, `macro_adjustment_request`, and
@@ -180,7 +180,7 @@ Current baseline artifact:
 Required evidence:
 
 - `git status --short` inventory before each validation round.
-- `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose` from
+- `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose` from
   `/home/bfly/yunwei/test_ccb2`.
 - Fresh root path under `/home/bfly/yunwei/test_ccb2`, command log, B7 path,
   and final cleanup path recorded before execution.
@@ -377,7 +377,7 @@ frontdesk evidence.
 
 Runtime refresh status: `cc-bridge restart worker1` failed with
 `role_digest_changed_fresh_restart_unsupported` after the worker lanes failed,
-and `cc-bridge reload --dry-run` returned `plan_class: no_change` /
+and `cc_bridge reload --dry-run` returned `plan_class: no_change` /
 `reload_namespace_patch_status: no_op`. Ordinary restart and additive reload
 are therefore not enough to restore the worker panes. Do not submit another
 full delegated evidence round. The active validation path is direct
@@ -589,7 +589,7 @@ is claimed.
     primary authority blocker, so this artifact remains non-claimable.
   - Talk2 source-runtime sequence20 probe used fresh root
     `/home/bfly/yunwei/test_ccb2/deploy-l1-l4-frontdesk-sequence20-talk2-20260707230547`
-    with `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`, inherited system provider
+    with `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`, inherited system provider
     environment, frontdesk/planner/orchestrator/task_detailer on Codex, and
     `cc-bridge_round_reviewer` on Claude. This is positive but still not deployment
     readiness: frontdesk auto-forwarded to planner with `silence=true`,
@@ -659,7 +659,7 @@ found during the 2026-07-07 pressure run was repaired locally:
   diagnostic timeout.
 - Focused tests passed for default no-timeout and explicit-timeout behavior.
 - A completed real job from the pressure project was re-read through
-  `cc-bridge_test pend --watch` with the project role store loaded and produced the
+  `cc_bridge_test pend --watch` with the project role store loaded and produced the
   terminal event stream.
 
 The sequence13 `not_claimable` result is an active contradiction gate for any
@@ -736,7 +736,7 @@ acceptance evidence.
 Worker1 `job_df3c9451c8b5` is accepted as source repair for the sequence16
 rolepack/bootstrap and B7 evidence blocker. It fixes source-test draft RolePack
 discovery, validates installer-compatible `catalog.level = "experimental"`,
-switches the maintained sequence packet to real `cc-bridge_test roles install
+switches the maintained sequence packet to real `cc_bridge_test roles install
 --skip-tools` role seeding with install metadata checks, observes/reuses
 existing task records, and repairs B7 to read round evidence from task-show
 artifact paths while requiring successful cleanup evidence before stale topology
@@ -874,7 +874,7 @@ gap is assigned to worker1 as `job_c82254482242`.
 
 Worker1 `job_83494eb661b7` completed the positive source/static coverage: all
 resident `agent.json` files present allows `frontdesk_entry()` to reach the
-stubbed `cc-bridge_test --project ... ask frontdesk -- ...` command path. Talk2
+stubbed `cc_bridge_test --project ... ask frontdesk -- ...` command path. Talk2
 verified the runner tests now pass with `9 passed`. This closes the
 `agent.json` existence guard but not deployment readiness.
 
@@ -897,7 +897,7 @@ resident readiness, not just agent spec existence, before any future
 Worker1 follow-up `job_c82254482242` plus talk2 local hardening close the
 source/static guard: `phase6b_l1_l4_frontdesk_runner.py` now records resident
 spec paths, validates all five resident `agent.json` identities, parses
-`cc-bridge_test --project <project> ps`, and refuses both `init` and
+`cc_bridge_test --project <project> ps`, and refuses both `init` and
 `frontdesk-entry` unless `frontdesk`, `planner`, `orchestrator`,
 `task_detailer`, and `cc-bridge_round_reviewer` are present and `state=idle`.
 `degraded`, `busy`, and missing ps entries fail as
@@ -1003,7 +1003,7 @@ shows:
   CC_BRIDGE_SOURCE_HOME when the test is meant to inherit the system provider
   environment.
 - Any worker evidence uses `CC_BRIDGE_SOURCE_RUNTIME_OK=1` for ordinary validation.
-- `cc-bridge_test` runtime validation runs from `cc-bridge_source` instead of
+- `cc_bridge_test` runtime validation runs from `cc-bridge_source` instead of
   `/home/bfly/yunwei/test_ccb2`.
 - Frontdesk receives a hard-coded plan slug, task id, or pre-scripted command
   instead of a natural-language user task.
@@ -1212,7 +1212,7 @@ release retry. These live and completed blocker states are triage observations
 only until a fresh real-provider stress rerun proves the repair.
 Worker1 `job_69c0af75ac18` added a source/static runner guard for the worker3
 resident-agent readiness blocker: after startup and before frontdesk entry, the
-maintained runner consumes logged `cc-bridge_test --project <project> ps` output and
+maintained runner consumes logged `cc_bridge_test --project <project> ps` output and
 fails as `resident_agents_not_ready` unless every resident target is present
 and `state=idle`; it also classifies snapshot evidence where
 `delivery_current_log_path` points outside the current project root as stale

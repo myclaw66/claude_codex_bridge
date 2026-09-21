@@ -10,7 +10,7 @@ This report covers one approved Phase 6B L0 runtime-sanity attempt only. It does
 ## Launch Approval
 
 - Static launch approval: `/home/bfly/yunwei/cc-bridge_source/.cc-bridge/cc-bridge-daemon/artifacts/text/completion-reply/job_960ec614c477-art_e3692fee6841495a.txt`
-- Approved scope: one run from `/home/bfly/yunwei/test_ccb2` using `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`.
+- Approved scope: one run from `/home/bfly/yunwei/test_ccb2` using `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`.
 - Lab root: `/home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-20260704`
 - Project root: `/home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-20260704/l0-runtime-sanity`
 - Provider map: `cc-bridge_round_reviewer -> claude`; all other six mapped roles -> `codex`.
@@ -20,7 +20,7 @@ This report covers one approved Phase 6B L0 runtime-sanity attempt only. It does
 
 The L0 attempt did not pass. It is classified as `test_design_failure` because the frozen launch script was internally inconsistent with current runtime constraints:
 
-- Variant A compact ask targeted cc-bridge_orchestrator, but runtime ask target was phase6b-l0-cc-bridge-orchestrator; cc-bridge_test returned unknown agent.
+- Variant A compact ask targeted cc-bridge_orchestrator, but runtime ask target was phase6b-l0-cc-bridge-orchestrator; cc_bridge_test returned unknown agent.
 - Variant B topology proposal used an invalid long proposal id; proposal was rejected before apply. The repeat request must keep both proposal and agent ids inside the accepted name regex.
 - Approved normalizer could not handle the missing p6bl0b runtime proposal after proposal failure and raised FileNotFoundError.
 
@@ -89,7 +89,7 @@ derived from provider reply text and did not mutate authority fields.
   },
   "task_id": "phase6b-l0-runtime-sanity",
   "test_design_failures": [
-    "Variant A compact ask targeted cc-bridge_orchestrator, but runtime ask target was phase6b-l0-cc-bridge-orchestrator; cc-bridge_test returned unknown agent.",
+    "Variant A compact ask targeted cc-bridge_orchestrator, but runtime ask target was phase6b-l0-cc-bridge-orchestrator; cc_bridge_test returned unknown agent.",
     "Variant B topology proposal used an invalid long proposal id; proposal was rejected before apply.",
     "Approved normalizer could not handle the missing p6bl0b runtime proposal after proposal failure and raised FileNotFoundError."
   ],
@@ -198,7 +198,7 @@ cd /home/bfly/yunwei/test_ccb2
 HOME=/home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-20260704/source_home
 CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-20260704/source_home
 AGENT_ROLES_STORE=/home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-20260704/roles
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project /home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-20260704/l0-runtime-sanity kill
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project /home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-20260704/l0-runtime-sanity kill
 ```
 
 Cleanup result:

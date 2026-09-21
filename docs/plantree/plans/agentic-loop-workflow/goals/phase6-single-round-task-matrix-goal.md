@@ -189,7 +189,7 @@ Phase 6 verification should be split into three layers:
    - `smoke-reviewer-reject-rework`;
    - `smoke-reviewer-cannot-accept`;
    one smoke per task type from `/home/bfly/yunwei/test_ccb2` using
-   `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`. `smoke-busy-release` may be a
+   `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`. `smoke-busy-release` may be a
    separate seventh smoke or an explicit cleanup phase inside a direct-
    execution smoke.
 3. Optional real-provider opt-in smoke:

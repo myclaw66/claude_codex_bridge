@@ -36,7 +36,7 @@ The final run used an isolated short `HOME` and XDG directories, the complete
 system/provider `PATH`, and no suite-global `CC_BRIDGE_SOURCE_HOME`. The latter is
 important for this pytest gate because provider-profile tests intentionally
 monkeypatch `HOME`; a global `CC_BRIDGE_SOURCE_HOME` overrides that isolation and
-invalidates those rows. Stateful `cc-bridge_test` acceptance continues to follow its
+invalidates those rows. Stateful `cc_bridge_test` acceptance continues to follow its
 separate source-runtime isolation contract.
 
 Result:
@@ -64,7 +64,7 @@ Corrected 46-node recheck:
 
 Root15 must be a fresh visible opened project under
 `/home/bfly/yunwei/test_ccb2`, launched with
-`/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`, inherited real provider configuration
+`/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`, inherited real provider configuration
 where required, and a lab-local `AGENT_ROLES_STORE`. Root13/root14 evidence and
 installed-release runtime state are read-only boundaries.
 

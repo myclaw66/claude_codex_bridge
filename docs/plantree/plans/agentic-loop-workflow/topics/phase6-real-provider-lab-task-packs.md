@@ -53,11 +53,11 @@ Every real-provider lab run must use an external source-wrapper root such as:
 
 Required controls:
 
-- Use `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`, never the installed `cc-bridge` for
+- Use `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`, never the installed `cc-bridge` for
   source validation.
 - Run commands from `/home/bfly/yunwei/test_ccb2` or the lab project root, not
   from `/home/bfly/yunwei/cc-bridge_source`.
-- Run `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose` before any runtime
+- Run `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose` before any runtime
   action.
 - Set isolated `HOME` and `CC_BRIDGE_SOURCE_HOME`, for example:
   `/home/bfly/yunwei/test_ccb2/source_home`.
@@ -120,7 +120,7 @@ Accepted classifications:
 | Required artifacts | `agent_mount_topology.desired.json`, `agent_mount_topology.observed.json`, topology events, `asks.jsonl`, release summary. |
 | Required evidence row fields | Shared fields plus `diagnose_status`, `mount_topology_ready`, `orchestrator_ping_job_id`, `release_status`. |
 | Cleanup/residue checks | `retained_count=0`; no dynamic lab agent remains in `.cc-bridge/cc-bridge.config`; observed topology has no unexplained runtime residue. |
-| Blocker findings | `cc-bridge_test --diagnose` fails; lab root or provider home is not isolated; topology contains communication DSL fields. |
+| Blocker findings | `cc_bridge_test --diagnose` fails; lab root or provider home is not isolated; topology contains communication DSL fields. |
 | High findings | Ask submission cannot return a job id; release leaves dynamic agents mounted. |
 | Medium findings | Provider ping is slow but completes within the configured timeout. |
 | Why launch-gated now | L0 spends real-provider budget and may touch live provider state; launch approval must first freeze provider-home isolation, profile selection, RolePack seeding, and the B7 report shape. |
@@ -289,7 +289,7 @@ Current known medium findings:
 2. Create `/home/bfly/yunwei/test_ccb2/phase6-real-lab-<stamp>`.
 3. Prepare isolated `HOME`, `CC_BRIDGE_SOURCE_HOME`, provider homes, and
    `AGENT_ROLES_STORE`.
-4. Run `cc-bridge_test --diagnose` from the external test root.
+4. Run `cc_bridge_test --diagnose` from the external test root.
 5. Run L0 only. Stop if isolation, ask reachability, or cleanup fails.
 6. Run L1 and L2 direct-execution packs.
 7. Run L3 source-inspection detail pack. Run L3 clarification only if its path
@@ -304,7 +304,7 @@ Current known medium findings:
 Stop the lab immediately if:
 
 - source-wrapper root or provider-home isolation is invalid;
-- `cc-bridge_test --diagnose` fails;
+- `cc_bridge_test --diagnose` fails;
 - authority state is mutated outside scripts;
 - topology communication DSL appears in mainline mount topology;
 - dynamic runtime residue is unrecoverable;

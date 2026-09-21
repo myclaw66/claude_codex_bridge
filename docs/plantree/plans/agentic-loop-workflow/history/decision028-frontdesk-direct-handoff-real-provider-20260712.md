@@ -54,7 +54,7 @@ semantic prompts.
 Project root:
 `/home/bfly/yunwei/test_ccb2/decision028-frontdesk-direct-final-20260712072335`
 
-The source worktree's explicit `cc-bridge_test` opened the project with inherited
+The source worktree's explicit `cc_bridge_test` opened the project with inherited
 system provider configuration and a project-local Role store. Config V3
 validated with resident `frontdesk` and `planner`, five dynamic profiles, two
 maximum workgroups, two maximum parallel workgroups, and capacity digest
@@ -111,7 +111,7 @@ interpret findings into repair instructions, or bypass the Reviewer score.
   Planner in `cc-bridge-plan` remained mounted and idle.
 
 The project was then detached and closed with exact project-level
-`cc-bridge_test kill -f`. Final state was `unmounted`; project process and socket
+`cc_bridge_test kill -f`. Final state was `unmounted`; project process and socket
 scans were empty.
 
 ## Closure Follow-Up
@@ -156,7 +156,7 @@ The reviewed node commit was
 `git-tree:sha1:9ae832e59420668997cc5638a3ae682beb1dd8cc`. Root verification passed
 `13` tests. Task authority ended `done/pass`, `next_owner=terminal`, and
 `current_loop=null`. Observed topology ended empty with retained and
-release-incomplete counts both zero. Project-level `cc-bridge_test kill -f` then
+release-incomplete counts both zero. Project-level `cc_bridge_test kill -f` then
 left lifecycle state `unmounted` and no related process residue.
 
 Three preceding fresh roots were consumed as strict failure evidence: one

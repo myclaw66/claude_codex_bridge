@@ -7,7 +7,7 @@ Repair commit: `62753d63791f8b644ee6f5f5433fe57070fb2c84`
 ## Admission Baseline
 
 The visible lanes started from clean source `c725b56f`, using the absolute
-source wrapper `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`, external projects under
+source wrapper `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`, external projects under
 `/home/bfly/yunwei/test_ccb2`, Config V3, project-local Role stores, inherited
 real provider state, and no `CC_BRIDGE_SOURCE_RUNTIME_OK` override.
 
@@ -111,7 +111,7 @@ auto-runner exit-zero/idle evidence.
 Both rejected real-provider projects were inspected while open. Each had only
 Frontdesk and Planner resident, no dynamic agent, no node worktree, and no live
 auto-runner. Each was then force-unmounted with its project-local Role store
-and source `cc-bridge_test`.
+and source `cc_bridge_test`.
 
 Post-cleanup audits found zero project-owned keeper, cc-bridge-daemon, provider, bridge,
 sidebar, tmux, listener, socket, auto-runner, and active mount residue. Raw

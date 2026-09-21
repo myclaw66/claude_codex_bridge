@@ -93,7 +93,7 @@ orchestrator triage
 ```
 
 `plan_steward` is a historical term for planner stewardship work mode or the
-deterministic `cc-bridge plan` authority surface. It is not a separate required
+deterministic `cc_bridge plan` authority surface. It is not a separate required
 mainline Role. `task_detailer` is not a fixed downstream planning member; it is
 activated only when orchestrator triage needs task-local detail refinement.
 
@@ -151,7 +151,7 @@ are referenced as durable evidence, blocker material,
 
 ## Outputs
 
-Planner writes macro draft artifacts, then asks `cc-bridge plan` scripts to import
+Planner writes macro draft artifacts, then asks `cc_bridge plan` scripts to import
 them as authoritative task packet files. Orchestrator may later request a
 detailed execution packet from `task_detailer` before dispatch.
 
@@ -231,7 +231,7 @@ Planner handling rules:
   adjustment;
 - decide whether the finding is blocking, non-blocking, obsolete, already
   covered, or needs user-facing macro clarification;
-- if accepted, produce a narrow `plan-update-request.json` for `cc-bridge plan` or
+- if accepted, produce a narrow `plan-update-request.json` for `cc_bridge plan` or
   the future plan adapter to commit;
 - if rejected, record a short reason and return the detailer to the current
   macro scope;
@@ -314,7 +314,7 @@ If these are missing, planner must return `not_ready` or
 
 ## Script Authority And Plan Stewardship Mode
 
-Planner proposes content. `cc-bridge plan` scripts write authority. Plan stewardship
+Planner proposes content. `cc_bridge plan` scripts write authority. Plan stewardship
 is a planner work mode or deterministic script surface for low-noise plan-tree
 sync, not a separate required mainline Role.
 
@@ -323,14 +323,14 @@ Recommended sequence:
 ```text
 frontdesk macro packet
   -> planner macro artifacts
-  -> cc-bridge plan task-create / task-artifact
+  -> cc_bridge plan task-create / task-artifact
   -> orchestrator triage
       -> direct_execution
       -> task_detailer when detailed refinement is needed
   -> macro-adjustment-request back to planner when macro drift is found
   -> optional plan_reviewer report
   -> detail packet linked to task document
-  -> cc-bridge plan task-status --status ready/detail_ready
+  -> cc_bridge plan task-status --status ready/detail_ready
   -> loop runner may activate orchestrator
   -> orchestrator proposes execution workgroups
 ```

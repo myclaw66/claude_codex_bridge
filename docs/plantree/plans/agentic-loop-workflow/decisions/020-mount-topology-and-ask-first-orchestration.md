@@ -53,7 +53,7 @@ The first production-oriented loop should use a small document set:
 
 | Anchor | Owner | Authority |
 | :--- | :--- | :--- |
-| `task_packet` | planner plus `cc-bridge plan` scripts | Goal, scope, non-goals, acceptance, verification, blockers, macro refs. |
+| `task_packet` | planner plus `cc_bridge plan` scripts | Goal, scope, non-goals, acceptance, verification, blockers, macro refs. |
 | `execution_contract` | planner/orchestrator plus scripts | Hard constraints for this round: no hidden fallback, required tests, artifact refs, stop/escalation rules. |
 | `agent_mount_topology` | CC_BRIDGE topology commands | Desired and observed agent/window/pane/lifecycle state. |
 | `orchestration_notes` | orchestrator | Lightweight human-readable ask plan and work split. Not runtime authority. |

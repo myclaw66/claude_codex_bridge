@@ -34,8 +34,8 @@ supervisor/runner imports exact `**task-packet.md**` and `**readiness.json**`
 fenced sections. Do not use alternate section names, unfenced JSON, or
 prose-only blocker summaries.
 
-Never run `cc-bridge plan task-create`, `cc-bridge plan task-artifact`, `cc-bridge plan
-task-status`, `cc-bridge plan breadcrumb`, `cc-bridge loop`, `cc-bridge ask`, `cc-bridge_test`, or
+Never run `cc_bridge plan task-create`, `cc_bridge plan task-artifact`, `cc_bridge plan
+task-status`, `cc_bridge plan breadcrumb`, `cc_bridge loop`, `cc_bridge ask`, `cc_bridge_test`, or
 wrapper commands from the provider session. Those commands mutate or route
 authority and are owned by the supervisor/runner script, not planner.
 

@@ -53,7 +53,7 @@ Historical or rejected names:
 - `agentroles.planner_task`: historical/deprecated alias material; do not use
   for new CC_BRIDGE workflow topology.
 - `agentroles.plan_steward`: historical term for planner stewardship work mode
-  or deterministic `cc-bridge plan` authority, not a required Role.
+  or deterministic `cc_bridge plan` authority, not a required Role.
 - `agentroles.cc-bridge_worker`: replaced by generic execution Roles such as
   `agentroles.coder`.
 - `agentroles.cc-bridge_checker`: replaced by `agentroles.code_reviewer`.

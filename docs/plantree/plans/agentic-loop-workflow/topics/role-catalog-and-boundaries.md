@@ -79,7 +79,7 @@ heavy semantic RolePacks.
 | Role | Form | Reason |
 | :--- | :--- | :--- |
 | `loop_runner` | CC_BRIDGE program/helper | Owns deterministic routing, locks, leases, status edges, and one-shot activation. It must not become an agent conversation. |
-| plan stewardship | deterministic `cc-bridge plan` first, optional `planner` work mode later | Script commands own authoritative task/index/status writes. Planner may summarize or audit plan-tree consistency, but cannot bypass scripts. |
+| plan stewardship | deterministic `cc_bridge plan` first, optional `planner` work mode later | Script commands own authoritative task/index/status writes. Planner may summarize or audit plan-tree consistency, but cannot bypass scripts. |
 | `runtime_layout_manager` | CC_BRIDGE program/helper | Owns tmux window/pane placement. Semantic roles request capacity; they do not mutate panes directly. |
 
 ### V1 Role Collections
@@ -180,7 +180,7 @@ Required skills/templates:
 - verification contract template;
 - candidate question template;
 - readiness recommendation schema;
-- `cc-bridge plan` usage guide for artifact import through scripts.
+- `cc_bridge plan` usage guide for artifact import through scripts.
 
 ### Task Detailer
 
@@ -378,7 +378,7 @@ Owns:
 - reading planner verification contract, orchestrator summary, and node reports;
 - deciding concrete round result:
   `pass`, `rework_node`, `partial`, `replan_required`, or `global_blocker`;
-- producing durable round report suitable for `cc-bridge plan task-import-round`.
+- producing durable round report suitable for `cc_bridge plan task-import-round`.
 
 Must not:
 
@@ -410,7 +410,7 @@ You must not directly edit authoritative state:
 - runtime capacity records
 - tmux pane/window state
 
-Use CC_BRIDGE commands such as `cc-bridge plan`, `cc-bridge loop`, `cc-bridge question`, or the
+Use CC_BRIDGE commands such as `cc_bridge plan`, `cc_bridge loop`, `cc_bridge question`, or the
 provided skill wrappers for authoritative writes.
 ```
 

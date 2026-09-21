@@ -28,7 +28,7 @@ The authority chain is:
 
 ```text
 orchestrator semantic proposal
-  -> cc-bridge loop topology validate/propose/commit
+  -> cc_bridge loop topology validate/propose/commit
   -> agent_topology.desired.json revision
   -> topology reconciler
   -> agent lifecycle, layout, capacity, ask dispatch readiness
@@ -45,7 +45,7 @@ capacity state, lifecycle records, tmux layout state, or `.cc-bridge/cc-bridge.c
 - Runtime changes become diffable and replayable.
 - Load/release failures can be represented as observed-state drift instead of
   hidden role-local failure.
-- Existing `loop.role_profiles`, `cc-bridge loop capacity`, dynamic lifecycle, and
+- Existing `loop.role_profiles`, `cc_bridge loop capacity`, dynamic lifecycle, and
   layout commands remain useful as lower-level reconciler mechanisms.
 - The preferred orchestrator-facing skill changes from
   `orchestrator-capacity` to `orchestrator-topology`.
@@ -55,8 +55,8 @@ capacity state, lifecycle records, tmux layout state, or `.cc-bridge/cc-bridge.c
 V1 should use explicit reconciliation:
 
 ```bash
-cc-bridge loop topology commit --loop-id <id> --proposal <id> --apply --json
-cc-bridge loop topology reconcile --loop-id <id> --json
+cc_bridge loop topology commit --loop-id <id> --proposal <id> --apply --json
+cc_bridge loop topology reconcile --loop-id <id> --json
 ```
 
 Avoid a background file watcher in V1. `loop runner --once` should reconcile at

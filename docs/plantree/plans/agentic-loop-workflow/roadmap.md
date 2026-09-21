@@ -218,7 +218,7 @@ Date: 2026-06-24
 - Accepted the dynamic capacity direction: users declare allowed
   `loop.role_profiles` in config, including role, provider, model, thinking,
   workspace, max instances, and reuse policy; `orchestrator` uses a fixed
-  `orchestrator-capacity` skill to call `cc-bridge loop capacity
+  `orchestrator-capacity` skill to call `cc_bridge loop capacity
   ensure/status/release` by profile and count.
 - Accepted the dynamic runtime layout direction: CC_BRIDGE should maintain logical
   tmux windows and panes for dynamic agents through a runtime layout manager.
@@ -238,7 +238,7 @@ Date: 2026-06-24
   `cc-bridge layout plan` reports 1->6 pane layouts and overflow windows, while
   `cc-bridge layout smoke` creates placeholder panes in an isolated tmux session.
   Verified from `/home/bfly/yunwei/test_ccb2` with
-  `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test` for pane counts 1, 2, 3, 4, 5, 6,
+  `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test` for pane counts 1, 2, 3, 4, 5, 6,
   7, and 8; 7 panes produced `frontdesk-dialog` with six panes plus
   `frontdesk-dialog-2` with one pane, 8 panes produced a second window with two
   panes, and smoke cleanup succeeded each run.
@@ -269,7 +269,7 @@ Date: 2026-06-24
   information-flow edges, call order, artifact refs, and release gates; CC_BRIDGE
   scripts commit it as desired topology, and a reconciler applies load,
   release, park, move, and reflow changes by diffing desired and observed
-  runtime state. Existing `loop.role_profiles`, `cc-bridge loop capacity`, dynamic
+  runtime state. Existing `loop.role_profiles`, `cc_bridge loop capacity`, dynamic
   lifecycle, and layout commands become lower-level reconciler mechanisms
   rather than the preferred orchestrator-facing contract. See
   [topics/runtime-workflow-graph-and-reconciler.md](topics/runtime-workflow-graph-and-reconciler.md)
@@ -279,13 +279,13 @@ Date: 2026-06-24
   plus ask-first collaboration; keep this item as landed historical substrate,
   not the current communication-flow direction.
 - Landed the first topology desired-state controller slice:
-  `cc-bridge loop topology propose/validate/commit/reconcile/status/release`
+  `cc_bridge loop topology propose/validate/commit/reconcile/status/release`
   imports orchestrator graph proposals, validates profile/capacity/edge
   constraints, commits `agent_topology.desired.json`, writes
   `agent_topology.observed.json`, and applies add, move, park, release, and
   reflow through existing lifecycle/layout services. Verified with focused
   unit tests, broad CLI/layout/config regression, and two external
-  source-wrapper `cc-bridge_test` smokes. See
+  source-wrapper `cc_bridge_test` smokes. See
   [history/runtime-topology-reconciler-2026-06-30.md](history/runtime-topology-reconciler-2026-06-30.md).
 - Fixed and verified topology release/shrink for dynamic execution nodes:
   same-policy release is batched through lifecycle, already unloaded records
@@ -314,11 +314,11 @@ Date: 2026-06-24
   schema validation for windows/agents/provider/lifecycle, default rejection
   of `edges/gates/artifacts`, explicit legacy graph dispatch compatibility,
   targeted pytest, adjacent lifecycle/layout regression, and a lightweight
-  source-wrapper `cc-bridge_test` smoke.
+  source-wrapper `cc_bridge_test` smoke.
 - Landed the first continuous dynamic layout smoke in the current worktree:
   `cc-bridge layout dynamic-smoke` grows fake-agent panes in one isolated tmux session
   and then shrinks them. Verified from `/home/bfly/yunwei/test_ccb2` with
-  source `cc-bridge_test` for `1->6->1` and `1->8->1`; all retained panes stayed
+  source `cc_bridge_test` for `1->6->1` and `1->8->1`; all retained panes stayed
   alive, `frontdesk-dialog-2` was added at overflow and removed when shrinking
   back to six, and cleanup succeeded.
 - Landed a repeatable source-wrapper dynamic layout smoke script in the current
@@ -327,25 +327,25 @@ Date: 2026-06-24
   reached by `ask`, drained, and released, and proves same-window middle-pane
   removal preserves surviving agent panes. Verified in
   `/home/bfly/yunwei/test_ccb2/dynamic-layout-smoke-1782565-*` with source
-  `cc-bridge_test`; both flows returned `dynamic_layout_smoke_status=ok` and cleanup
+  `cc_bridge_test`; both flows returned `dynamic_layout_smoke_status=ok` and cleanup
   reached `kill_status: ok`.
 - Accepted the planner authority boundary: planner group owns semantic
   requirements, acceptance criteria, verification contract, risk notes, and
-  readiness recommendations; `cc-bridge plan` scripts own authoritative task status,
+  readiness recommendations; `cc_bridge plan` scripts own authoritative task status,
   indexes, imported artifact records, and current-loop bindings.
 - Accepted the first plan-update landing direction: implement a narrow
-  `cc-bridge plan task-create/task-artifact/task-status/task-show/task-list/breadcrumb`
+  `cc_bridge plan task-create/task-artifact/task-status/task-show/task-list/breadcrumb`
   slice before allowing autonomous planner-to-loop handoff.
-- Landed the first `cc-bridge plan` task-packet command surface in the current
+- Landed the first `cc_bridge plan` task-packet command surface in the current
   worktree. It creates durable task packets, imports planner artifacts with
   digest metadata, enforces review before `ready`, renders breadcrumb handoff
   text, and was externally smoke-tested through
-  `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test` in
+  `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test` in
   `/home/bfly/yunwei/test_ccb2/plan-task-smoke-v1`.
 - Accepted the round-checker separation model: `round_checker` remains an
   independent post-round verifier, while planner rehydrates next-loop planning
   from task packet and round evidence instead of retained conversation memory.
-- Extended the current `cc-bridge loop run-once` slice to include a fixed
+- Extended the current `cc_bridge loop run-once` slice to include a fixed
   `round_checker` ask after orchestrator aggregation.
 - Ran an external fake-provider end-to-end smoke in
   `/home/bfly/yunwei/test_ccb2/agentic-loop-full-smoke-v1`: planner task packet
@@ -394,8 +394,8 @@ Date: 2026-06-24
   passed with `PYTHONPATH=lib pytest -q test/test_orchestrator_rolepack.py`
   producing `7 passed`.
 - Landed the first workflow runner state-router slice in the current
-  worktree. `cc-bridge plan` artifact imports now record actor/job provenance;
-  `cc-bridge loop runner --once` routes `ready` to the existing execution bridge,
+  worktree. `cc_bridge plan` artifact imports now record actor/job provenance;
+  `cc_bridge loop runner --once` routes `ready` to the existing execution bridge,
   routes `draft`/`partial`/`replan_required` to one planner activation packet
   and ask, and stops without provider activation for
   `needs_clarification`/`blocked`/terminal states. Focused tests passed with
@@ -415,10 +415,10 @@ Date: 2026-06-24
   commit and identifies planner-reply consumption/import as the next missing
   bridge.
 - Landed the planner/plan-reviewer role-output import bridge in the current
-  worktree. `cc-bridge loop runner --once --consume-role-output` now waits for one
+  worktree. `cc_bridge loop runner --once --consume-role-output` now waits for one
   planner or plan-reviewer ask/watch reply, accepts only explicit
   machine-readable JSON bundles, writes imported bundle text to activation
-  import files, and commits artifacts/status through existing `cc-bridge plan`
+  import files, and commits artifacts/status through existing `cc_bridge plan`
   authority. Planner bundles may import `requirements`, `acceptance`,
   `verification`, `risk`, and `handoff`; plan-reviewer bundles may import
   `review` and request `ready`. The default runner remains submit-only unless
@@ -521,7 +521,7 @@ Date: 2026-06-24
   flow. See
   [topics/config-v2-static-control-panel.md](topics/config-v2-static-control-panel.md).
 - First command/state slice is implemented in the current worktree:
-  `cc-bridge loop capacity ensure/status/release --json` writes and reads
+  `cc_bridge loop capacity ensure/status/release --json` writes and reads
   deterministic loop capacity state under `.cc-bridge/runtime/loops` through the
   existing runtime-state path layout.
 - Runtime overlay slice is implemented in the current worktree: active
@@ -538,7 +538,7 @@ Date: 2026-06-24
   `worker + code_reviewer` ensure applied through guarded reload, generated
   targets accepted ask/watch jobs, release removed idle nodes, and busy release
   retained a running worker until terminal completion.
-- Deterministic `cc-bridge loop run-once` slice is implemented and tested: it ensures
+- Deterministic `cc_bridge loop run-once` slice is implemented and tested: it ensures
   one worker/reviewer pair, dispatches worker/reviewer/orchestrator ask/watch
   jobs, dispatches a fixed `round_checker` ask, releases idle generated nodes,
   and writes `round.json`, `asks.jsonl`, `events.jsonl`, `breadcrumb.md`, and
@@ -553,7 +553,7 @@ Date: 2026-06-24
   `scripts/orchestrator_capacity_semantic_smoke.py`. Codex prepare/preflight
   passed under
   `/home/bfly/yunwei/test_ccb2/orchestrator-capacity-real-provider-smoke`, and
-  the generated project passed source `cc-bridge_test config validate`. The harness
+  the generated project passed source `cc_bridge_test config validate`. The harness
   refuses to start real providers unless `CC_BRIDGE_ORCH_SMOKE_RUN_REAL=1` is set.
 - Planner role design is documented in
   [topics/planner-role-design.md](topics/planner-role-design.md): V1 keeps
@@ -572,7 +572,7 @@ Date: 2026-06-24
   gaps.
 - The active follow-through implementation goal is now fixed in
   [goals/clarification-planner-followthrough-goal.md](goals/clarification-planner-followthrough-goal.md):
-  add the V1 `cc-bridge question` artifact surface and the macro
+  add the V1 `cc_bridge question` artifact surface and the macro
   planner/broker/frontdesk/reviewer path that can move a routed `draft`,
   `partial`, or `replan_required` task toward script-owned `ready`. When
   implementation detail is missing, the path should route through
@@ -594,7 +594,7 @@ Date: 2026-06-24
   `main + helper`, `ask helper` completes through fake provider, `kill -f`
   unmounts, `remove --policy unload --idle-only` removes the overlay, and
   final `config validate` returns only `main`.
-- Mounted reload analysis is now pinned: existing `cc-bridge reload` already supports
+- Mounted reload analysis is now pinned: existing `cc_bridge reload` already supports
   additive agent append from `cc-bridge.config`, and the dynamic lifecycle overlay now
   has a matching reload-apply test proving it materializes a tmux pane before
   mounting runtime. External fake/fake-codex providers do not expose a preserved
@@ -638,14 +638,14 @@ Date: 2026-06-24
   `/home/bfly/yunwei/test_ccb2/hotload-smoke-1782474327` proved
   add/ask/park-reject/resume-ask/new-window-add/release cleanup end to end.
 - Landed the first clarification follow-through slice in the current worktree.
-  `cc-bridge question` now imports candidate questions, broker/user question batches,
+  `cc_bridge question` now imports candidate questions, broker/user question batches,
   raw answers, normalized answers, and status refs with schema/path/provenance
   checks. `user-batch-import` pauses draft tasks at `needs_clarification`,
   `normalized-import` returns answered tasks to `draft`, runner paused
   responses include question refs, and planner activation packets include
   compact question/answer refs. The runner also activates `plan_reviewer` when
   planner artifacts are present but review is missing, and the existing
-  `cc-bridge plan` ready guard rejects `ready` until review is imported. Focused
+  `cc_bridge plan` ready guard rejects `ready` until review is imported. Focused
   tests passed with
   `PYTHONPATH=lib pytest -q test/test_question_cli.py` producing `7 passed`;
   neighboring plan/loop/rolepack tests passed with `34 passed`, and the
@@ -672,7 +672,7 @@ Date: 2026-06-24
   `/home/bfly/yunwei/test_ccb2/workflow-rolepack-handoff-smoke` installed all
   eight Roles, validated the five-role foreground config, planned dynamic
   worker/checker capacity, projected Codex `ask` plus role skills, and imported
-  planner/broker/reviewer artifacts through `cc-bridge plan` and `cc-bridge question` until
+  planner/broker/reviewer artifacts through `cc_bridge plan` and `cc_bridge question` until
   task `role-handoff-001` reached `ready`. The smoke also found and fixed the
   invalid `normalized-answers.jsonl` placeholder enum in both external Roles
   and local draft templates. CC_BRIDGE source now carries provider-local `ask` assets
@@ -680,7 +680,7 @@ Date: 2026-06-24
 - Completed the repeatable Workflow Closure Smoke goal in the current
   worktree. `scripts/workflow_closure_smoke.py` now prepares an isolated
   fake-provider source-wrapper project, installs the local workflow RolePacks,
-  drives `cc-bridge plan`, `cc-bridge question`, and `cc-bridge loop runner --once` through
+  drives `cc_bridge plan`, `cc_bridge question`, and `cc_bridge loop runner --once` through
   planner activation, clarification pause, normalized answers, planner
   reactivation, plan-reviewer gate, review-backed `ready`, execution bridge,
   round evidence import, and `release --policy auto` cleanup. Focused tests
@@ -714,7 +714,7 @@ Date: 2026-06-24
   `node-round1-node1`, same-node `worker1, checker1` ordering, ask submission
   to `checker1`, reverse unload, empty dynamic-window removal, and final return
   to the two configured windows.
-- Connected `cc-bridge loop capacity` to the runtime layout placement model.
+- Connected `cc_bridge loop capacity` to the runtime layout placement model.
   Capacity-generated worker/checker agents now carry `loop_id`, `node_id`,
   `created_sequence`, and execution-node placement; explicit `[windows]`
   overlays materialize them in `node-<loop-id>-<node-id>` windows instead of
@@ -728,7 +728,7 @@ Date: 2026-06-24
   node window and returns to `loop_agent_count=0`.
 - Aligned orchestrator-facing RolePack and capacity documentation with the
   runtime layout model. `orchestrator-capacity` now states that
-  `cc-bridge loop capacity ensure/status/release` is the only dynamic execution
+  `cc_bridge loop capacity ensure/status/release` is the only dynamic execution
   capacity path, returned `node_id`/window/placement fields are CC_BRIDGE-owned
   evidence only, `cc-bridge layout status --json` is read-only diagnostics for
   `source=loop`, and raw `cc-bridge agent add --window`, `--window-class`, tmux,
@@ -869,7 +869,7 @@ Date: 2026-06-24
   `prepared` from `/home/bfly/yunwei/test_ccb2`.
 - Added shared reload apply pane-identity diagnostics for dynamic
   add/remove reports. Mounted `cc-bridge agent add/remove --json` and
-  `cc-bridge loop capacity ensure/release --json` now include a
+  `cc_bridge loop capacity ensure/release --json` now include a
   `pane_identity_report` built from reload `namespace_patch` and
   `runtime_mount` facts: added agents, removed agents, preserved before/after
   panes, created/removed panes, removed windows, reflowed windows, reflow
@@ -900,7 +900,7 @@ Date: 2026-06-24
   a full `plan-orchestrate` class to `plan-orchestrate-2`, hot-adds a dynamic
   short-lived reviewer there with `add_window`, verifies `agent show` and
   `layout status`, releases the agent and removes the empty overflow window,
-  then resolves `node-round3-node1` and uses `cc-bridge loop capacity` to create and
+  then resolves `node-round3-node1` and uses `cc_bridge loop capacity` to create and
   release worker/checker panes without exposing raw `agent add` for loop
   capacity. The external source-wrapper run in
   `/home/bfly/yunwei/test_ccb2/resolve-preflight-smoke-1782573894-resolve-preflight`
@@ -962,7 +962,7 @@ Date: 2026-06-24
   `orchestrator_capacity_semantic_smoke.py --provider fake --prepare-only`
   gate now prepares an isolated role store/source home, asserts the autonomous
   success contract rejects retained capacity or layout loop-agent residue, and
-  validates the prepared `.cc-bridge/cc-bridge.config` through the source `cc-bridge_test`
+  validates the prepared `.cc-bridge/cc-bridge.config` through the source `cc_bridge_test`
   wrapper. Focused tests passed with `20 passed`; source-wrapper prepare and
   config validation passed in
   `/home/bfly/yunwei/test_ccb2/orchestrator-autonomous-cleanup-contract-smoke`.
@@ -1279,10 +1279,10 @@ Latest verification, 2026-07-02:
 
 Candidate-covered behavior:
 
-- `cc-bridge plan` creates and advances the durable task packet;
-- `cc-bridge question` imports candidate questions, user-facing question batches,
+- `cc_bridge plan` creates and advances the durable task packet;
+- `cc_bridge question` imports candidate questions, user-facing question batches,
   raw answers, and normalized answers;
-- `cc-bridge loop runner --once` activates planner, pauses for clarification,
+- `cc_bridge loop runner --once` activates planner, pauses for clarification,
   reactivates planner after answers, activates plan reviewer, consumes explicit
   planner/reviewer bundles when `--consume-role-output` is set, and executes
   one ready round;

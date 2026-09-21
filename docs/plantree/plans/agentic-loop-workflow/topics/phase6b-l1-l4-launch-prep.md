@@ -47,7 +47,7 @@ true:
   task list, timeout policy, evidence schema, and stop conditions.
 - The run uses an external lab root under `/home/bfly/yunwei/test_ccb2`, not
   `/home/bfly/yunwei/cc-bridge_source`.
-- Future runtime commands use `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test` from the
+- Future runtime commands use `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test` from the
   approved external root. This document does not authorize running it.
 - Provider map remains the owner-decided L0 map unless a reviewer approves a
   new map:
@@ -217,7 +217,7 @@ Required sections:
 - claim boundary: real-provider observations only; Phase 6A fake-provider
   matrix remains a separate accepted scope;
 - launch approval artifact path and exact approved task list;
-- lab root, source checkout, `cc-bridge_test`, inherited-provider-home policy,
+- lab root, source checkout, `cc_bridge_test`, inherited-provider-home policy,
   isolated `HOME` / `CC_BRIDGE_SOURCE_HOME`, and `AGENT_ROLES_STORE`;
 - provider map and any provider-specific limits or rate/quota notes;
 - fixture manifest with file paths and hashes before each task;

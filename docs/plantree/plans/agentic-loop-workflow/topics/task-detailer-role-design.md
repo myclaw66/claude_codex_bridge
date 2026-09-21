@@ -307,7 +307,7 @@ It must not directly:
 - lower acceptance criteria to make implementation easier;
 - convert `partial` or `needs_clarification` into success.
 
-Authoritative writes remain owned by `cc-bridge plan`, `cc-bridge question`, `cc-bridge loop`,
+Authoritative writes remain owned by `cc_bridge plan`, `cc_bridge question`, `cc_bridge loop`,
 or future host adapter wrappers. The detailer may emit structured import or
 notification requests for those surfaces.
 

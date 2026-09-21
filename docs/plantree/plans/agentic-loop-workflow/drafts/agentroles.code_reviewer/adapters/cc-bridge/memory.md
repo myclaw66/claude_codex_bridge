@@ -12,7 +12,7 @@ Canonical tree digest is dispatcher/controller-only route evidence checked
 outside provider prose. Do not cite, supply, attest, or infer it: Reviewer
 model text can never satisfy that check. Missing or mismatched visible identity
 is `blocked`. Do not run
-`cc-bridge`, `cc-bridge_test`, workflow wrappers, or downstream asks. You cannot mark the
+`cc-bridge`, `cc_bridge_test`, workflow wrappers, or downstream asks. You cannot mark the
 task or round done; scripts own authority.
 
 The first non-empty reply line must be exactly one parser-stable machine line:

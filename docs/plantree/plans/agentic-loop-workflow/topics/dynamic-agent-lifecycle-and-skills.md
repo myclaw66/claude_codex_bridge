@@ -22,7 +22,7 @@ unloaded after their evidence has been imported and their work is idle.
 
 Current workflow direction: loop execution agents should normally be created
 and released by topology reconciliation, not by `orchestrator` directly calling
-`cc-bridge agent add/remove` or `cc-bridge loop capacity ensure/release`. The lifecycle
+`cc-bridge agent add/remove` or `cc_bridge loop capacity ensure/release`. The lifecycle
 commands in this document remain the lower-level mechanism for operators,
 non-loop dynamic agents, and the topology reconciler.
 
@@ -394,31 +394,31 @@ the safety and diagnostics surface for all later lifecycle work.
 
 ### Loop And Orchestrator Commands
 
-`cc-bridge loop topology` should become the orchestrator-facing execution-node
+`cc_bridge loop topology` should become the orchestrator-facing execution-node
 interface:
 
 ```bash
-cc-bridge loop topology propose --loop-id <loop-id> --from <file> --json
-cc-bridge loop topology commit --loop-id <loop-id> --proposal <id> --apply --json
-cc-bridge loop topology reconcile --loop-id <loop-id> --json
-cc-bridge loop topology status --loop-id <loop-id> --json
-cc-bridge loop topology release --loop-id <loop-id> --policy auto --json
+cc_bridge loop topology propose --loop-id <loop-id> --from <file> --json
+cc_bridge loop topology commit --loop-id <loop-id> --proposal <id> --apply --json
+cc_bridge loop topology reconcile --loop-id <loop-id> --json
+cc_bridge loop topology status --loop-id <loop-id> --json
+cc_bridge loop topology release --loop-id <loop-id> --policy auto --json
 ```
 
-`cc-bridge loop capacity` remains the lower-level substrate that the reconciler may
+`cc_bridge loop capacity` remains the lower-level substrate that the reconciler may
 use:
 
 ```bash
-cc-bridge loop capacity ensure \
+cc_bridge loop capacity ensure \
   --loop-id <loop-id> \
   --profile coder=2 \
   --profile checker=2 \
   --lifetime current_round \
   --json
 
-cc-bridge loop capacity status --loop-id <loop-id> --json
+cc_bridge loop capacity status --loop-id <loop-id> --json
 
-cc-bridge loop capacity release \
+cc_bridge loop capacity release \
   --loop-id <loop-id> \
   --idle-only \
   --policy auto \
@@ -482,9 +482,9 @@ Allowed commands:
 - `cc-bridge agent resume ... --json`;
 - `cc-bridge agent remove ... --idle-only --json`;
 - `cc-bridge agent release ... --idle-only --json`;
-- `cc-bridge loop topology propose/status/commit --json` when the caller is
+- `cc_bridge loop topology propose/status/commit --json` when the caller is
   orchestrator and the target is execution capacity;
-- `cc-bridge loop capacity ensure/status/release --json` only when the caller is the
+- `cc_bridge loop capacity ensure/status/release --json` only when the caller is the
   topology reconciler, operator diagnostics, or a legacy compatibility flow.
 
 For `add`, the intended sequence is:
@@ -503,8 +503,8 @@ or accidental execution-node placement before any provider or tmux mutation.
 Forbidden actions:
 
 - edit `.cc-bridge/cc-bridge.config`;
-- call raw `cc-bridge reload`;
-- call raw `cc-bridge kill`;
+- call raw `cc_bridge reload`;
+- call raw `cc_bridge kill`;
 - call raw `tmux`;
 - kill provider processes;
 - hard unload long-lived roles without explicit operator instruction;
@@ -528,7 +528,7 @@ Outputs:
 | :--- | :--- | :--- |
 | `frontdesk` / `frontend` | load visible dialog expert, hide dialog expert, resume parked dialog expert, status | No worker fanout, no hard unload, no plan/runtime authority writes. |
 | planner group | add/load/resume planner helper/reviewer/broker by profile, park planner helpers, status | No execution-node capacity and no direct user question bypass. |
-| orchestrator | propose/inspect/commit topology through `cc-bridge loop topology`, park/resume itself, status | Max 1-4 nodes, no direct capacity ensure/release in the normal path, no raw tmux, no config edits, no provider kill, no `kill` policy. |
+| orchestrator | propose/inspect/commit topology through `cc_bridge loop topology`, park/resume itself, status | Max 1-4 nodes, no direct capacity ensure/release in the normal path, no raw tmux, no config edits, no provider kill, no `kill` policy. |
 | round checker | status, request temporary diagnostic helper, park self after result import | No implementation fixes and no task status writes. |
 | monitor/recovery | status, report retained/failed lifecycle, suggest operator actions | No force unload unless explicitly escalated. |
 
@@ -640,7 +640,7 @@ Current worktree slice:
   `--window`, `--window-class`, or `--loop-id/--node-id` intent without
   rewriting `.cc-bridge/cc-bridge.config`;
 - append-only hot add into an existing managed window and hot creation of a
-  new managed window through the guarded `cc-bridge reload` transaction;
+  new managed window through the guarded `cc_bridge reload` transaction;
 - idle `remove --policy unload --idle-only` now applies the guarded
   `remove_agent` reload path, closes only the target dynamic pane, unloads its
   runtime authority, and removes the dynamic overlay from the projected config;
@@ -705,13 +705,13 @@ Verification evidence:
 - Controlled mounted tmux smoke with seeded preserved pane identity passed for
   existing-window append in
   `/home/bfly/yunwei/test_ccb2/agent-hot-pane-ident.otr4SM`:
-  `cc-bridge_test agent add helper:fake-codex --role agentroles.general --window main --hidden --json`
+  `cc_bridge_test agent add helper:fake-codex --role agentroles.general --window main --hidden --json`
   returned `apply_status=applied`, `plan_class=add_agent`, a new `pane_id`,
   `runtime_mount_status=mounted`, and `ask helper` completed.
 - Controlled mounted tmux smoke with seeded preserved pane identity passed for
   new-window creation in
   `/home/bfly/yunwei/test_ccb2/agent-hot-window-ident.Xj9dR6`:
-  `cc-bridge_test agent add helper:fake-codex --role agentroles.general --window review --hidden --json`
+  `cc_bridge_test agent add helper:fake-codex --role agentroles.general --window review --hidden --json`
   returned `apply_status=applied`, `plan_class=add_window`, `window_name=review`,
   a new `pane_id`, `runtime_mount_status=mounted`, and `ask helper` completed.
 - Controlled mounted tmux smoke with seeded preserved pane identity passed for

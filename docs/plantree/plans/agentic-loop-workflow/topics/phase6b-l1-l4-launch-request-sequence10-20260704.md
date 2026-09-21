@@ -299,7 +299,7 @@ EOF
 
 Status: lab-local launch plan root
 
-This minimal plan root exists so `cc-bridge plan task-create --plan
+This minimal plan root exists so `cc_bridge plan task-create --plan
 phase6b-real-provider-l1-l4` can create task records for the supervised L1-L4
 sequence10 run.
 EOF
@@ -547,18 +547,18 @@ create_task_record() {
   validate_plan_root
   create_task_files "$task_id"
   run_required "${task_id}__task_create" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
     plan task-create --plan "$PHASE6B_L1L4_PLAN_SLUG" --title "$task_id" --task-id "$task_id" --json
   run_required "${task_id}__artifact_task_packet" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
     plan task-artifact --task "$task_id" --kind task_packet \
     --file "$PHASE6B_L1L4_PROJECT/drafts/${task_id}.task_packet.md" --json
   run_required "${task_id}__artifact_execution_contract" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
     plan task-artifact --task "$task_id" --kind execution_contract \
     --file "$PHASE6B_L1L4_PROJECT/drafts/${task_id}.execution_contract.md" --json
   run_required "${task_id}__ready_for_orchestration" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
     plan task-status --task "$task_id" --status ready_for_orchestration \
     --next-owner orchestrator --activation-reason phase6b_l1_l4_sequence10 --json
 }
@@ -566,7 +566,7 @@ create_task_record() {
 activate_orchestrator_and_stop() {
   local task_id="$1"
   run_required "${task_id}__activate_orchestrator" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
     loop runner --once --timeout "$PHASE6B_L1L4_TIMEOUT_SECONDS" --json
   printf 'STOP: supervisor must create project-local route checkpoint for %s before continuing.\n' "$task_id" >&2
 }
@@ -585,7 +585,7 @@ import_supervisor_route() {
     exit 71
   fi
   run_required "${task_id}__import_orchestration_notes_${expected_route}" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
     plan task-artifact --task "$task_id" --kind orchestration_notes \
     --file "$notes_file" --route "$observed_route" --json
 }
@@ -593,10 +593,10 @@ import_supervisor_route() {
 run_direct_execution_round() {
   local task_id="$1"
   run_required "${task_id}__run_direct_execution_round" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
     loop runner --once --timeout "$PHASE6B_L1L4_TIMEOUT_SECONDS" --json
   run_required "${task_id}__task_show_after_round" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
     plan task-show --task "$task_id" --json
 }
 
@@ -612,7 +612,7 @@ continue_route() {
       ;;
     needs_detail)
       run_required "${task_id}__activate_detailer" \
-        /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+        /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
         loop runner --once --timeout "$PHASE6B_L1L4_TIMEOUT_SECONDS" --json
       printf 'STOP: supervisor must create detail checkpoint files for %s before continue-detail.\n' "$task_id" >&2
       ;;
@@ -620,11 +620,11 @@ continue_route() {
       local macro_file
       macro_file="$(require_supervisor_file "$task_id" macro_adjustment_request.md)"
       run_required "${task_id}__import_macro_adjustment_request" \
-        /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+        /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
         plan task-artifact --task "$task_id" --kind macro_adjustment_request \
         --file "$macro_file" --route macro_adjustment_request --json
       run_required "${task_id}__status_replan_required" \
-        /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+        /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
         plan task-status --task "$task_id" --status replan_required \
         --next-owner planner --activation-reason phase6b_l1_l4_sequence10_macro --json
       ;;
@@ -632,11 +632,11 @@ continue_route() {
       local blocker_file
       blocker_file="$(require_supervisor_file "$task_id" blocker_evidence.md)"
       run_required "${task_id}__import_blocker_evidence" \
-        /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+        /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
         plan task-artifact --task "$task_id" --kind blocker_evidence \
         --file "$blocker_file" --route blocked --json
       run_required "${task_id}__status_blocked" \
-        /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+        /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
         plan task-status --task "$task_id" --status blocked \
         --activation-reason phase6b_l1_l4_sequence10_blocked --json
       ;;
@@ -658,23 +658,23 @@ continue_detail() {
   detail_packet="$(require_supervisor_file "$task_id" detail_packet.manifest.json)"
   require_supervisor_file "$task_id" steps/step-001.md >/dev/null
   run_required "${task_id}__import_detail_design" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
     plan task-artifact --task "$task_id" --kind detail_design \
     --file "$detail_design" --route needs_detail --json
   run_required "${task_id}__import_detail_summary" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
     plan task-artifact --task "$task_id" --kind detail_summary \
     --file "$detail_summary" --route needs_detail --json
   run_required "${task_id}__import_detail_packet" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
     plan task-artifact --task "$task_id" --kind detail_packet \
     --file "$detail_packet" --route needs_detail --json
   run_required "${task_id}__status_detail_ready" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
     plan task-status --task "$task_id" --status detail_ready \
     --next-owner orchestrator --activation-reason phase6b_l1_l4_sequence10_detail_ready --json
   run_required "${task_id}__task_show_detail_ready" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" \
     plan task-show --task "$task_id" --json
 }
 
@@ -1019,7 +1019,7 @@ PY
 
 cleanup_after_b7() {
   run_required cleanup_after_b7 \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" kill
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" kill
 }
 
 init_lab() {
@@ -1030,9 +1030,9 @@ init_lab() {
   seed_rolepacks
   write_fixtures
   run_required config_validate_initial \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT" config validate
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT" config validate
   run_required start_project \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L1L4_PROJECT"
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L1L4_PROJECT"
 }
 
 main() {
@@ -1176,7 +1176,7 @@ No row may emit a pass classification for L1/L2 if `changed_files` is empty, if
 the task authority from `task_status_from_show` is blocked, or if the L2
 project-root test evidence is missing/failing/outside the lab project.
 
-The B7 normalizer must parse `cc-bridge_test plan task-show --json` from current
+The B7 normalizer must parse `cc_bridge_test plan task-show --json` from current
 top-level `status` and nested `task.status` fields. A missing task-show file,
 missing route, missing `round_summary.md`, or unrun task row is explicit
 `test_design_failure` evidence and cannot fall back to the expected status.

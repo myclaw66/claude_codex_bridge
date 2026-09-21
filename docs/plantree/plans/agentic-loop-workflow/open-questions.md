@@ -5,7 +5,7 @@ Date: 2026-07-15
 ## Product Questions
 
 1. Resolved V1 direction: the first user-visible automatic runner is
-   `cc-bridge loop runner --once`, which scans for one ready task, executes one round,
+   `cc_bridge loop runner --once`, which scans for one ready task, executes one round,
    imports the result, and exits. Long-running daemon or frontdesk-triggered
    automatic activation remains deferred.
 2. Should a blank CC_BRIDGE project include this workflow by default, or should it be
@@ -23,11 +23,11 @@ Date: 2026-07-15
    reading task/loop state, while scripts write authoritative status. See
    [decisions/009-loop-runner-activates-planner-and-stops.md](decisions/009-loop-runner-activates-planner-and-stops.md).
 2. Resolved V1 direction: task-level read-modify-write protection starts as a
-   per-task lock in the `cc-bridge plan` command service used by
+   per-task lock in the `cc_bridge plan` command service used by
    `task-bind-loop`/`task-import-round`. The longer-term owner for loop-wide
    locks across cc-bridge-daemon, an external runner, or a separate helper remains open.
 3. Resolved V1 direction: plan stewardship is a planner work mode plus
-   deterministic `cc-bridge plan` command authority, not a separate required
+   deterministic `cc_bridge plan` command authority, not a separate required
    mainline Role. Scripts write authority; planner may audit and summarize but
    cannot bypass scripts.
 4. Should agents be allowed to request transitions directly, or must every
@@ -35,7 +35,7 @@ Date: 2026-07-15
    macro state changes?
 5. What fields are required for a transition to be accepted: phase, owner,
    artifact refs, verification refs, parent job id, and lease id?
-6. Resolved for V1: `cc-bridge plan task-*` should be implemented as first-class CLI
+6. Resolved for V1: `cc_bridge plan task-*` should be implemented as first-class CLI
    commands for task packet creation, artifact import, status, show/list, and
    breadcrumb. See
    [topics/plan-update-script-landing.md](topics/plan-update-script-landing.md).
@@ -54,7 +54,7 @@ Date: 2026-07-15
    [topics/complete-workflow-design.md](topics/complete-workflow-design.md).
 2. Should `agentroles.planner` be published as a standalone Agent Roles catalog
    role immediately, or should V1 keep planner as a project-local configured
-   role until the `cc-bridge plan` script surface lands?
+   role until the `cc_bridge plan` script surface lands?
 3. Should `plan_reviewer` be a separate role id or a mode/profile of planner
    for V1?
 4. Should `ready` require a semantic `review.md` artifact in every case, or
@@ -70,7 +70,7 @@ Date: 2026-07-15
 ## Clarification Questions
 
 1. Should the deterministic broker router live in the same helper as
-   `cc-bridge loop`, or as a separate `cc-bridge question` command namespace?
+   `cc_bridge loop`, or as a separate `cc_bridge question` command namespace?
 2. What is the default per-phase user-question budget: one question, up to
    three questions, or configurable by workflow spec?
 3. Should `frontdesk` be allowed to read only `user_questions.md` display
@@ -97,9 +97,9 @@ Date: 2026-07-15
 4. Resolved: orchestrator is immaculate and activation-scoped. One activation
    produces one bundle; normal worker completion does not reactivate it.
    Structural replan creates a fresh activation.
-5. Should the first `cc-bridge loop capacity` implementation use daemon-side
+5. Should the first `cc_bridge loop capacity` implementation use daemon-side
    transient runtime overlays immediately, or start with a generated config
-   block over the existing guarded `cc-bridge reload` transaction?
+   block over the existing guarded `cc_bridge reload` transaction?
 6. What exact provider adapter mapping should compile
    `thinking = "low|medium|high"` into provider-specific startup arguments or
    model settings?
@@ -183,7 +183,7 @@ and
    retention threshold?
 3. How should a loop produce durable history without turning plan-tree files
    into event logs?
-4. For `cc-bridge plan` V1, should `tasks/index.json` be committed durable state or
+4. For `cc_bridge plan` V1, should `tasks/index.json` be committed durable state or
    treated as generated/machine-owned state that can be rebuilt from task
    directories?
 5. Should task ids be time-based, slug-based, or content-hash-assisted to

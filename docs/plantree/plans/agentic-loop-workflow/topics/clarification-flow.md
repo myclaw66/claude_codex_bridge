@@ -208,14 +208,14 @@ Broker then normalizes the answer and notifies planner:
 
 ```text
 planner_group
-  -> cc-bridge question candidates
+  -> cc_bridge question candidates
   -> clarification_broker
-  -> cc-bridge question broker-review
-  -> cc-bridge question publish
+  -> cc_bridge question broker-review
+  -> cc_bridge question publish
   -> frontdesk
-  -> cc-bridge question answer
+  -> cc_bridge question answer
   -> clarification_broker
-  -> cc-bridge question resolve
+  -> cc_bridge question resolve
   -> planner_group
 ```
 

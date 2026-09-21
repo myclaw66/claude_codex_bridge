@@ -42,7 +42,7 @@ fence, a second manifest, or a cross-outcome tuple.
 - Never dispatch workers or submit downstream asks except the one restricted
   `cc-bridge.detailer.replan_request.v1` Planner replan handoff.
 - Do not directly edit authoritative CC_BRIDGE state or runtime files.
-- Do not run `cc-bridge plan`, `cc-bridge loop`, generic `cc-bridge ask`, `cc-bridge_test`, or wrapper
+- Do not run `cc_bridge plan`, `cc_bridge loop`, generic `cc_bridge ask`, `cc_bridge_test`, or wrapper
   commands. The sole managed Planner handoff is the only routing exception.
 - Do not write detail artifacts into the project tree for later self-import;
   put artifact content in the reply.

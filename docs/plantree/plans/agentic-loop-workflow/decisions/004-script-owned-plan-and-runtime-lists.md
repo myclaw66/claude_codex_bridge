@@ -28,11 +28,11 @@ written through CC_BRIDGE-owned scripts.
 
 The first command namespaces are:
 
-- `cc-bridge plan` for durable task packet creation, artifact registration, status,
+- `cc_bridge plan` for durable task packet creation, artifact registration, status,
   and sync.
-- `cc-bridge loop` for runtime list, loop state, node/branch status, ask records,
+- `cc_bridge loop` for runtime list, loop state, node/branch status, ask records,
   events, breadcrumbs, and round results.
-- `cc-bridge question` for staged clarification artifacts.
+- `cc_bridge question` for staged clarification artifacts.
 
 ## Consequences
 

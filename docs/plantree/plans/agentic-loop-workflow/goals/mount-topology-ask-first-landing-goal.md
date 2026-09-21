@@ -82,7 +82,7 @@ simple and stable; semantic flexibility stays with roles and `ask`.
 
 ### Landing Scope
 
-- Keep existing `cc-bridge loop topology` command names for operator continuity.
+- Keep existing `cc_bridge loop topology` command names for operator continuity.
 - Add or alias schema semantics for `cc-bridge.loop.agent_mount_topology.v1`.
 - Prefer runtime filenames:
 
@@ -130,7 +130,7 @@ simple and stable; semantic flexibility stays with roles and `ask`.
   - `execution_contract.md`;
   - `orchestration_notes.md`;
   - `round_summary.md`.
-- Extend `cc-bridge plan` task metadata with a small activation surface:
+- Extend `cc_bridge plan` task metadata with a small activation surface:
 
 ```text
 status: draft | ready_for_orchestration | running | partial | replan_required | done | blocked
@@ -139,7 +139,7 @@ current_loop: <loop-id|none>
 activation_reason: <short reason>
 ```
 
-- `cc-bridge loop runner --once` reads task status and `next_owner`; it does not
+- `cc_bridge loop runner --once` reads task status and `next_owner`; it does not
   infer workflow state from agent conversation memory.
 - Default policy: `execution_contract.md` is mandatory before
   `ready_for_orchestration`. A synthesized low-risk contract is allowed only
@@ -164,11 +164,11 @@ Phase 2 must define machine-checkable fields before runner behavior expands.
 
 Phase 2 must not introduce Markdown guessing. If a field affects state,
 scripts must read it from command arguments, metadata, or a structured sidecar
-that is imported through `cc-bridge plan`.
+that is imported through `cc_bridge plan`.
 
 ### Test Gate
 
-- `cc-bridge plan` unit tests:
+- `cc_bridge plan` unit tests:
   - cannot mark ready for orchestration without required task packet fields;
   - cannot run without execution contract unless the test explicitly uses a
     low-risk synthesized contract path;
@@ -179,7 +179,7 @@ that is imported through `cc-bridge plan`.
   - duplicate `round_summary` import is idempotent for the same digest and
     rejected or versioned for conflicting content.
 - Source-wrapper fake smoke creates a task in `/home/bfly/yunwei/test_ccb2`
-  using `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`.
+  using `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`.
 
 ### Review Gate
 
@@ -212,7 +212,7 @@ that is imported through `cc-bridge plan`.
   - needs-detail route asks detailer, imports detail packet, then continues;
   - macro-adjustment route does not mount workers;
   - blocked route stops with blocker evidence.
-- All route tests verify that task status changes only through `cc-bridge plan`
+- All route tests verify that task status changes only through `cc_bridge plan`
   commands.
 
 ### Review Gate
@@ -323,7 +323,7 @@ frontdesk input
 - Focused pytest suite passes for plan tasks, topology, lifecycle, runner,
   fake provider, and workflow smoke.
 - Source-wrapper fake-provider smokes pass with
-  `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test` from
+  `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test` from
   `/home/bfly/yunwei/test_ccb2`.
 - The task matrix covers at least:
   - one `direct_execution` round that passes;

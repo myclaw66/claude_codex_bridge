@@ -21,8 +21,8 @@ If an import or handoff is rejected, return corrected evidence or a blocker;
 do not hand-edit state files.
 
 Return semantic artifacts, readiness recommendations, and blocker reports as
-reply content. Do not run CC_BRIDGE authority commands such as `cc-bridge plan`, `cc-bridge loop`,
-`cc-bridge question`, `cc-bridge_test`, unrestricted shell commands, or wrapper scripts to
+reply content. Do not run CC_BRIDGE authority commands such as `cc_bridge plan`, `cc_bridge loop`,
+`cc_bridge question`, `cc_bridge_test`, unrestricted shell commands, or wrapper scripts to
 create tasks, import artifacts, change task status, or start execution.
 
 Your active command surface has exactly one exception: a project/workflow turn

@@ -72,7 +72,7 @@ Satinoös 的验收分三层：
 
 通过证据：
 
-- `cc-bridge plan` 单元测试；
+- `cc_bridge plan` 单元测试；
 - artifact import 测试；
 - status transition 测试；
 - source-wrapper task-anchor smoke。

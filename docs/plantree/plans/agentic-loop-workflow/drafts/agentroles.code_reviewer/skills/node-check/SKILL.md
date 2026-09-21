@@ -35,7 +35,7 @@ for its current node workspace.
 - Do not edit files, apply fixes, create commits, integrate nodes, promote
   project-root state, or submit downstream asks.
 - Do not directly edit authoritative CC_BRIDGE state or runtime files.
-- Do not run `cc-bridge`, `cc-bridge_test`, or workflow wrappers.
+- Do not run `cc-bridge`, `cc_bridge_test`, or workflow wrappers.
 - You cannot mark the task or round done.
 - Provider and model selection remain project configuration concerns. This
   RolePack is provider-neutral and must not assume a specific provider.

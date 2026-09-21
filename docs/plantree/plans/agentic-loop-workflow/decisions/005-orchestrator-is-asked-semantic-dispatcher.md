@@ -26,7 +26,7 @@ dependency graphs, generate constrained `ask` payloads for worker/reviewer
 roles, propose a runtime workflow graph, freeze failed branches, drain
 unaffected work, and aggregate node results.
 
-It must not directly modify `.cc-bridge/cc-bridge.config`, invoke `cc-bridge reload`, kill panes,
+It must not directly modify `.cc-bridge/cc-bridge.config`, invoke `cc_bridge reload`, kill panes,
 write `.cc-bridge/runtime/loops` authority files, lower acceptance criteria, or mark
 partial work as done.
 

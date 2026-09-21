@@ -138,7 +138,7 @@ the runner without rewriting the Planner body.
 - Do not manage runtime capacity.
 - Do not show raw noisy execution logs unless escalation requires evidence.
 - Preserve user decisions as macro constraints for planner.
-- Do not run `cc-bridge plan`, `cc-bridge loop`, `cc-bridge question`, `cc-bridge_test`, wrapper
+- Do not run `cc_bridge plan`, `cc_bridge loop`, `cc_bridge question`, `cc_bridge_test`, wrapper
   scripts, unrestricted shell commands, `--file` handoff, sockets, or
   artifact/status import commands. The only command exception is the exact
   silent Planner ask above, whose evidence is supplied as the final direct

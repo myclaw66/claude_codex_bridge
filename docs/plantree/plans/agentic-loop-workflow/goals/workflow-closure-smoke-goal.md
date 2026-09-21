@@ -27,7 +27,7 @@ represented by imported artifacts and fake-provider asks.
 
 ## Landed Slice
 
-- Added `cc-bridge loop capacity release --policy auto` while preserving legacy
+- Added `cc_bridge loop capacity release --policy auto` while preserving legacy
   `--idle-only`.
 - Updated `loop_run_once` to call release with `policy='auto'`.
 - Preserved `release_policy` and `idle_only` in `round.json` capacity summaries
@@ -35,12 +35,12 @@ represented by imported artifacts and fake-provider asks.
 - Added `scripts/workflow_closure_smoke.py`, a deterministic fake-provider
   source-wrapper smoke that prepares an isolated project in
   `/home/bfly/yunwei/test_ccb2`, installs local workflow RolePacks into a
-  project-local role store, drives `cc-bridge plan`, `cc-bridge question`, and
-  `cc-bridge loop runner --once`, then kills the project.
+  project-local role store, drives `cc_bridge plan`, `cc_bridge question`, and
+  `cc_bridge loop runner --once`, then kills the project.
 - Added `test/test_workflow_closure_smoke_script.py` for script config,
   project preparation, command sequence, review gate, and auto-release summary.
 - Updated local and external `agentroles.cc-bridge_orchestrator` guidance to use
-  `cc-bridge loop capacity release --loop-id <id> --policy auto --json`.
+  `cc_bridge loop capacity release --loop-id <id> --policy auto --json`.
 
 ## Verification
 
@@ -87,7 +87,7 @@ CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/source_home \
 python /home/bfly/yunwei/cc-bridge_source/scripts/workflow_closure_smoke.py \
   --test-root /home/bfly/yunwei/test_ccb2 \
   --project-name workflow-closure-smoke-178255c \
-  --cc-bridge-test /home/bfly/yunwei/cc-bridge_source/cc-bridge_test \
+  --cc-bridge-test /home/bfly/yunwei/cc-bridge_source/cc_bridge_test \
   --reset --run --json
 ```
 

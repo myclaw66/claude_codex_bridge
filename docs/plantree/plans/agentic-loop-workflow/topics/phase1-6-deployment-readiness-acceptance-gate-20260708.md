@@ -57,7 +57,7 @@ authority.
 | B2 | Fresh test root | Each validation lane uses a fresh root under `/home/bfly/yunwei/test_ccb2`, created for this round, with project-local `.cc-bridge` anchor and command log. | Root is reused, consumed, from `cc-bridge_source`, or missing command log. |
 | B3 | Inherited provider environment | Real-provider runs inherit the system provider environment; no lab-local `HOME`, `CC_BRIDGE_SOURCE_HOME`, or `CC_BRIDGE_SOURCE_RUNTIME_OK=1`. | Lab-local provider home, fake provider, or diagnostics override used for ordinary validation. |
 | B4 | Project-local role store | `AGENT_ROLES_STORE=$ROOT/roles` and all required rolepacks are installed locally: `cc-bridge_frontdesk`, `cc-bridge_planner`, `cc-bridge_orchestrator`, `cc-bridge_task_detailer`, `code_reviewer`, `cc-bridge_round_reviewer`, plus coder/worker profile. | Global role store used, missing rolepack, or role source not found. |
-| B5 | Resident idle preflight | Before first `ask frontdesk`, `cc-bridge_test --project <project> ps` shows all five resident roles present and `state=idle`. | Any resident is `degraded`, `busy`, missing, or `agent.json` absent. |
+| B5 | Resident idle preflight | Before first `ask frontdesk`, `cc_bridge_test --project <project> ps` shows all five resident roles present and `state=idle`. | Any resident is `degraded`, `busy`, missing, or `agent.json` absent. |
 | B6 | Frontdesk natural-language entry | User request starts at `frontdesk` with natural language; frontdesk produces intake evidence and auto-hands off to planner. | Frontdesk asks for plan slug, requires manual planner activation, receives hard-coded task id, or implements the request directly. |
 | B7 | Single planner authority | One user request produces exactly one planner handoff path; no duplicate planner jobs from dispatcher handoff plus legacy role-output import. | Two planner jobs from one frontdesk ask, or frontdesk handoff marker ignored. |
 | B8 | Script-owned authority | Task status, route, and round result are imported by script-owned paths, not parsed from provider conversation text. | Provider reply mutates authority, or runner infers state from conversation memory. |
@@ -106,12 +106,12 @@ For each case, the validation artifact must name absolute paths for:
 
 1. `fresh_root`: the test project directory under `/home/bfly/yunwei/test_ccb2`.
 2. `command_log`: a timestamped command log inside the fresh root.
-3. `resident_ps_before_frontdesk_entry`: `cc-bridge_test --project <project> ps` output
+3. `resident_ps_before_frontdesk_entry`: `cc_bridge_test --project <project> ps` output
 taken after startup and before the first `ask frontdesk`.
 4. `gate_evidence_rows.json` and `gate_evidence_rows.jsonl`: fixed-schema rows.
 5. `b7_report` or equivalent normalized markdown report.
 6. `cleanup_after_b7.stdout` / `.stderr`: final cleanup output.
-7. `final_ps`: `cc-bridge_test --project <project> ps` output after cleanup.
+7. `final_ps`: `cc_bridge_test --project <project> ps` output after cleanup.
 
 ### L1-L4 route mix
 

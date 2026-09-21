@@ -257,7 +257,7 @@ cd /home/bfly/yunwei/test_ccb2
 HOME=/home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-repeat4-20260704/source_home
 CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-repeat4-20260704/source_home
 AGENT_ROLES_STORE=/home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-repeat4-20260704/roles
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project /home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-repeat4-20260704/l0-runtime-sanity kill
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project /home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-repeat4-20260704/l0-runtime-sanity kill
 ```
 
 Cleanup result:

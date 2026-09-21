@@ -183,7 +183,7 @@ recoverable workflow loops.
   implementation questions.
 - [goals/orchestrator-dynamic-capacity-goal.md](goals/orchestrator-dynamic-capacity-goal.md):
   historical implementation and real-test goal for the `loop.role_profiles`
-  and `cc-bridge loop capacity` substrate, now superseded as the
+  and `cc_bridge loop capacity` substrate, now superseded as the
   orchestrator-facing path by topology proposal and reconciliation.
 - [goals/single-lane-multi-workgroup-release-goal.md](goals/single-lane-multi-workgroup-release-goal.md):
   current release goal for one task lane, one orchestration bundle, one to four
@@ -193,7 +193,7 @@ recoverable workflow loops.
   versus explicitly authorized publication gates while preserving Config V2.
 - [goals/planner-plan-script-goal.md](goals/planner-plan-script-goal.md):
   implementation and source-test goal for the first planner role boundary and
-  `cc-bridge plan` task-packet command surface.
+  `cc_bridge plan` task-packet command surface.
 - [goals/loop-runner-bridge-goal.md](goals/loop-runner-bridge-goal.md):
   next implementation goal for removing the manual bridge between a ready task
   packet and one script-owned execution round, while preserving the
@@ -209,7 +209,7 @@ recoverable workflow loops.
   states, and stops on paused or terminal states without moving semantic
   judgment into scripts.
 - [goals/clarification-planner-followthrough-goal.md](goals/clarification-planner-followthrough-goal.md):
-  next implementation goal for adding the V1 `cc-bridge question` artifact surface,
+  next implementation goal for adding the V1 `cc_bridge question` artifact surface,
   macro broker/frontdesk clarification loop, normalized answers, planner
   artifact import, plan-reviewer gate, optional task-detailer refinement, and
   script-owned transition to `ready`.
@@ -226,7 +226,7 @@ recoverable workflow loops.
   finding.
 - [goals/minimum-production-candidate-goal.md](goals/minimum-production-candidate-goal.md):
   narrow production-candidate gate for one scripted workflow closure using
-  `cc-bridge plan`, `cc-bridge question`, `cc-bridge loop runner --once`, dynamic worker/checker
+  `cc_bridge plan`, `cc_bridge question`, `cc_bridge loop runner --once`, dynamic worker/checker
   capacity, round-result import, and auto-release cleanup.
 - [goals/mount-topology-ask-first-landing-goal.md](goals/mount-topology-ask-first-landing-goal.md):
   phased landing plan for Decision 020, including mount-topology schema split,
@@ -302,7 +302,7 @@ recoverable workflow loops.
   durable plan packet layout, runtime loop list layout, and script-owned write
   surfaces inspired by Trellis but adapted for visible CC_BRIDGE agents.
 - [topics/plan-update-script-landing.md](topics/plan-update-script-landing.md):
-  V1 landing plan for `cc-bridge plan task-*` scripts, task packet layout, authority
+  V1 landing plan for `cc_bridge plan task-*` scripts, task packet layout, authority
   rules, and test targets.
 - [topics/orchestrator-role-capability.md](topics/orchestrator-role-capability.md):
   orchestrator role capability boundary, ask activation model, 1-4 node
@@ -389,7 +389,7 @@ recoverable workflow loops.
   mapping from experimental `agentroles.cc-bridge_*` roles and recommended
   `agentroles.collections.*` bundles.
 - [topics/role-profiles-and-capacity-skill.md](topics/role-profiles-and-capacity-skill.md):
-  lower-level design for `loop.role_profiles` config and `cc-bridge loop capacity`;
+  lower-level design for `loop.role_profiles` config and `cc_bridge loop capacity`;
   retained as the capacity substrate that topology reconciliation may use,
   rather than the preferred orchestrator-facing contract.
 - [topics/dynamic-window-pane-agent-maintenance.md](topics/dynamic-window-pane-agent-maintenance.md):
@@ -439,7 +439,7 @@ recoverable workflow loops.
   requests, but does not directly perform, runtime agent load/unload.
 - [decisions/006-configured-role-profiles-and-capacity-skill.md](decisions/006-configured-role-profiles-and-capacity-skill.md):
   decision to give orchestrator dynamic capacity through config-declared role
-  profiles and a narrow `cc-bridge loop capacity` command surface.
+  profiles and a narrow `cc_bridge loop capacity` command surface.
 - [decisions/007-planner-proposes-scripts-write-plan-state.md](decisions/007-planner-proposes-scripts-write-plan-state.md):
   decision that planner proposes semantic artifacts while CC_BRIDGE scripts write
   authoritative plan state.
@@ -538,7 +538,7 @@ recoverable workflow loops.
   common authority rule, host-neutral versus CC_BRIDGE-adapter split, and the first
   external Agent Roles spec landing order.
 - [history/runtime-topology-reconciler-2026-06-30.md](history/runtime-topology-reconciler-2026-06-30.md):
-  landing evidence for `cc-bridge loop topology
+  landing evidence for `cc_bridge loop topology
   propose/validate/commit/reconcile/status/release`, desired/observed
   topology files, and add/move/park/release/reflow source-wrapper tests.
 - [history/workflow-role-output-import-2026-07-02.md](history/workflow-role-output-import-2026-07-02.md):
@@ -636,7 +636,7 @@ Out of scope:
 | planner | Macro planning artifacts, global Roadmap Graph, plan brief, serial/parallel branches, priorities, cross-lane dependencies, high-level acceptance, readiness recommendation, macro adjustment and integration review | Detail design body maintenance, detailed implementation packet maintenance, runtime worker lifecycle, direct detailer/worker dispatch, concurrent writing of another planner scope, or final authority over code correctness |
 | `task_detailer` | Task-local refinement, task-scoped detail docs, source evidence, detail packet, stable summary backfill, task-local clarification | Roadmap/status authority, runtime dispatch, worker/reviewer control, or long-term user conversation |
 | clarification broker | Candidate-question filtering, user-question artifact, answer normalization | Direct user conversation or execution-loop activation |
-| planner stewardship mode / `cc-bridge plan` scripts | Plan-tree consistency, short-term progress state, evidence linking, authoritative task/index/status writes through scripts | Business implementation, provider repair, daemon supervision, or bypassing script validation |
+| planner stewardship mode / `cc_bridge plan` scripts | Plan-tree consistency, short-term progress state, evidence linking, authoritative task/index/status writes through scripts | Business implementation, provider repair, daemon supervision, or bypassing script validation |
 | loop runner | Deterministic state-machine execution and loop start/advance | Semantic product decisions |
 | orchestrator | One activation owns coupled work slicing, dependencies, logical role assignment, worker packets, review/integration intent, and bounded semantic replanning | Long-term plan authority, concrete agent binding, physical `ask` submission, topology mutation, or runtime authority writes |
 | execution node | Bounded `worker + checker` implementation and node-quality gate | Global task routing, hidden degradation, or durable plan mutation |

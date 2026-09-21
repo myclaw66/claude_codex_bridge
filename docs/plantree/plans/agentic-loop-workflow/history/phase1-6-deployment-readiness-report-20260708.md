@@ -28,7 +28,7 @@ the P4 report in the queue tracked by
 Required operator-facing standard:
 
 - real opened project under `/home/bfly/yunwei/test_ccb2`;
-- explicit source wrapper `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`;
+- explicit source wrapper `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`;
 - inherited system provider environment for real-provider tests;
 - root-local `AGENT_ROLES_STORE`;
 - visible project/UI/pane evidence where claimed;
@@ -128,7 +128,7 @@ rather than only the older manual checkpoint path.
 - First attempted root:
   `/home/bfly/yunwei/test_ccb2/deploy-stress-talk2-selfrun-20260708205853`
   was abandoned because `init` was mistakenly invoked from the source checkout,
-  and `cc-bridge_test` correctly refused source-checkout runtime execution.
+  and `cc_bridge_test` correctly refused source-checkout runtime execution.
 - Fresh accepted root:
   `/home/bfly/yunwei/test_ccb2/deploy-stress-talk2-selfrun-20260708205921`
 - Project:
@@ -229,8 +229,8 @@ Installed-preview workflow closure smoke:
   `/home/bfly/yunwei/test_ccb2/p5-current-source-release-talk2-202607082205/installed-preview-workflow-smoke-result.json`
 - Command source:
   `/home/bfly/yunwei/test_ccb2/p5-current-source-release-talk2-202607082205/install-prefix/scripts/workflow_closure_smoke.py`
-- `cc-bridge_test`:
-  `/home/bfly/yunwei/test_ccb2/p5-current-source-release-talk2-202607082205/install-prefix/cc-bridge_test`
+- `cc_bridge_test`:
+  `/home/bfly/yunwei/test_ccb2/p5-current-source-release-talk2-202607082205/install-prefix/cc_bridge_test`
 - Status: `workflow_smoke_status=ok`
 - Final task status: `done`
 - Round result: `pass`

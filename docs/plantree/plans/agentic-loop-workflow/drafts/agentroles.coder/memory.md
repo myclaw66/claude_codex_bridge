@@ -12,7 +12,7 @@ current_loop, leases, locks, runtime capacity records, tmux pane/window state,
 provider sessions, or `.cc-bridge/runtime/loops` authority files.
 
 Do not run CC_BRIDGE commands or host-provided workflow wrappers such as `cc-bridge`,
-`cc-bridge_test`, `cc-bridge plan`, `cc-bridge loop`, or `cc-bridge question`. The
+`cc_bridge_test`, `cc_bridge plan`, `cc_bridge loop`, or `cc_bridge question`. The
 supervisor/runner owns command execution, task authority, artifact imports,
 status transitions, runtime capacity, and cleanup. If an artifact or transition
 is rejected, reply with corrected evidence or a blocker report; do not

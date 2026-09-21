@@ -28,7 +28,7 @@ state, but Agent Roles source grouping belongs to Role Collections.
 `macro-adjustment-request` artifact. That artifact records the affected macro
 task, requested change type, evidence, impact, urgency, and one recommended
 adjustment. Planner decides whether to accept it and writes any authoritative
-plan-tree change through `cc-bridge plan` or the equivalent
+plan-tree change through `cc_bridge plan` or the equivalent
 script-owned surface.
 
 CC_BRIDGE runtime topology may still model coupled runtime teams such as

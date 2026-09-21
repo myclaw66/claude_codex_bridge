@@ -151,64 +151,64 @@ Use for:
 Minimum shape:
 
 ```bash
-cc-bridge plan current
-cc-bridge plan breadcrumb
-cc-bridge plan start --plan <slug> --task "<title>"
-cc-bridge plan task-create --plan <slug> --title "<title>"
-cc-bridge plan task-artifact --task <task-id> \
+cc_bridge plan current
+cc_bridge plan breadcrumb
+cc_bridge plan start --plan <slug> --task "<title>"
+cc_bridge plan task-create --plan <slug> --title "<title>"
+cc_bridge plan task-artifact --task <task-id> \
   --kind <requirements|acceptance|verification|risk|handoff|review|completion|round_pass|round_partial|round_replan|round_blocker> \
   --file <path>
-cc-bridge plan task-status --task <task-id> --status <draft|ready|running|partial|replan_required|done|blocked>
-cc-bridge plan task-bind-loop --task <task-id> --loop <loop-id>
-cc-bridge plan task-import-round --task <task-id> --loop <loop-id> --result <pass|partial|replan_required|blocked> --report <path>
-cc-bridge plan task-sync --task <task-id> --loop <loop-id>
-cc-bridge plan artifact --type <type> --path <path>
-cc-bridge plan evidence --commit <hash> --test "<command>"
-cc-bridge plan sync
+cc_bridge plan task-status --task <task-id> --status <draft|ready|running|partial|replan_required|done|blocked>
+cc_bridge plan task-bind-loop --task <task-id> --loop <loop-id>
+cc_bridge plan task-import-round --task <task-id> --loop <loop-id> --result <pass|partial|replan_required|blocked> --report <path>
+cc_bridge plan task-sync --task <task-id> --loop <loop-id>
+cc_bridge plan artifact --type <type> --path <path>
+cc_bridge plan evidence --commit <hash> --test "<command>"
+cc_bridge plan sync
 
-cc-bridge loop create --task <task-id>
-cc-bridge loop list --active
-cc-bridge loop start --task <task-id>
-cc-bridge loop status --loop <loop-id>
-cc-bridge loop breadcrumb --loop <loop-id>
-cc-bridge loop event --loop <loop-id> --kind <kind> --file <payload-json>
-cc-bridge loop transition --loop <loop-id> --to <phase> --owner <agent-or-team>
-cc-bridge loop ask-record --loop <loop-id> --target <agent> --job <job-id> --node <node-id>
-cc-bridge loop node-add --loop <loop-id> --kind execution --team execution_node
-cc-bridge loop node-done --loop <loop-id> --node <node-id> --artifact <path>
-cc-bridge loop node-status --loop <loop-id> --node <node-id> --status <running|passed|rework|blocked|non_converged>
-cc-bridge loop node-rework --loop <loop-id> --node <node-id> --reason <text>
-cc-bridge loop node-non-converged --loop <loop-id> --node <node-id> --report <path>
-cc-bridge loop branch-status --loop <loop-id> --branch <branch-id> --status <running|frozen|draining|drained>
-cc-bridge loop branch-freeze --loop <loop-id> --branch <branch-id> --reason <text>
-cc-bridge loop drain-unaffected --loop <loop-id>
-cc-bridge loop round-check --loop <loop-id> --contract <path> --summary <path>
-cc-bridge loop round-result --loop <loop-id> --result <pass|partial|replan_required|blocked> --report <path>
-cc-bridge loop block --loop <loop-id> --reason <text>
-cc-bridge loop finish --loop <loop-id>
-cc-bridge loop run-once --task-id <task-id>
-cc-bridge loop runner --once
+cc_bridge loop create --task <task-id>
+cc_bridge loop list --active
+cc_bridge loop start --task <task-id>
+cc_bridge loop status --loop <loop-id>
+cc_bridge loop breadcrumb --loop <loop-id>
+cc_bridge loop event --loop <loop-id> --kind <kind> --file <payload-json>
+cc_bridge loop transition --loop <loop-id> --to <phase> --owner <agent-or-team>
+cc_bridge loop ask-record --loop <loop-id> --target <agent> --job <job-id> --node <node-id>
+cc_bridge loop node-add --loop <loop-id> --kind execution --team execution_node
+cc_bridge loop node-done --loop <loop-id> --node <node-id> --artifact <path>
+cc_bridge loop node-status --loop <loop-id> --node <node-id> --status <running|passed|rework|blocked|non_converged>
+cc_bridge loop node-rework --loop <loop-id> --node <node-id> --reason <text>
+cc_bridge loop node-non-converged --loop <loop-id> --node <node-id> --report <path>
+cc_bridge loop branch-status --loop <loop-id> --branch <branch-id> --status <running|frozen|draining|drained>
+cc_bridge loop branch-freeze --loop <loop-id> --branch <branch-id> --reason <text>
+cc_bridge loop drain-unaffected --loop <loop-id>
+cc_bridge loop round-check --loop <loop-id> --contract <path> --summary <path>
+cc_bridge loop round-result --loop <loop-id> --result <pass|partial|replan_required|blocked> --report <path>
+cc_bridge loop block --loop <loop-id> --reason <text>
+cc_bridge loop finish --loop <loop-id>
+cc_bridge loop run-once --task-id <task-id>
+cc_bridge loop runner --once
 
-cc-bridge question candidates --loop <loop-id> --phase <phase> --file <path>
-cc-bridge question broker-review --loop <loop-id> --phase <phase>
-cc-bridge question publish --loop <loop-id> --phase <phase>
-cc-bridge question answer --loop <loop-id> --question <question-id> --text <text>
-cc-bridge question resolve --loop <loop-id> --phase <phase>
+cc_bridge question candidates --loop <loop-id> --phase <phase> --file <path>
+cc_bridge question broker-review --loop <loop-id> --phase <phase>
+cc_bridge question publish --loop <loop-id> --phase <phase>
+cc_bridge question answer --loop <loop-id> --question <question-id> --text <text>
+cc_bridge question resolve --loop <loop-id> --phase <phase>
 ```
 
-`cc-bridge plan` owns durable planning surfaces. `cc-bridge loop` owns runtime loop state.
-`cc-bridge question` owns staged clarification artifacts and answer normalization.
-The first implementation should start with the narrower `cc-bridge plan` slice in
+`cc_bridge plan` owns durable planning surfaces. `cc_bridge loop` owns runtime loop state.
+`cc_bridge question` owns staged clarification artifacts and answer normalization.
+The first implementation should start with the narrower `cc_bridge plan` slice in
 [plan-update-script-landing.md](plan-update-script-landing.md) before exposing
 the full command set above.
 
 The next implementation slice should stay narrower than the full command list:
 
 ```bash
-cc-bridge plan task-bind-loop
-cc-bridge plan task-import-round
-cc-bridge loop run-once --task-id
-cc-bridge loop runner --once
+cc_bridge plan task-bind-loop
+cc_bridge plan task-import-round
+cc_bridge loop run-once --task-id
+cc_bridge loop runner --once
 ```
 
 That slice is enough to remove the manual shell bridge between a ready task

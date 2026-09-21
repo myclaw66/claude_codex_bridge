@@ -11,7 +11,7 @@ Status: PASS WITH BOUNDED RESIDUALS
 /home/bfly/yunwei/test_ccb2/workflow-window-e2e-talk2-20260710-093408
 ```
 
-The run used the `workflow/agentic-loop-topology` worktree `cc-bridge_test`, inherited
+The run used the `workflow/agentic-loop-topology` worktree `cc_bridge_test`, inherited
 the system Codex/Claude provider environment, and used the project-local role
 store. The visible steady state was two windows:
 

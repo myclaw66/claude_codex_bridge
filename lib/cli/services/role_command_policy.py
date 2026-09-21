@@ -44,8 +44,8 @@ class RoleCommandPolicyError(ValueError):
 
 def load_role_command_policy(role: RoleManifest) -> RoleCommandPolicy | None:
     adapters = role.table('adapters')
-    cc_bridge_adapter = adapters.get('cc_bridge') if isinstance(adapters.get('cc_bridge'), dict) else {}
-    surface_path = str(cc_bridge_adapter.get('command_surface') or 'adapters/cc_bridge/command-surface.toml').strip()
+    cc_bridge_adapter = adapters.get('cc-bridge') if isinstance(adapters.get('cc-bridge'), dict) else {}
+    surface_path = str(cc_bridge_adapter.get('command_surface') or 'adapters/cc-bridge/command-surface.toml').strip()
     path = Path(surface_path)
     if path.is_absolute():
         raise RoleCommandPolicyError(f'{role.root}: command surface path must be relative')
@@ -67,7 +67,7 @@ def load_role_command_policy(role: RoleManifest) -> RoleCommandPolicy | None:
         enforcement=_required_string(surface, 'enforcement', path=path),
         if_unsupported=_required_string(surface, 'if_unsupported', path=path),
         generic_shell=_required_bool(surface, 'generic_shell', path=path),
-        generic_cc_bridge=_required_bool(surface, 'generic_cc_bridge', path=path),
+        generic_cc_bridge=_required_bool(surface, 'generic_cc-bridge', path=path),
         supported_providers=_string_tuple(surface.get('supported_providers')),
         provider_tools=_provider_tools(payload.get('provider_tools')),
         allowed_effects=_string_tuple(surface.get('allowed_effects')),

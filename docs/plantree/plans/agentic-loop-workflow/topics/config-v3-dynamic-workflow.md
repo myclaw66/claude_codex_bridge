@@ -725,7 +725,7 @@ must not be silently rewritten.
    semantic/physical capacity mismatch, workspace/integration policy, and
    `worker`/`coder` drift.
 8. Add migration dry-run tests before any write mode.
-9. Validate with `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test` from
+9. Validate with `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test` from
    `/home/bfly/yunwei/test_ccb2`, then run a real opened-project smoke only
    after source tests pass.
 
@@ -849,7 +849,7 @@ Recommended source slices:
 
 ### Slice 8: Runtime Smoke
 
-- Use `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test` from
+- Use `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test` from
   `/home/bfly/yunwei/test_ccb2`.
 - Start with fake-provider/source tests.
 - Only after parser and generated runtime behavior are source-clean, run a

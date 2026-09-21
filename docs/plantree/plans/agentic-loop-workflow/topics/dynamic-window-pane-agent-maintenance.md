@@ -372,11 +372,11 @@ Acceptance criteria:
 - only the new agent runtime is started;
 - preserved agents keep their pane ids, runtime authority, queues, and jobs;
 - `cc-bridge ps` shows the new agent after the transaction publishes;
-- `cc-bridge ask <new-agent> ...` is accepted after the command returns;
+- `cc_bridge ask <new-agent> ...` is accepted after the command returns;
 - failure rolls back or marks the dynamic record as failed without publishing a
   partial service graph.
 
-The existing `cc-bridge reload` path is the right transaction kernel. It already has:
+The existing `cc_bridge reload` path is the right transaction kernel. It already has:
 
 - additive `add_agent` for appending a pane to an existing managed window;
 - additive `add_window` for creating a new managed window and materializing its
@@ -387,7 +387,7 @@ The existing `cc-bridge reload` path is the right transaction kernel. It already
 
 The missing layer is not another raw tmux command. The missing layer is a
 dynamic placement overlay that can produce the same config/topology delta that
-`cc-bridge reload` already knows how to apply.
+`cc_bridge reload` already knows how to apply.
 
 ### Dynamic Add Transaction
 
@@ -777,7 +777,7 @@ Evidence:
 - Dynamic reload apply reports now carry pane identity diagnostics. The shared
   `pane_identity_report` appears under mounted `cc-bridge agent add/remove --json`,
   topology reconciliation, and lower-level
-  `cc-bridge loop capacity ensure/release --json` apply payloads, summarizing
+  `cc_bridge loop capacity ensure/release --json` apply payloads, summarizing
   added and removed agent panes, preserved before/after panes, created/removed
   panes, removed windows, reflowed windows, reflow errors, mounted agents, and
   unloaded agents from the same namespace patch/runtime mount transaction.
@@ -1200,7 +1200,7 @@ Current evidence:
   `add_window`, `agent show` and `layout status` confirmed placement,
   `agent release --idle-only` unloaded the short-lived reviewer and removed the
   empty overflow window, then `layout resolve --loop-id/--node-id` predicted
-  `node-round3-node1` before `cc-bridge loop capacity` created and released the
+  `node-round3-node1` before `cc_bridge loop capacity` created and released the
   worker/checker execution-node window;
 - guarded provider prepare-only now covers `window-class`, `move-agent`, and
   `resolve-preflight` for Codex+Claude, so CI validates the new project/config

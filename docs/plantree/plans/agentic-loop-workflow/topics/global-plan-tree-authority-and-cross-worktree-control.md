@@ -101,7 +101,7 @@ locator remains the only pointer to it. All linked worktrees must resolve and
 validate the same locator. Environment variables may select a test root but
 cannot silently override production locator authority.
 
-`cc-bridge plan control init` is the only first-creation path. It requires an existing
+`cc_bridge plan control init` is the only first-creation path. It requires an existing
 committed portfolio manifest, a clean target ref/control workspace, a supported
 filesystem capability probe, and atomic create-without-replace plus file and
 parent-directory durability. If a locator is missing, unreadable, duplicated,
@@ -456,7 +456,7 @@ acceptance matrix calls `closure refreshed`. A changed relevant ref enters
 
 ## Consistent Global Read
 
-`cc-bridge plan global`, `lanes`, `context`, and generated projections return:
+`cc_bridge plan global`, `lanes`, `context`, and generated projections return:
 
 ```text
 authority_commit, authority_generation, target_ref

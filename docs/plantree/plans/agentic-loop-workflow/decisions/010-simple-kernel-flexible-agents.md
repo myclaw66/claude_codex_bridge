@@ -43,7 +43,7 @@ agents.
 
 ## Consequences
 
-- `cc-bridge plan`, `cc-bridge loop`, and `cc-bridge question` should stay small and stable.
+- `cc_bridge plan`, `cc_bridge loop`, and `cc_bridge question` should stay small and stable.
 - Script commands should be judged by determinism, idempotence, recoverability,
   and narrow validation, not by semantic completeness.
 - Agents may write complex human-readable Markdown, but scripts import,

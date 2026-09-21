@@ -34,7 +34,7 @@ not from retained conversation memory.
 - Round checker can independently challenge execution results.
 - Next-loop planning still has full evidence through task packet and round
   report files.
-- `pass` can go directly to planner / `cc-bridge plan`; `partial` and
+- `pass` can go directly to planner / `cc_bridge plan`; `partial` and
   `replan_required` return to planner; `global_blocker` reaches frontdesk only
   when a user decision is needed.
 - V1 can keep `plan_reviewer` inside planner group while preserving

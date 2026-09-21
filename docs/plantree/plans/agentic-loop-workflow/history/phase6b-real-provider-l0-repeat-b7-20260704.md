@@ -184,7 +184,7 @@ The variant A ask submitted successfully as `job_25a9c7e4a9b6` to
 variant B, or release commands were logged before B7 normalization.
 
 Supervisor diagnosis: the frozen command block was executed through stdin
-piping into `bash`; `cc-bridge_test ask` inherited stdin and consumed the remaining
+piping into `bash`; `cc_bridge_test ask` inherited stdin and consumed the remaining
 script body. This is a repeat-launch execution-harness defect, not Phase 6B
 readiness. The repeat approval is consumed and a further run requires fresh
 correction and launch-specific approval.

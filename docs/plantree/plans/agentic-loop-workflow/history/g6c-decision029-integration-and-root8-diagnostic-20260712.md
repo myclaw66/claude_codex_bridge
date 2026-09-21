@@ -55,7 +55,7 @@ reconciliation fix. It is not an acceptance report.
 Preserved root:
 `/home/bfly/yunwei/test_ccb2/deploy-g6c-real-talk2-20260712-8`
 
-The project was opened with the source worktree `cc-bridge_test`, inherited real
+The project was opened with the source worktree `cc_bridge_test`, inherited real
 provider configuration, and a root-local Role store. Script-owned parent
 authority and Frontdesk/Planner transaction journals were valid. L1 and L2
 reached `done/pass`; the macro-adjustment L4 child reached

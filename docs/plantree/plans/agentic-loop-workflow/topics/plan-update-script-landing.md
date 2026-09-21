@@ -19,34 +19,34 @@ agents draft content; CC_BRIDGE scripts write authority.
 Start smaller than the full proposed command set.
 
 ```bash
-cc-bridge plan task-create --plan <plan-slug> --title "<title>" --json
-cc-bridge plan task-artifact --task <task-id> --kind <requirements|acceptance|verification|risk|handoff|review|completion> --file <path> --json
-cc-bridge plan task-status --task <task-id> --status <draft|needs_clarification|ready|running|partial|replan_required|done|blocked> --json
-cc-bridge plan task-show --task <task-id> --json
-cc-bridge plan task-list --plan <plan-slug> --json
-cc-bridge plan breadcrumb --task <task-id>
+cc_bridge plan task-create --plan <plan-slug> --title "<title>" --json
+cc_bridge plan task-artifact --task <task-id> --kind <requirements|acceptance|verification|risk|handoff|review|completion> --file <path> --json
+cc_bridge plan task-status --task <task-id> --status <draft|needs_clarification|ready|running|partial|replan_required|done|blocked> --json
+cc_bridge plan task-show --task <task-id> --json
+cc_bridge plan task-list --plan <plan-slug> --json
+cc_bridge plan breadcrumb --task <task-id>
 ```
 
 Defer for later:
 
-- `cc-bridge question ...` broker commands;
-- `cc-bridge plan sync` full plan-tree summary automation;
-- `cc-bridge loop create/start` integration beyond a ready-task handoff;
+- `cc_bridge question ...` broker commands;
+- `cc_bridge plan sync` full plan-tree summary automation;
+- `cc_bridge loop create/start` integration beyond a ready-task handoff;
 - multi-plan cross-index updates.
 
 ## Follow-Up Slice: Ready Task To One Round
 
 The next narrow slice should connect an execution-ready task packet to one
-`cc-bridge loop run-once` invocation without introducing a daemon.
+`cc_bridge loop run-once` invocation without introducing a daemon.
 
 Minimum commands:
 
 ```bash
-cc-bridge plan task-bind-loop --task <task-id> --loop <loop-id> --json
-cc-bridge plan task-import-round --task <task-id> --loop <loop-id> \
+cc_bridge plan task-bind-loop --task <task-id> --loop <loop-id> --json
+cc_bridge plan task-import-round --task <task-id> --loop <loop-id> \
   --result <pass|partial|replan_required|blocked> --report <path> --json
-cc-bridge loop run-once --task-id <task-id> --json
-cc-bridge loop runner --once --json
+cc_bridge loop run-once --task-id <task-id> --json
+cc_bridge loop runner --once --json
 ```
 
 `task-bind-loop` writes `current_loop`, moves `ready` to `running` when needed,
@@ -105,7 +105,7 @@ Updated: <timestamp>
 
 ## Authority Rules
 
-`cc-bridge plan` scripts own:
+`cc_bridge plan` scripts own:
 
 - task id allocation;
 - task status;
@@ -133,7 +133,7 @@ Scripts must reject:
 - status transitions that skip required artifacts;
 - `ready` without requirements, acceptance, verification, handoff, and review;
 - terminal status changes without completion or blocker evidence;
-- direct writes into `.cc-bridge/runtime` through `cc-bridge plan`.
+- direct writes into `.cc-bridge/runtime` through `cc_bridge plan`.
 
 ## Status Edges
 
@@ -197,12 +197,12 @@ Unit tests:
 
 CLI contract tests:
 
-- `cc-bridge plan task-create --json`;
-- `cc-bridge plan task-artifact --json`;
-- `cc-bridge plan task-status --json`;
-- `cc-bridge plan task-show --json`;
-- `cc-bridge plan task-list --json`;
-- `cc-bridge plan breadcrumb`.
+- `cc_bridge plan task-create --json`;
+- `cc_bridge plan task-artifact --json`;
+- `cc_bridge plan task-status --json`;
+- `cc_bridge plan task-show --json`;
+- `cc_bridge plan task-list --json`;
+- `cc_bridge plan breadcrumb`.
 
 Integration smoke in `/home/bfly/yunwei/test_ccb2`:
 
@@ -221,7 +221,7 @@ Regression guard:
 - plan scripts must not start providers;
 - plan scripts must not mutate `.cc-bridge/runtime/loops`;
 - plan scripts must not require installed global `cc-bridge` during source tests;
-- source validation must use `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test` from
+- source validation must use `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test` from
   `/home/bfly/yunwei/test_ccb2`.
 
 ## Acceptance Criteria
@@ -229,7 +229,7 @@ Regression guard:
 The slice is done when:
 
 - planner role design is documented;
-- `cc-bridge plan` V1 command surface is implemented;
+- `cc_bridge plan` V1 command surface is implemented;
 - focused unit and CLI tests pass;
 - an external `/home/bfly/yunwei/test_ccb2` smoke creates a ready task packet;
 - plan-tree is updated with evidence and remaining open questions;
@@ -239,12 +239,12 @@ The slice is done when:
 
 Current worktree implementation evidence:
 
-- `cc-bridge plan task-create/task-artifact/task-status/task-show/task-list/breadcrumb`
+- `cc_bridge plan task-create/task-artifact/task-status/task-show/task-list/breadcrumb`
   is implemented through parser, phase2 dispatch, service, and render layers.
 - Focused tests live in `test/test_plan_tasks_cli.py`.
 - External smoke project:
   `/home/bfly/yunwei/test_ccb2/plan-task-smoke-v1`.
 - Smoke result: `smoke-task-001` reached `ready` only after review was
   imported; `breadcrumb` produced the compact runtime handoff text.
-- The smoke used `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test` from
+- The smoke used `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test` from
   `/home/bfly/yunwei/test_ccb2` with isolated `HOME` and `CC_BRIDGE_SOURCE_HOME`.

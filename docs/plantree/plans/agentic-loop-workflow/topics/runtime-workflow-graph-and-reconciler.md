@@ -42,7 +42,7 @@ runtime changes.
 orchestrator
   writes semantic topology proposal
     ↓
-cc-bridge loop topology validate / commit
+cc_bridge loop topology validate / commit
   writes desired topology revision
     ↓
 topology reconciler
@@ -102,7 +102,7 @@ Candidate loop-local layout:
 
 ### `agent_topology.desired.json`
 
-Authority target written only by `cc-bridge loop topology commit`.
+Authority target written only by `cc_bridge loop topology commit`.
 
 Minimum fields:
 
@@ -331,8 +331,8 @@ release gates, artifact import policy, and rework loops remain future slices.
 V1 should avoid a background watcher. Reconciliation happens explicitly:
 
 ```bash
-cc-bridge loop topology commit --loop-id loop-123 --proposal proposal-001 --apply --json
-cc-bridge loop topology reconcile --loop-id loop-123 --json
+cc_bridge loop topology commit --loop-id loop-123 --proposal proposal-001 --apply --json
+cc_bridge loop topology reconcile --loop-id loop-123 --json
 ```
 
 `loop runner --once` should call reconcile at stable boundaries:
@@ -450,18 +450,18 @@ Observed states:
 V1 topology commands:
 
 ```bash
-cc-bridge loop topology propose --loop-id <id> --from <file> --json
-cc-bridge loop topology validate --loop-id <id> --proposal <proposal-id> --json
-cc-bridge loop topology commit --loop-id <id> --proposal <proposal-id> --apply --json
-cc-bridge loop topology reconcile --loop-id <id> --json
-cc-bridge loop topology status --loop-id <id> --json
-cc-bridge loop topology release --loop-id <id> --policy auto --json
+cc_bridge loop topology propose --loop-id <id> --from <file> --json
+cc_bridge loop topology validate --loop-id <id> --proposal <proposal-id> --json
+cc_bridge loop topology commit --loop-id <id> --proposal <proposal-id> --apply --json
+cc_bridge loop topology reconcile --loop-id <id> --json
+cc_bridge loop topology status --loop-id <id> --json
+cc_bridge loop topology release --loop-id <id> --policy auto --json
 ```
 
 Possible later command:
 
 ```bash
-cc-bridge loop topology patch --loop-id <id> --from <file> --apply --json
+cc_bridge loop topology patch --loop-id <id> --from <file> --apply --json
 ```
 
 ## Validation Rules
@@ -499,7 +499,7 @@ Before commit:
 `loop.role_profiles` remains the source policy for provider, model, thinking,
 workspace, role id, max instances, and reuse behavior.
 
-`cc-bridge loop capacity ensure/status/release` remains a useful lower-level
+`cc_bridge loop capacity ensure/status/release` remains a useful lower-level
 implementation substrate. It can be called by the reconciler or retained as a
 compatibility/debugging surface.
 
@@ -510,14 +510,14 @@ The preferred orchestrator-facing contract is now:
 
 ```text
 orchestrator-topology skill
-  -> cc-bridge loop topology propose / status / commit
+  -> cc_bridge loop topology propose / status / commit
 ```
 
 not:
 
 ```text
 orchestrator-capacity skill
-  -> cc-bridge loop capacity ensure / release
+  -> cc_bridge loop capacity ensure / release
 ```
 
 ## Failure Handling
@@ -536,7 +536,7 @@ Failure should be visible and durable:
 
 V1 desired-state topology control is landed in the current worktree:
 
-- `cc-bridge loop topology propose/validate/commit/reconcile/status/release` is
+- `cc_bridge loop topology propose/validate/commit/reconcile/status/release` is
   available as a scriptable JSON command surface;
 - proposal validation covers role profile existence, profile capacity limits,
   duplicate node ids, duplicate agent ids, unknown edge dependencies, and edge

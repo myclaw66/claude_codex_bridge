@@ -61,7 +61,7 @@ also did not pass; it produced a second `test_design_failure` B7 report. The
 repeat execution submitted variant A ask job `job_25a9c7e4a9b6`, but the
 command log stopped after `ask_a_orchestrator_compact`; A release and all
 variant B commands were missing. Supervisor diagnosis: the frozen block was
-executed through stdin piping, and `cc-bridge_test ask` inherited stdin and consumed
+executed through stdin piping, and `cc_bridge_test ask` inherited stdin and consumed
 the remaining script body. A further attempt must correct the execution harness
 so ask commands cannot consume the runner script, then get fresh launch-review
 approval.
@@ -164,7 +164,7 @@ Run evidence:
 Observed blockers from the executed attempts:
 
 - Variant A mounted `phase6b-l0-cc-bridge-orchestrator`, but the compact ask targeted
-  `cc-bridge_orchestrator`, so `cc-bridge_test ask` returned `unknown agent`.
+  `cc-bridge_orchestrator`, so `cc_bridge_test ask` returned `unknown agent`.
 - Variant B proposal was rejected before apply because the generated proposal
   id exceeded the current agent-name length/regex; corrected repeat requests
   keep both the proposal id and generated agent ids inside that regex.
@@ -174,7 +174,7 @@ Observed blockers from the executed attempts:
   dynamic A agent in `ps`/config-derived status; cleanup was therefore not a
   pass condition.
 - The corrected repeat submitted variant A successfully, then stopped because
-  the stdin-fed shell harness let `cc-bridge_test ask` consume the remaining runner
+  the stdin-fed shell harness let `cc_bridge_test ask` consume the remaining runner
   text as ask stdin. Corrected repeat requests materialize `run_l0.sh` and
   redirects every `run_l0_command` child stdin from `/dev/null`.
 - Repeat2 proved the stdin fix but surfaced a profile-capacity/release blocker:
@@ -238,7 +238,7 @@ Source checkout and source wrapper:
 
 ```text
 /home/bfly/yunwei/cc-bridge_source
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test
 ```
 
 The lab root is intentionally outside `/home/bfly/yunwei/cc-bridge_source`.
@@ -694,17 +694,17 @@ cat > "$PHASE6B_L0_PROJECT/drafts/phase6b-l0-mount-topology-b-resident-planning-
 JSON
 
 run_l0_required diagnose \
-  /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose
+  /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose
 
 run_l0_required config_validate_initial \
-  /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L0_PROJECT" config validate
+  /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L0_PROJECT" config validate
 
 run_l0_required start_project \
-  /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L0_PROJECT"
+  /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L0_PROJECT"
 
 # B-only: resident planning group mount, only orchestrator asked.
 run_l0_required topology_b_propose \
-  /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L0_PROJECT" \
+  /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L0_PROJECT" \
   loop topology propose \
   --loop-id p6bl0b \
   --from "$PHASE6B_L0_PROJECT/drafts/phase6b-l0-mount-topology-b-resident-planning-group.json" \
@@ -712,7 +712,7 @@ run_l0_required topology_b_propose \
   --json
 
 run_l0_required topology_b_commit_apply \
-  /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L0_PROJECT" \
+  /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L0_PROJECT" \
   loop topology commit \
   --loop-id p6bl0b \
   --proposal p6bl0b-plan \
@@ -721,26 +721,26 @@ run_l0_required topology_b_commit_apply \
 
 # The wrapper enforces PHASE6B_L0_TIMEOUT_SECONDS for this compact submit-only ask.
 run_l0_command ask_b_orchestrator_compact \
-  /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L0_PROJECT" \
+  /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L0_PROJECT" \
   ask \
   --compact \
   p6bl0b-orchestrator \
   "Phase 6B L0 runtime sanity only. Reply with a short reachability acknowledgement. Do not change task status, topology, files, or plan state."
 
 run_l0_command ps_b_after_ask \
-  /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L0_PROJECT" ps
+  /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L0_PROJECT" ps
 
 run_l0_required topology_b_release \
-  /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L0_PROJECT" \
+  /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L0_PROJECT" \
   loop topology release \
   --loop-id p6bl0b \
   --json
 
 run_l0_required ps_b_after_release \
-  /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L0_PROJECT" ps
+  /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L0_PROJECT" ps
 
 run_l0_required config_validate_after_b \
-  /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L0_PROJECT" config validate
+  /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L0_PROJECT" config validate
 
 # After the run, talk2 normalizes B7 from the exact inputs/outputs listed in
 # the "Talk2-Owned B7 Normalization Procedure" section below. Provider replies
@@ -1304,7 +1304,7 @@ export HOME="$PHASE6B_L0_ROOT/source_home"
 export CC_BRIDGE_SOURCE_HOME="$PHASE6B_L0_ROOT/source_home"
 export AGENT_ROLES_STORE="$PHASE6B_L0_ROOT/roles"
 
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L0_PROJECT" kill
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L0_PROJECT" kill
 ```
 
 ## Expected Evidence Files
@@ -1417,7 +1417,7 @@ docs/plantree/plans/agentic-loop-workflow/history/phase6b-real-provider-l0-b-onl
 Required sections:
 
 - status and claim boundary;
-- approved lab root, source checkout, `cc-bridge_test`, `HOME`,
+- approved lab root, source checkout, `cc_bridge_test`, `HOME`,
   `CC_BRIDGE_SOURCE_HOME`, provider-home path, and `AGENT_ROLES_STORE`;
 - provider profile map and inherited-provider-home risk decision;
 - command sequence actually run, with return codes, command-log path, script

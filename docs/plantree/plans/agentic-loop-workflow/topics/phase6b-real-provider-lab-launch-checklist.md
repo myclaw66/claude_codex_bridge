@@ -110,7 +110,7 @@ gate:
   repair, and obtain fresh launch-specific reviewer approval before any runtime
   command. The current fresh-packet lane is worker3 `job_2faf4fd57789`.
 - A future L1-L4 or L5 launch packet must prove that every supervisor artifact
-  passed to `cc-bridge plan task-artifact --file`, including route, detail, terminal,
+  passed to `cc_bridge plan task-artifact --file`, including route, detail, terminal,
   and round-evidence files, is created or copied inside the lab project root.
   Files under only the outer lab root are invalid for `plan task-artifact
   --file`.
@@ -125,7 +125,7 @@ Current L0 request draft:
   consumed. The repeat run submitted variant A ask job `job_25a9c7e4a9b6`, but
   its command log stopped after `ask_a_orchestrator_compact` because the
   supervisor execution harness piped the frozen script through stdin and
-  `cc-bridge_test ask` inherited/consumed the remaining script body. Reviewer2
+  `cc_bridge_test ask` inherited/consumed the remaining script body. Reviewer2
   `job_041526ab5f10` then approved one repeat2 run; that approval is consumed.
   Repeat2 proved the stdin fix and reached variant B, but it did not pass:
   variant A compact ask submitted as `job_40835bfeed99`, A release left the
@@ -187,10 +187,10 @@ Stop before or during the lab if any condition is observed:
 
 - commands would run from `/home/bfly/yunwei/cc-bridge_source` instead of the
   external source-wrapper root;
-- `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose` fails from the approved
+- `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose` fails from the approved
   external root;
 - any supervisor route, detail, terminal, or round-evidence file that will be
-  passed to `cc-bridge plan task-artifact --file` is outside the lab project root;
+  passed to `cc_bridge plan task-artifact --file` is outside the lab project root;
 - a real-provider launch script exports lab-local `HOME` or `CC_BRIDGE_SOURCE_HOME`
   and therefore hides the current system provider environment;
 - `AGENT_ROLES_STORE` is not the approved lab-local role store when the packet
@@ -249,7 +249,7 @@ Accepted classifications remain:
 
 The Phase 6B B7 report must include:
 
-- exact lab root, source checkout, `cc-bridge_test` path, provider-environment
+- exact lab root, source checkout, `cc_bridge_test` path, provider-environment
   policy, and `AGENT_ROLES_STORE`;
 - provider profile selection and any provider-specific limits or safety
   controls;

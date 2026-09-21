@@ -9,7 +9,7 @@ Define the repair for the second Phase 6B L0 `test_design_failure` before any
 new real-provider launch approval is requested.
 
 This plan is not approval to run L0. It is a reviewable work package for fixing
-the launch harness and, optionally, hardening `cc-bridge ask`/Ask skill guidance so
+the launch harness and, optionally, hardening `cc_bridge ask`/Ask skill guidance so
 future scripts cannot accidentally feed runner text into an ask message.
 
 ## Current Evidence
@@ -44,7 +44,7 @@ The approved command block was executed by piping Markdown-extracted shell text
 into `bash`. That made the shell script body the stdin stream for every child
 process that inherited stdin.
 
-`cc-bridge ask` intentionally supports stdin as message text:
+`cc_bridge ask` intentionally supports stdin as message text:
 
 - Ask skill examples use stdin/heredoc for message bodies.
 - [lib/cli/parser.py](/home/bfly/yunwei/cc-bridge_source/lib/cli/parser.py:108)
@@ -52,7 +52,7 @@ process that inherited stdin.
 - [lib/cli/parser_runtime/ask.py](/home/bfly/yunwei/cc-bridge_source/lib/cli/parser_runtime/ask.py:94)
   appends stdin text to the ask message.
 
-Therefore a long script must not call `cc-bridge ask` while the script itself is being
+Therefore a long script must not call `cc_bridge ask` while the script itself is being
 fed through stdin unless the ask subprocess stdin is explicitly closed or
 redirected. This was a launch-harness defect, not valid evidence about real
 provider capability.
@@ -87,8 +87,8 @@ This is enough to fix the observed failure without changing product behavior.
 These are useful but should not be required for the next L0 if they would slow
 the launch harness repair:
 
-- Add `cc-bridge ask --no-stdin` and teach scripts to use it.
-- Or change `cc-bridge ask` to read stdin only when no positional message is present.
+- Add `cc_bridge ask --no-stdin` and teach scripts to use it.
+- Or change `cc_bridge ask` to read stdin only when no positional message is present.
 - Or reject positional message plus non-empty stdin unless `--append-stdin` is
   explicit.
 - Update Ask skill guidance: do not invoke `ask` inside stdin-fed scripts; use a
@@ -99,7 +99,7 @@ Any product-level behavior change needs compatibility review because current
 Ask skill and CLI behavior intentionally support stdin messages.
 
 Deferred follow-up: product-level stdin hardening remains open after the
-repeat2 harness repair. Candidate changes include `cc-bridge ask --no-stdin`, an
+repeat2 harness repair. Candidate changes include `cc_bridge ask --no-stdin`, an
 explicit `--append-stdin` policy, or Ask skill guidance updates. These are not
 blockers for repeat2 launch-review because the immediate accepted scope is
 docs/harness only.
@@ -136,7 +136,7 @@ review:
 ## Owner Decisions Applied
 
 - Immediate worker scope is docs/harness only. Product-level
-  `cc-bridge ask --no-stdin` or stdin policy changes are deferred.
+  `cc_bridge ask --no-stdin` or stdin policy changes are deferred.
 - The next fresh root is fixed as
   `/home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-repeat2-20260704`.
 - The launch request embeds the full reviewed `run_l0.sh` materializer instead

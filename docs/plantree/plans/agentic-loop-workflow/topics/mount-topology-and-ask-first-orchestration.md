@@ -229,7 +229,7 @@ Activation:
 V1 should use explicit runner calls, not a watcher:
 
 ```text
-cc-bridge loop runner --once
+cc_bridge loop runner --once
   reads task_packet status
   if ready_for_orchestration:
     validates the single-unit template or asks cc-bridge_orchestrator once
@@ -297,7 +297,7 @@ execution phase numbers, gates, tests, and review indicators.
 
 ### Design Step B: Mount topology schema split
 
-- Keep existing `cc-bridge loop topology` commands.
+- Keep existing `cc_bridge loop topology` commands.
 - Add validation mode that treats topology as mount-only.
 - Introduce `agent_mount_topology.*` aliases or schema name while preserving
   backward-compatible read of `agent_topology.*`.
@@ -306,7 +306,7 @@ execution phase numbers, gates, tests, and review indicators.
 
 ### Design Step C: Ask-first source smoke
 
-Run from `/home/bfly/yunwei/test_ccb2` with source `cc-bridge_test` and fake
+Run from `/home/bfly/yunwei/test_ccb2` with source `cc_bridge_test` and fake
 providers:
 
 1. Create a task packet and execution contract.
@@ -349,7 +349,7 @@ providers:
   `ready_for_orchestration`. A low-risk synthesized contract is allowed only
   behind an explicit flag and must write provenance.
 - Resolved V1 preference: `orchestration_notes.md` should be imported through
-  `cc-bridge plan task-artifact` as task evidence, not stored only as loop-local
+  `cc_bridge plan task-artifact` as task evidence, not stored only as loop-local
   runtime evidence, so semantic route choices remain reviewable from
   plan-tree.
 - How long old `agent_topology.*` dispatch support remains available after the

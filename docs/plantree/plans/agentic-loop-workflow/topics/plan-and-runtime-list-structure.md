@@ -272,35 +272,35 @@ draft artifacts and pass file refs to scripts.
 Minimum CC_BRIDGE-owned write surfaces:
 
 ```bash
-cc-bridge plan task-create --plan <plan-slug> --title "<title>"
-cc-bridge plan task-artifact --task <task-id> \
+cc_bridge plan task-create --plan <plan-slug> --title "<title>"
+cc_bridge plan task-artifact --task <task-id> \
   --kind <requirements|acceptance|verification|risk|handoff|review|completion|round_pass|round_partial|round_replan|round_blocker> \
   --file <path>
-cc-bridge plan task-status --task <task-id> --status <draft|ready|running|partial|replan_required|done|blocked>
-cc-bridge plan task-bind-loop --task <task-id> --loop <loop-id>
-cc-bridge plan task-import-round --task <task-id> --loop <loop-id> --result <pass|partial|replan_required|blocked> --report <path>
-cc-bridge plan task-sync --task <task-id> --loop <loop-id>
+cc_bridge plan task-status --task <task-id> --status <draft|ready|running|partial|replan_required|done|blocked>
+cc_bridge plan task-bind-loop --task <task-id> --loop <loop-id>
+cc_bridge plan task-import-round --task <task-id> --loop <loop-id> --result <pass|partial|replan_required|blocked> --report <path>
+cc_bridge plan task-sync --task <task-id> --loop <loop-id>
 
-cc-bridge loop create --task <task-id>
-cc-bridge loop list --active
-cc-bridge loop breadcrumb --loop <loop-id>
-cc-bridge loop event --loop <loop-id> --kind <kind> --file <payload-json>
-cc-bridge loop transition --loop <loop-id> --to <phase> --owner <owner>
-cc-bridge loop ask-record --loop <loop-id> --target <agent> --job <job-id> --node <node-id>
-cc-bridge loop node-status --loop <loop-id> --node <node-id> --status <running|passed|rework|blocked|non_converged>
-cc-bridge loop branch-status --loop <loop-id> --branch <branch-id> --status <running|frozen|draining|drained>
-cc-bridge loop round-result --loop <loop-id> --result <pass|partial|replan_required|blocked> --report <path>
-cc-bridge loop run-once --task-id <task-id>
-cc-bridge loop runner --once
+cc_bridge loop create --task <task-id>
+cc_bridge loop list --active
+cc_bridge loop breadcrumb --loop <loop-id>
+cc_bridge loop event --loop <loop-id> --kind <kind> --file <payload-json>
+cc_bridge loop transition --loop <loop-id> --to <phase> --owner <owner>
+cc_bridge loop ask-record --loop <loop-id> --target <agent> --job <job-id> --node <node-id>
+cc_bridge loop node-status --loop <loop-id> --node <node-id> --status <running|passed|rework|blocked|non_converged>
+cc_bridge loop branch-status --loop <loop-id> --branch <branch-id> --status <running|frozen|draining|drained>
+cc_bridge loop round-result --loop <loop-id> --result <pass|partial|replan_required|blocked> --report <path>
+cc_bridge loop run-once --task-id <task-id>
+cc_bridge loop runner --once
 ```
 
 The first implementation may use fewer commands, but it must preserve the
 authority split:
 
-- `cc-bridge plan` writes durable task packet indexes and statuses.
-- `cc-bridge loop` writes runtime indexes, loop state, node/branch/round state, and
+- `cc_bridge plan` writes durable task packet indexes and statuses.
+- `cc_bridge loop` writes runtime indexes, loop state, node/branch/round state, and
   breadcrumbs.
-- `cc-bridge question` writes clarification artifacts.
+- `cc_bridge question` writes clarification artifacts.
 
 ## Agent Write Boundary
 

@@ -10,8 +10,8 @@ not importable.
 The brief update must include `global impact: none|bounded|macro`, its compact
 rationale, and planner backfill evidence. The detail packet remains task-local.
 
-Never run `cc-bridge plan task-artifact`, `cc-bridge plan task-status`, `cc-bridge plan
-task-create`, `cc-bridge loop`, generic `cc-bridge ask`, `cc-bridge_test`, or wrapper commands
+Never run `cc_bridge plan task-artifact`, `cc_bridge plan task-status`, `cc_bridge plan
+task-create`, `cc_bridge loop`, generic `cc_bridge ask`, `cc_bridge_test`, or wrapper commands
 from the provider session. Those commands mutate or route authority and are
 owned by the supervisor/runner script, not task_detailer. The sole managed
 Planner handoff below is the only routing exception.

@@ -371,7 +371,7 @@ Gate result: passed for source/fake scope. Direct evidence: commits
 
 ### G6 Visible Real-Provider Acceptance - Active, Two-Group Rework Passed
 
-- From `/home/bfly/yunwei/test_ccb2`, use the current source `cc-bridge_test`, inherit
+- From `/home/bfly/yunwei/test_ccb2`, use the current source `cc_bridge_test`, inherit
   system provider environment, use a lab-local Role store, and open a visible
   project/UI.
 - Start with a natural user prompt to frontdesk and inspect every handoff.
@@ -486,7 +486,7 @@ test result to report.
 ## Visible Real-Validation Campaign
 
 All runs use fresh roots under `/home/bfly/yunwei/test_ccb2`, the explicit
-source `cc-bridge_test`, inherited system provider environment, and a root-local
+source `cc_bridge_test`, inherited system provider environment, and a root-local
 `AGENT_ROLES_STORE`. The project must be opened in a separate visible terminal
 or WezTerm window. Script output alone is insufficient.
 

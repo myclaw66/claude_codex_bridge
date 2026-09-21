@@ -36,7 +36,7 @@ script-owned state and release all short-lived execution capacity.
 
 In scope:
 
-- deterministic `cc-bridge plan`, `cc-bridge question`, and `cc-bridge loop runner --once`
+- deterministic `cc_bridge plan`, `cc_bridge question`, and `cc_bridge loop runner --once`
   command chain;
 - project-local workflow RolePacks for frontdesk, planner, broker,
   plan reviewer, orchestrator, worker, checker, and round checker;
@@ -75,7 +75,7 @@ The candidate gate passes only when:
 - retained dynamic capacity count is zero;
 - generated loop workers/checkers are absent from `ps` after release;
 - final cleanup reaches `kill_status: ok`;
-- all commands run through `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test` from
+- all commands run through `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test` from
   `/home/bfly/yunwei/test_ccb2` with isolated `HOME`, `CC_BRIDGE_SOURCE_HOME`, and
   `AGENT_ROLES_STORE`.
 
@@ -96,7 +96,7 @@ CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/source_home \
 python /home/bfly/yunwei/cc-bridge_source/scripts/workflow_closure_smoke.py \
   --test-root /home/bfly/yunwei/test_ccb2 \
   --project-name workflow-min-prod-candidate-<stamp> \
-  --cc-bridge-test /home/bfly/yunwei/cc-bridge_source/cc-bridge_test \
+  --cc-bridge-test /home/bfly/yunwei/cc-bridge_source/cc_bridge_test \
   --reset --run --json
 ```
 
@@ -141,12 +141,12 @@ cleanup: kill_status ok
 
 Interpretation:
 
-- `cc-bridge loop runner --once --consume-role-output` now consumes explicit
+- `cc_bridge loop runner --once --consume-role-output` now consumes explicit
   machine-readable planner and plan-reviewer bundles from ask/watch replies;
-- planner output is committed through existing `cc-bridge plan task-artifact`
+- planner output is committed through existing `cc_bridge plan task-artifact`
   authority, not by direct agent mutation of task indexes or status;
 - plan-reviewer output imports the review artifact and commits `ready` only
-  through the existing `cc-bridge plan task-status` validation path;
+  through the existing `cc_bridge plan task-status` validation path;
 - the subsequent runner activation enters the existing orchestrator execution
   bridge, creates dynamic worker/reviewer capacity, records a round pass, and
   releases all short-lived dynamic agents.
@@ -189,7 +189,7 @@ Interpretation:
 - the current workflow runner is still submit-only for planner activation and
   does not yet consume planner replies or auto-import planner-authored
   artifacts;
-- once planner artifacts are committed through `cc-bridge plan` commands, the
+- once planner artifacts are committed through `cc_bridge plan` commands, the
   ready-task to orchestrator execution path works: the runner binds the task,
   creates dynamic worker/reviewer capacity, dispatches the round, imports round
   evidence, and releases both short-lived dynamic agents;

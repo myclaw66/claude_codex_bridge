@@ -73,7 +73,7 @@ Agents do semantic work and produce artifacts. Scripts own hard authority.
 frontdesk / planner / checker / round_checker
   produce: requests, questions, reports, plans, evidence
 
-cc-bridge plan / cc-bridge loop / cc-bridge question scripts
+cc_bridge plan / cc_bridge loop / cc_bridge question scripts
   validate and write: status, phase, owner, index, current_loop, task packet imports
 
 loop_runner
@@ -181,8 +181,8 @@ Round completion is not direct planner activation.
 ```text
 execution round ends
   -> round_checker writes semantic report
-  -> cc-bridge loop records round result
-  -> cc-bridge plan imports durable evidence
+  -> cc_bridge loop records round result
+  -> cc_bridge plan imports durable evidence
   -> loop_runner reads updated state
   -> loop_runner stops, pauses, or activates next role
 ```
@@ -294,7 +294,7 @@ through scripts and sends a compact evidence package to `frontdesk`.
 | Does the remaining work require a new plan? | planner after rehydration |
 | Is user input required? | planner or broker, surfaced through frontdesk |
 | Has the workflow reached a terminal or paused state? | loop runner |
-| Who writes terminal status? | `cc-bridge plan` / `cc-bridge loop` scripts |
+| Who writes terminal status? | `cc_bridge plan` / `cc_bridge loop` scripts |
 
 The document stores the decision result. It does not decide on its own. Agents
 recommend; loop runner evaluates state and limits; scripts write authority.
@@ -371,7 +371,7 @@ Minimal V1 role set:
 | `worker` | yes | Performs bounded work. |
 | `checker` / `code_reviewer` | yes | Node-level quality gate. |
 | `round_checker` | yes | Whole-round verifier, separate from planner. |
-| planner stewardship mode / `cc-bridge plan` | script-first | Deterministic `cc-bridge plan` commands are V1 authority; planner may audit/summarize without bypassing scripts. |
+| planner stewardship mode / `cc_bridge plan` | script-first | Deterministic `cc_bridge plan` commands are V1 authority; planner may audit/summarize without bypassing scripts. |
 | `inner_monitor` | partial/later | Deterministic health checks first; semantic monitor later. |
 
 ## V1 Command Surface
@@ -379,30 +379,30 @@ Minimal V1 role set:
 Already landed or partially landed:
 
 ```bash
-cc-bridge plan task-create
-cc-bridge plan task-artifact
-cc-bridge plan task-status
-cc-bridge plan task-show
-cc-bridge plan task-list
-cc-bridge plan breadcrumb
+cc_bridge plan task-create
+cc_bridge plan task-artifact
+cc_bridge plan task-status
+cc_bridge plan task-show
+cc_bridge plan task-list
+cc_bridge plan breadcrumb
 
-cc-bridge loop capacity ensure/status/release
-cc-bridge loop run-once --round-checker <agent>
+cc_bridge loop capacity ensure/status/release
+cc_bridge loop run-once --round-checker <agent>
 ```
 
 Needed next:
 
 ```bash
-cc-bridge plan task-bind-loop --task <task-id> --loop <loop-id>
-cc-bridge plan task-import-round --task <task-id> --loop <loop-id> \
+cc_bridge plan task-bind-loop --task <task-id> --loop <loop-id>
+cc_bridge plan task-import-round --task <task-id> --loop <loop-id> \
   --result <pass|partial|replan_required|blocked> --report <path>
-cc-bridge loop run-once --task-id <task-id>
-cc-bridge loop runner --once
-cc-bridge loop topology propose/validate/commit/reconcile/status/release
+cc_bridge loop run-once --task-id <task-id>
+cc_bridge loop runner --once
+cc_bridge loop topology propose/validate/commit/reconcile/status/release
 ```
 
 The immediate gap is removing the manual bridge between a ready task packet and
-`cc-bridge loop run-once`. The first runner should be a one-shot CLI, not a daemon.
+`cc_bridge loop run-once`. The first runner should be a one-shot CLI, not a daemon.
 Planner activation, clarification commands, and long-running runner ownership
 remain later slices.
 
@@ -410,8 +410,8 @@ remain later slices.
 
 Current proven slice:
 
-- `cc-bridge plan` creates durable task packets and enforces readiness artifacts.
-- `cc-bridge loop run-once` runs worker, reviewer, orchestrator, and round checker.
+- `cc_bridge plan` creates durable task packets and enforces readiness artifacts.
+- `cc_bridge loop run-once` runs worker, reviewer, orchestrator, and round checker.
 - Topology-driven execution is the next design target: orchestrator should
   propose a runtime workflow graph, scripts should commit desired topology,
   and the reconciler should load/release execution agents by diffing desired

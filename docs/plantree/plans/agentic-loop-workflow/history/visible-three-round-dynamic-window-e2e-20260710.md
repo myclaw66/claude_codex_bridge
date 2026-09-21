@@ -11,7 +11,7 @@ Status: PASS WITH RECOVERED PROVIDER-SESSION DEFECT
 /home/bfly/yunwei/test_ccb2/workflow-window-e2e-talk2-20260710-093408
 ```
 
-The run used the workflow worktree `cc-bridge_test`, inherited the system provider
+The run used the workflow worktree `cc_bridge_test`, inherited the system provider
 environment, and used the project-local role store under `roles/`. The V2
 project config statically mounted only `frontdesk:codex` in `cc-bridge-user` and
 `planner:codex` in `cc-bridge-plan`. Orchestrator, round reviewer, coder, and code

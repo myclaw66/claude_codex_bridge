@@ -464,7 +464,7 @@ EOF
 
 Status: lab-local launch plan root
 
-This minimal plan root exists so `cc-bridge plan task-create --plan
+This minimal plan root exists so `cc_bridge plan task-create --plan
 phase6b-real-provider-l5` can create task records for the supervised L5
 partial-only run.
 EOF
@@ -598,18 +598,18 @@ create_task_record() {
   validate_plan_root
   create_task_files
   run_required "${task_id}__task_create" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L5_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L5_PROJECT" \
     plan task-create --plan "$PHASE6B_L5_PLAN_SLUG" --title "$task_id" --task-id "$task_id" --json
   run_required "${task_id}__artifact_task_packet" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L5_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L5_PROJECT" \
     plan task-artifact --task "$task_id" --kind task_packet \
     --file "$PHASE6B_L5_PROJECT/drafts/${task_id}.task_packet.md" --json
   run_required "${task_id}__artifact_execution_contract" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L5_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L5_PROJECT" \
     plan task-artifact --task "$task_id" --kind execution_contract \
     --file "$PHASE6B_L5_PROJECT/drafts/${task_id}.execution_contract.md" --json
   run_required "${task_id}__ready_for_orchestration" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L5_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L5_PROJECT" \
     plan task-status --task "$task_id" --status ready_for_orchestration \
     --next-owner orchestrator --activation-reason phase6b_l5_partial_launch --json
 }
@@ -617,7 +617,7 @@ create_task_record() {
 activate_orchestrator_and_stop() {
   local task_id="$PHASE6B_L5_TASK_ID"
   run_required "${task_id}__activate_orchestrator" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L5_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L5_PROJECT" \
     loop runner --once --timeout "$PHASE6B_L5_TIMEOUT_SECONDS" --json
   echo "STOP: supervisor must import direct_execution route for $task_id before continuing." >&2
 }
@@ -635,7 +635,7 @@ import_supervisor_route() {
     exit 71
   fi
   run_required "${task_id}__import_orchestration_notes_direct_execution" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L5_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L5_PROJECT" \
     plan task-artifact --task "$task_id" --kind orchestration_notes \
     --file "$notes_file" --route "$observed_route" --json
 }
@@ -643,7 +643,7 @@ import_supervisor_route() {
 run_direct_execution_round() {
   local task_id="$PHASE6B_L5_TASK_ID"
   run_required "${task_id}__run_direct_execution_round" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L5_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L5_PROJECT" \
     loop runner --once --timeout "$PHASE6B_L5_TIMEOUT_SECONDS" --json
   echo "STOP: supervisor must capture partial evidence and round_summary before B7." >&2
 }
@@ -660,10 +660,10 @@ finalize_partial_evidence() {
   require_supervisor_file "$task_id" runtime_residue.json >/dev/null
   require_supervisor_file "$task_id" release.json >/dev/null
   run_required "${task_id}__task_show_after_round" \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L5_PROJECT" \
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L5_PROJECT" \
     plan task-show --task "$task_id" --json
   run_required config_validate_after_l5 \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L5_PROJECT" config validate
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L5_PROJECT" config validate
 }
 
 init_lab() {
@@ -674,11 +674,11 @@ init_lab() {
   materialize_plan_root
   seed_rolepacks
   write_fixtures
-  run_required diagnose /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose
+  run_required diagnose /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose
   run_required config_validate_initial \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L5_PROJECT" config validate
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L5_PROJECT" config validate
   run_required start_project \
-    /home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project "$PHASE6B_L5_PROJECT"
+    /home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project "$PHASE6B_L5_PROJECT"
 }
 
 main() {

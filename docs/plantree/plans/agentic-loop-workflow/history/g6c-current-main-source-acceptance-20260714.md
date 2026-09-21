@@ -76,7 +76,7 @@ Result: `4992 passed, 2 skipped in 785.04s (0:13:05)`, exit `0`.
 
 After pytest, fourteen basetemp-owned restart/Phase 2 projects were identified
 from live process command lines and force-unmounted with the candidate
-`cc-bridge_test`. Direct post-cleanup checks found zero related processes, pytest
+`cc_bridge_test`. Direct post-cleanup checks found zero related processes, pytest
 instances, Unix listeners, and socket files. Git remained clean at the exact
 accepted code commit.
 

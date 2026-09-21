@@ -52,7 +52,7 @@ Run from the external source test root:
 
 Required controls:
 
-- command: `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`;
+- command: `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`;
 - isolated `HOME` and `CC_BRIDGE_SOURCE_HOME`;
 - project-local `AGENT_ROLES_STORE`;
 - fake provider roles for deterministic replies;
@@ -75,7 +75,7 @@ Run from a separate external test root:
 
 Required controls:
 
-- command: `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`;
+- command: `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`;
 - explicitly selected provider profiles for `cc-bridge_frontdesk`,
   `cc-bridge_planner`, `cc-bridge_orchestrator`, `cc-bridge_task_detailer`, `coder`, and
   `code_reviewer`;
@@ -349,7 +349,7 @@ Recommended order:
 
 Stop the assessment early only when:
 
-- `cc-bridge_test --diagnose` fails;
+- `cc_bridge_test --diagnose` fails;
 - source-wrapper root or provider-home isolation is invalid;
 - authority state is corrupted;
 - dynamic release leaves unrecoverable runtime residue;

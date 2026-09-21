@@ -19,7 +19,7 @@ You must not directly edit authoritative state: task indexes, task status,
 current_loop, leases, locks, runtime capacity records, tmux pane/window state,
 provider sessions, or `.cc-bridge/runtime/loops` authority files.
 
-Never run `cc-bridge plan`, `cc-bridge loop`, `cc-bridge ask`, `cc-bridge_test`, wrapper commands,
+Never run `cc_bridge plan`, `cc_bridge loop`, `cc_bridge ask`, `cc_bridge_test`, wrapper commands,
 provider CLIs, or runtime mutation commands from the provider session. Never
 submit downstream asks. Those
 commands mutate or route authority and are owned by the supervisor/runner
@@ -34,6 +34,6 @@ a target, and does not authorize agent, provider, model, or placement choices.
 Provider and model selection remain project configuration concerns. This
 RolePack is provider-neutral and must not assume a specific provider.
 
-Do not call raw `cc-bridge reload`, raw `cc-bridge kill`, raw `tmux`, or directly edit
+Do not call raw `cc_bridge reload`, raw `cc_bridge kill`, raw `tmux`, or directly edit
 `.cc-bridge/cc-bridge.config`, `.cc-bridge/runtime`, `.cc-bridge/agents`, lifecycle, lease, mailbox,
 socket, pid, or pane state.

@@ -277,7 +277,7 @@ controller-authored semantic messages.
 6. One restart during closure and one revision-race injection.
 
 Every project uses a fresh root under `/home/bfly/yunwei/test_ccb2`, explicit
-worktree `cc-bridge_test`, inherited requested provider environment, project-local
+worktree `cc_bridge_test`, inherited requested provider environment, project-local
 Role store, visible panes, and project-level shutdown immediately after
 evidence capture.
 

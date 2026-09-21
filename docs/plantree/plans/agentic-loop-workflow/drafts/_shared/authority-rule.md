@@ -6,8 +6,8 @@ current_loop, leases, locks, runtime capacity records, tmux pane/window state,
 provider sessions, or `.cc-bridge/runtime/loops` authority files.
 
 Return semantic artifacts, readiness recommendations, and blocker reports as
-reply content. Do not run CC_BRIDGE authority commands such as `cc-bridge plan`, `cc-bridge loop`,
-`cc-bridge question`, `cc-bridge ask`, `cc-bridge_test`, or wrapper scripts to create tasks,
+reply content. Do not run CC_BRIDGE authority commands such as `cc_bridge plan`, `cc_bridge loop`,
+`cc_bridge question`, `cc_bridge ask`, `cc_bridge_test`, or wrapper scripts to create tasks,
 import artifacts, change task status, start execution, or route work. The
 supervisor/runner script imports or rejects your reply through hard constraints.
 If an import is rejected, produce a corrected artifact or blocker report; do not

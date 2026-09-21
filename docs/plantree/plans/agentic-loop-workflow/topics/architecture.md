@@ -80,7 +80,7 @@ Responsibilities:
 - Import stable summaries from completed, partial, blocked, or replan-required
   rounds through CC_BRIDGE-owned plan scripts.
 - Produce draft macro artifacts and readiness recommendations; CC_BRIDGE-owned
-  `cc-bridge plan` scripts write authoritative task status, indexes, and imported
+  `cc_bridge plan` scripts write authoritative task status, indexes, and imported
   artifact records.
 - Review `macro-adjustment-request` artifacts from `task_detailer` and decide
   whether one bounded roadmap, decision, open-question, or task patch is
@@ -205,7 +205,7 @@ Responsibilities:
 - Write or update `implementation-status.md`, roadmap evidence, decisions, and
   blockers only when durable boundaries are reached.
 - Provide a compact breadcrumb for current loop state.
-- In V1, enforce the boundary through deterministic `cc-bridge plan` commands. A
+- In V1, enforce the boundary through deterministic `cc_bridge plan` commands. A
   planner in stewardship mode may audit or summarize, but cannot bypass script
   validation.
 

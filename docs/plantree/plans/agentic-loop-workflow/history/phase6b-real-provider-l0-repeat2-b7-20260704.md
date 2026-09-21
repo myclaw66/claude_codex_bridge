@@ -10,7 +10,7 @@ This report covers one approved Phase 6B L0 repeat2 runtime-sanity attempt only.
 ## Launch Approval
 
 - Approval artifact: `/home/bfly/yunwei/cc-bridge_source/.cc-bridge/cc-bridge-daemon/artifacts/text/completion-reply/job_041526ab5f10-art_5fb0add0afc141b7.txt`
-- Approved scope: exactly one repeat2 L0 run from `/home/bfly/yunwei/test_ccb2` using `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`.
+- Approved scope: exactly one repeat2 L0 run from `/home/bfly/yunwei/test_ccb2` using `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`.
 - Lab root: `/home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-repeat2-20260704`
 - Project root: `/home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-repeat2-20260704/l0-runtime-sanity`
 - Provider map: `cc-bridge_round_reviewer -> claude`; all other six mapped roles -> `codex`.
@@ -281,7 +281,7 @@ cd /home/bfly/yunwei/test_ccb2
 HOME=/home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-repeat2-20260704/source_home
 CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-repeat2-20260704/source_home
 AGENT_ROLES_STORE=/home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-repeat2-20260704/roles
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --project /home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-repeat2-20260704/l0-runtime-sanity kill
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --project /home/bfly/yunwei/test_ccb2/phase6-real-lab-l0-repeat2-20260704/l0-runtime-sanity kill
 ```
 
 Cleanup result:

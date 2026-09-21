@@ -20,7 +20,7 @@ example:
 docs/plantree/plans/agentic-loop-workflow/topics/phase6b-l1-l4-launch-request-sequence9-20260704.md
 ```
 
-No source-wrapper, `cc-bridge_test`, provider, L1-L4, L5, B7, cleanup, or runtime
+No source-wrapper, `cc_bridge_test`, provider, L1-L4, L5, B7, cleanup, or runtime
 command is authorized by this document.
 
 ## Evidence References

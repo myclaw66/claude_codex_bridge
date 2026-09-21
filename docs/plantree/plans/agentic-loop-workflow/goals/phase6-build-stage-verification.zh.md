@@ -34,7 +34,7 @@
 | :--- | :--- | :--- | :--- |
 | B0 | 方案包验收 | 说明文档、示意图、PDF 可读可分发 | 思路表达清楚，但不证明 runtime 能力。 |
 | B1 | 测试设计冻结 | 冻结 task matrix、复杂度阶梯、评分字段 | 后续实现不再临时改验收口径。 |
-| B2 | 脚本/状态单元门禁 | `cc-bridge plan`、artifact import、route/result enum、release guard 单测通过 | 状态机硬边界可被机器验证。 |
+| B2 | 脚本/状态单元门禁 | `cc_bridge plan`、artifact import、route/result enum、release guard 单测通过 | 状态机硬边界可被机器验证。 |
 | B3 | Fake-provider 程序矩阵 | 用真实 CC_BRIDGE runtime + fake provider 跑完整矩阵 | 程序链路支持 Phase 6A。 |
 | B4 | 真实 provider L0-L2 | 真实 provider 跑 sanity、文档任务、简单代码任务 | 基础真实单轮执行能力成立。 |
 | B5 | 真实 provider L3-L4 | 跑 detail-needed、澄清、blocked、macro adjustment | 任务细化和非成功合法终态成立。 |
@@ -100,8 +100,8 @@
 
 - task artifact schema；
 - route/result enum；
-- `cc-bridge plan task-artifact`；
-- `cc-bridge plan task-status`；
+- `cc_bridge plan task-artifact`；
+- `cc_bridge plan task-status`；
 - `round_summary` import；
 - mount topology validator；
 - dynamic release/retain guard。
@@ -143,7 +143,7 @@
 
 验证项：
 
-- 每条 smoke 使用真实 `cc-bridge_test`、真实 `.cc-bridge` runtime、真实 topology apply/reconcile。
+- 每条 smoke 使用真实 `cc_bridge_test`、真实 `.cc-bridge` runtime、真实 topology apply/reconcile。
 - fake provider 只提供确定性语义输出，不替代状态机。
 - 每条 smoke 都输出结构化 evidence row。
 - 每条 smoke cleanup 后动态执行 agent 不残留。
@@ -297,7 +297,7 @@ docs/plantree/plans/agentic-loop-workflow/history/
 - `.cc-bridge` runtime 状态损坏；
 - 权威状态被 agent 直接修改；
 - dynamic agent 无法清理；
-- `cc-bridge_test --diagnose` 失败；
+- `cc_bridge_test --diagnose` 失败；
 - 测试根或 provider home 隔离失效。
 
 不需要停止：

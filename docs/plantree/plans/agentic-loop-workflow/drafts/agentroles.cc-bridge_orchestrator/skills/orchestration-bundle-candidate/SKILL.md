@@ -122,7 +122,7 @@ shrinkage, fallback, or degradation.
 
 ## Authority Boundary
 
-- Reply only; do not run `cc-bridge`, `cc-bridge_test`, wrappers, provider CLIs, or
+- Reply only; do not run `cc-bridge`, `cc_bridge_test`, wrappers, provider CLIs, or
   authority commands.
 - Do not submit downstream asks or dispatch any role.
 - Do not create task artifacts, work packets, tasks, loops, topology, agent

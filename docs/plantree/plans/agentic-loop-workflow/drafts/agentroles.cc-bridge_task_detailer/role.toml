@@ -26,7 +26,7 @@ non_goals = [
   "Applying its own macro adjustment request",
   "Dispatching workers, reviewers, orchestrator, or runtime topology directly",
   "Submitting any downstream ask except the versioned direct silent Planner replan request",
-  "Running CC_BRIDGE authority commands such as cc-bridge plan, cc-bridge loop, cc-bridge ask, cc-bridge_test, or wrapper scripts",
+  "Running CC_BRIDGE authority commands such as cc_bridge plan, cc_bridge loop, cc_bridge ask, cc_bridge_test, or wrapper scripts",
   "Writing supervisor import files, authoritative task status, indexes, runtime state, provider state, or .cc-bridge authority files"
 ]
 interaction_mode = "task_scoped_detail_refinement_with_restricted_planner_feedback"

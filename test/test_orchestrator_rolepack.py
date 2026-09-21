@@ -28,16 +28,16 @@ WORKFLOW_DRAFTS = (
 )
 ORCHESTRATOR_ROLE = (
     WORKFLOW_DRAFTS
-    / 'agentroles.cc_bridge_orchestrator'
+    / 'agentroles.cc-bridge_orchestrator'
 )
 ROLE_EXPECTATIONS = {
-    'agentroles.cc_bridge_frontdesk': {
+    'agentroles.cc-bridge_frontdesk': {
         'default': 'frontdesk',
         'skill': 'skills/frontdesk-intake',
         'templates': ('templates/macro-task-request.md',),
         'providers': ('codex', 'claude'),
     },
-    'agentroles.cc_bridge_planner': {
+    'agentroles.cc-bridge_planner': {
         'default': 'planner',
         'skills': ('skills/planner-task-packet', 'skills/planner-closure-backfill'),
         'templates': (
@@ -49,17 +49,17 @@ ROLE_EXPECTATIONS = {
             'templates/frontdesk-status.json',
         ),
     },
-    'agentroles.cc_bridge_plan_reviewer': {
+    'agentroles.cc-bridge_plan_reviewer': {
         'default': 'plan_reviewer',
         'skill': 'skills/plan-readiness-review',
         'templates': ('templates/planner-review.md',),
     },
-    'agentroles.cc_bridge_clarification_broker': {
+    'agentroles.cc-bridge_clarification_broker': {
         'default': 'clarification_broker',
         'skill': 'skills/clarification-broker',
         'templates': ('templates/user-questions.md', 'templates/normalized-answers.jsonl'),
     },
-    'agentroles.cc_bridge_orchestrator': {
+    'agentroles.cc-bridge_orchestrator': {
         'default': 'orchestrator',
         'skill': 'skills/orchestration-bundle-candidate',
         'templates': (
@@ -70,8 +70,8 @@ ROLE_EXPECTATIONS = {
             'templates/round-aggregation.md',
         ),
     },
-    'agentroles.cc_bridge_task_detailer': {
-        'default': 'cc_bridge_task_detailer',
+    'agentroles.cc-bridge_task_detailer': {
+        'default': 'cc-bridge_task_detailer',
         'skill': 'skills/task-detail-packet',
         'templates': ('templates/detail-packet.md', 'templates/replan-request.json'),
         'providers': ('codex', 'claude'),
@@ -86,22 +86,22 @@ ROLE_EXPECTATIONS = {
         'skill': 'skills/node-check',
         'templates': ('templates/node-check-result.md',),
     },
-    'agentroles.cc_bridge_round_reviewer': {
-        'default': 'cc_bridge_round_reviewer',
+    'agentroles.cc-bridge_round_reviewer': {
+        'default': 'cc-bridge_round_reviewer',
         'skill': 'skills/round-verification',
         'templates': ('templates/round-result.md',),
     },
-    'agentroles.cc_bridge_worker': {
+    'agentroles.cc-bridge_worker': {
         'default': 'worker',
         'skill': 'skills/bounded-work-item',
         'templates': ('templates/node-work-result.md',),
     },
-    'agentroles.cc_bridge_checker': {
+    'agentroles.cc-bridge_checker': {
         'default': 'code_reviewer',
         'skill': 'skills/node-check',
         'templates': ('templates/node-check-result.md',),
     },
-    'agentroles.cc_bridge_round_checker': {
+    'agentroles.cc-bridge_round_checker': {
         'default': 'round_checker',
         'skill': 'skills/round-verification',
         'templates': ('templates/round-result.md',),
@@ -116,10 +116,10 @@ def role_root(role_id: str) -> Path:
 def test_orchestrator_rolepack_translates_cc_bridge_skills() -> None:
     manifest = load_role_manifest(ORCHESTRATOR_ROLE)
 
-    assert manifest.id == 'agentroles.cc_bridge_orchestrator'
+    assert manifest.id == 'agentroles.cc-bridge_orchestrator'
     assert manifest.default_agent_name == 'orchestrator'
     assert {'codex', 'claude', 'qwen', 'zai'} <= set(manifest.providers)
-    assert manifest.manifest['memory']['files'] == ['memory.md', 'adapters/cc_bridge/memory.md']
+    assert manifest.manifest['memory']['files'] == ['memory.md', 'adapters/cc-bridge/memory.md']
     assert manifest.manifest['skills']['codex'] == ['skills/orchestration-bundle-candidate']
     assert manifest.manifest['skills']['qwen'] == ['skills/orchestration-bundle-candidate']
 
@@ -128,19 +128,19 @@ def test_orchestrator_rolepack_is_reply_only_for_capacity_and_lifecycle() -> Non
     skill = (
         ORCHESTRATOR_ROLE
         / 'adapters'
-        / 'cc_bridge'
+        / 'cc-bridge'
         / 'skills'
         / 'orchestrator-capacity'
         / 'SKILL.md'
     ).read_text(encoding='utf-8')
 
     role_memory = (ORCHESTRATOR_ROLE / 'memory.md').read_text(encoding='utf-8')
-    adapter_memory = (ORCHESTRATOR_ROLE / 'adapters' / 'cc_bridge' / 'memory.md').read_text(encoding='utf-8')
-    adapter = (ORCHESTRATOR_ROLE / 'adapters' / 'cc_bridge' / 'adapter.toml').read_text(encoding='utf-8')
+    adapter_memory = (ORCHESTRATOR_ROLE / 'adapters' / 'cc-bridge' / 'memory.md').read_text(encoding='utf-8')
+    adapter = (ORCHESTRATOR_ROLE / 'adapters' / 'cc-bridge' / 'adapter.toml').read_text(encoding='utf-8')
     dynamic_skill = (
         ORCHESTRATOR_ROLE
         / 'adapters'
-        / 'cc_bridge'
+        / 'cc-bridge'
         / 'skills'
         / 'dynamic-agent-lifecycle'
         / 'SKILL.md'
@@ -178,7 +178,7 @@ def test_dynamic_agent_lifecycle_skill_declares_non_loop_command_boundary() -> N
     skill = (
         ORCHESTRATOR_ROLE
         / 'adapters'
-        / 'cc_bridge'
+        / 'cc-bridge'
         / 'skills'
         / 'dynamic-agent-lifecycle'
         / 'SKILL.md'
@@ -209,7 +209,7 @@ def test_orchestrator_capacity_template_keeps_placement_cc_bridge_owned() -> Non
         )
     )
 
-    assert template['placement_policy'] == 'cc_bridge_runtime_layout_manager'
+    assert template['placement_policy'] == 'cc-bridge_runtime_layout_manager'
     assert template['forbidden_placement_overrides'] == [
         'window_name',
         'window_class',
@@ -233,7 +233,7 @@ def test_workflow_rolepacks_translate_and_project_role_skills() -> None:
         else:
             assert manifest.providers == tuple(expected_providers)
             skill_providers = tuple(expected_providers)
-        assert manifest.manifest['memory']['files'] == ['memory.md', 'adapters/cc_bridge/memory.md']
+        assert manifest.manifest['memory']['files'] == ['memory.md', 'adapters/cc-bridge/memory.md']
         expected_skills = tuple(expectation['skills']) if 'skills' in expectation else (expectation['skill'],)
         for provider in skill_providers:
             assert manifest.manifest['skills'][provider] == list(expected_skills)
@@ -250,7 +250,7 @@ def test_workflow_rolepacks_include_common_authority_rule_and_templates() -> Non
     for role_id, expectation in ROLE_EXPECTATIONS.items():
         root = role_root(role_id)
         memory_files = [root / 'memory.md']
-        adapter_memory = root / 'adapters' / 'cc_bridge' / 'memory.md'
+        adapter_memory = root / 'adapters' / 'cc-bridge' / 'memory.md'
         if adapter_memory.is_file():
             memory_files.append(adapter_memory)
         memory = '\n'.join(path.read_text(encoding='utf-8') for path in memory_files)
@@ -270,12 +270,12 @@ def test_workflow_rolepacks_include_common_authority_rule_and_templates() -> Non
 
 
 def test_planner_and_task_detailer_are_reply_only_for_authority_and_routing() -> None:
-    for role_id in ('agentroles.cc_bridge_planner', 'agentroles.cc_bridge_task_detailer'):
+    for role_id in ('agentroles.cc-bridge_planner', 'agentroles.cc-bridge_task_detailer'):
         root = role_root(role_id)
         combined = '\n'.join(
             [
                 (root / 'memory.md').read_text(encoding='utf-8'),
-                (root / 'adapters' / 'cc_bridge' / 'memory.md').read_text(encoding='utf-8'),
+                (root / 'adapters' / 'cc-bridge' / 'memory.md').read_text(encoding='utf-8'),
             ]
         )
 
@@ -299,19 +299,19 @@ def test_planner_and_task_detailer_are_reply_only_for_authority_and_routing() ->
             'Use CC_BRIDGE `ask` only for macro delegation',
         ):
             assert forbidden not in combined
-        if role_id == 'agentroles.cc_bridge_task_detailer':
+        if role_id == 'agentroles.cc-bridge_task_detailer':
             assert 'Do not write detail artifacts into the project tree for later self-import' in combined
             assert 'supervisor import files' in combined
             assert 'later self-import' in combined
 
 
 def test_frontdesk_rolepack_is_read_only_intake_not_implementation() -> None:
-    root = role_root('agentroles.cc_bridge_frontdesk')
+    root = role_root('agentroles.cc-bridge_frontdesk')
     manifest = load_role_manifest(root)
     combined = '\n'.join(
         [
             (root / 'memory.md').read_text(encoding='utf-8'),
-            (root / 'adapters' / 'cc_bridge' / 'memory.md').read_text(encoding='utf-8'),
+            (root / 'adapters' / 'cc-bridge' / 'memory.md').read_text(encoding='utf-8'),
             (root / 'skills' / 'frontdesk-intake' / 'SKILL.md').read_text(encoding='utf-8'),
         ]
     )
@@ -319,7 +319,7 @@ def test_frontdesk_rolepack_is_read_only_intake_not_implementation() -> None:
     assert manifest.manifest['permissions']['read_files'] is True
     assert manifest.manifest['permissions']['write_files'] is False
     assert manifest.manifest['compatibility']['providers'] == ['codex', 'claude']
-    assert manifest.manifest['adapters']['cc_bridge']['command_surface'] == 'adapters/cc_bridge/command-surface.toml'
+    assert manifest.manifest['adapters']['cc-bridge']['command_surface'] == 'adapters/cc-bridge/command-surface.toml'
     assert 'first non-empty line exactly\n  `**Intake Evidence**`' in combined
     assert 'Every turn, classify the user message first' in combined
     assert 'Every user turn must pass this gate' in combined
@@ -352,7 +352,7 @@ def test_frontdesk_rolepack_is_read_only_intake_not_implementation() -> None:
 
 
 def test_frontdesk_final_examples_put_request_id_immediately_after_evidence_heading() -> None:
-    root = role_root('agentroles.cc_bridge_frontdesk')
+    root = role_root('agentroles.cc-bridge_frontdesk')
     skill = (root / 'skills' / 'frontdesk-intake' / 'SKILL.md').read_text(encoding='utf-8')
     template = (root / 'templates' / 'macro-task-request.md').read_text(encoding='utf-8')
 
@@ -363,7 +363,7 @@ def test_frontdesk_final_examples_put_request_id_immediately_after_evidence_head
 
 
 def test_frontdesk_rolepack_declares_one_planner_silence_handoff_surface() -> None:
-    manifest = load_role_manifest(role_root('agentroles.cc_bridge_frontdesk'))
+    manifest = load_role_manifest(role_root('agentroles.cc-bridge_frontdesk'))
     policy = load_role_command_policy(manifest)
 
     assert policy is not None
@@ -381,28 +381,28 @@ def test_frontdesk_rolepack_declares_one_planner_silence_handoff_surface() -> No
     command = policy.allowed[0]
     assert command.id == 'planner_silence_handoff'
     assert command.argv_prefix == ('ask', '--silence', '--compact', '--inline-request', '--task-id')
-    assert policy.provider_tools == (('codex', 'cc_bridge_frontdesk_ask_planner'),)
+    assert policy.provider_tools == (('codex', 'cc-bridge_frontdesk_ask_planner'),)
     assert command.required_args == ('act-frontdesk-<request-id>', 'planner')
-    assert command.stdin_schema == 'inline:cc_bridge.frontdesk.intake.v1'
-    assert command.output_schema == 'cc_bridge.ask.submission_receipt.v1'
+    assert command.stdin_schema == 'inline:cc-bridge.frontdesk.intake.v1'
+    assert command.output_schema == 'cc-bridge.ask.submission_receipt.v1'
     assert command.idempotency_key == 'frontdesk_request_id_and_intake_sha256'
 
 
 def test_planner_rolepack_is_closed_reply_only_planning_surface() -> None:
-    root = role_root('agentroles.cc_bridge_planner')
+    root = role_root('agentroles.cc-bridge_planner')
     manifest = load_role_manifest(root)
     policy = load_role_command_policy(manifest)
     combined = '\n'.join(
         [
             (root / 'memory.md').read_text(encoding='utf-8'),
-            (root / 'adapters' / 'cc_bridge' / 'memory.md').read_text(encoding='utf-8'),
+            (root / 'adapters' / 'cc-bridge' / 'memory.md').read_text(encoding='utf-8'),
             (root / 'skills' / 'planner-task-packet' / 'SKILL.md').read_text(encoding='utf-8'),
         ]
     )
 
     assert manifest.manifest['permissions']['read_files'] is False
     assert manifest.manifest['permissions']['write_files'] is False
-    assert manifest.manifest['adapters']['cc_bridge']['command_surface'] == 'adapters/cc_bridge/command-surface.toml'
+    assert manifest.manifest['adapters']['cc-bridge']['command_surface'] == 'adapters/cc-bridge/command-surface.toml'
     assert policy is not None
     assert policy.mode == 'deny_all_except'
     assert policy.enforcement == 'required'
@@ -432,7 +432,7 @@ def test_planner_rolepack_is_closed_reply_only_planning_surface() -> None:
 
 
 def test_planner_rolepack_gates_git_verification_on_explicit_project_capability() -> None:
-    root = role_root('agentroles.cc_bridge_planner')
+    root = role_root('agentroles.cc-bridge_planner')
     combined = '\n'.join(
         [
             (root / 'memory.md').read_text(encoding='utf-8'),
@@ -453,7 +453,7 @@ def test_planner_rolepack_gates_git_verification_on_explicit_project_capability(
 
 
 def test_planner_rolepack_defines_bounded_detail_ready_terminal_constraint() -> None:
-    root = role_root('agentroles.cc_bridge_planner')
+    root = role_root('agentroles.cc-bridge_planner')
     combined = '\n'.join(
         [
             (root / 'memory.md').read_text(encoding='utf-8'),
@@ -485,7 +485,7 @@ def test_planner_rolepack_defines_bounded_detail_ready_terminal_constraint() -> 
 
 
 def test_planner_rolepack_terminal_constraint_fails_closed_without_changing_ordinary_flow() -> None:
-    root = role_root('agentroles.cc_bridge_planner')
+    root = role_root('agentroles.cc-bridge_planner')
     combined = '\n'.join(
         [
             (root / 'memory.md').read_text(encoding='utf-8'),
@@ -505,7 +505,7 @@ def test_planner_rolepack_terminal_constraint_fails_closed_without_changing_ordi
 
 
 def test_frontdesk_rolepack_preserves_explicit_project_capability_for_planner() -> None:
-    root = role_root('agentroles.cc_bridge_frontdesk')
+    root = role_root('agentroles.cc-bridge_frontdesk')
     combined = '\n'.join(
         [
             (root / 'memory.md').read_text(encoding='utf-8'),
@@ -521,12 +521,12 @@ def test_frontdesk_rolepack_preserves_explicit_project_capability_for_planner() 
 
 
 def test_planner_rolepack_defines_revision_fenced_replan_and_task_set_closure_modes() -> None:
-    root = role_root('agentroles.cc_bridge_planner')
+    root = role_root('agentroles.cc-bridge_planner')
     manifest = load_role_manifest(root)
     combined = '\n'.join(
         [
             (root / 'memory.md').read_text(encoding='utf-8'),
-            (root / 'adapters' / 'cc_bridge' / 'memory.md').read_text(encoding='utf-8'),
+            (root / 'adapters' / 'cc-bridge' / 'memory.md').read_text(encoding='utf-8'),
             (root / 'skills' / 'planner-closure-backfill' / 'SKILL.md').read_text(encoding='utf-8'),
             (root / 'templates' / 'planner-backfill-detailer-replan.json').read_text(encoding='utf-8'),
             (root / 'templates' / 'planner-backfill.json').read_text(encoding='utf-8'),
@@ -537,7 +537,7 @@ def test_planner_rolepack_defines_revision_fenced_replan_and_task_set_closure_mo
     assert 'skills/planner-closure-backfill' in manifest.manifest['skills']['codex']
     assert 'detailer_replan' in combined
     assert 'task_set_closure' in combined
-    assert 'cc_bridge.planner.backfill_proposal.v1' in combined
+    assert 'cc-bridge.planner.backfill_proposal.v1' in combined
     assert 'expected_plan_revision' in combined
     assert 'closure_evidence_digest' in combined
     assert 'accepted_scope' in combined
@@ -545,7 +545,7 @@ def test_planner_rolepack_defines_revision_fenced_replan_and_task_set_closure_mo
     assert 'pass -> closure_complete' in combined
     assert 'replan_required -> task_set_replanned' in combined
     assert 'selected|workflow_terminal|blocked_none' in combined
-    assert 'cc_bridge.planner.frontdesk_status.v1' in combined
+    assert 'cc-bridge.planner.frontdesk_status.v1' in combined
     assert 'multiple replan children produce one coherent macro proposal' in combined.lower()
     assert 'never output a complete semantic result for non-pass' in combined.lower()
     assert 'do not modify plantree or send frontdesk messages' in combined.lower()
@@ -562,7 +562,7 @@ def test_planner_rolepack_defines_revision_fenced_replan_and_task_set_closure_mo
 
 
 def test_planner_backfill_templates_are_complete_mode_specific_parser_examples() -> None:
-    root = role_root('agentroles.cc_bridge_planner')
+    root = role_root('agentroles.cc-bridge_planner')
     detailer_path = root / 'templates' / 'planner-backfill-detailer-replan.json'
     closure_path = root / 'templates' / 'planner-backfill.json'
     detailer = json.loads(detailer_path.read_text(encoding='utf-8'))
@@ -574,7 +574,7 @@ def test_planner_backfill_templates_are_complete_mode_specific_parser_examples()
         proposal = parse_planner_feedback_reply(
             '**planner-backfill.json**\n```json\n' + json.dumps(payload) + '\n```\n'
         )
-        assert proposal.schema == 'cc_bridge.planner.backfill_proposal.v1'
+        assert proposal.schema == 'cc-bridge.planner.backfill_proposal.v1'
         assert proposal.frontdesk_status['aggregate_result'] == proposal.aggregate_result
 
     assert detailer['mode'] == 'detailer_replan'
@@ -594,7 +594,7 @@ def test_planner_backfill_templates_are_complete_mode_specific_parser_examples()
 
 
 def test_frontdesk_rolepack_reports_validated_closure_without_reinterpreting_result() -> None:
-    root = role_root('agentroles.cc_bridge_frontdesk')
+    root = role_root('agentroles.cc-bridge_frontdesk')
     combined = '\n'.join(
         [
             (root / 'memory.md').read_text(encoding='utf-8'),
@@ -603,7 +603,7 @@ def test_frontdesk_rolepack_reports_validated_closure_without_reinterpreting_res
         ]
     )
 
-    assert 'cc_bridge.planner.frontdesk_status.v1' in combined
+    assert 'cc-bridge.planner.frontdesk_status.v1' in combined
     assert 'pass|partial|replan_required|blocked' in combined
     assert 'accepted scope' in combined.lower()
     assert 'unresolved scope' in combined.lower()
@@ -617,7 +617,7 @@ def test_coder_rolepack_is_workspace_only_and_reply_only_for_workflow_authority(
     combined = '\n'.join(
         [
             (root / 'memory.md').read_text(encoding='utf-8'),
-            (root / 'adapters' / 'cc_bridge' / 'memory.md').read_text(encoding='utf-8'),
+            (root / 'adapters' / 'cc-bridge' / 'memory.md').read_text(encoding='utf-8'),
             (root / 'skills' / 'bounded-work-item' / 'SKILL.md').read_text(encoding='utf-8'),
         ]
     )
@@ -637,7 +637,7 @@ def test_coder_rolepack_is_workspace_only_and_reply_only_for_workflow_authority(
 
 def _combined_role_contract(role_id: str) -> str:
     root = role_root(role_id)
-    paths = [root / 'memory.md', root / 'adapters' / 'cc_bridge' / 'memory.md']
+    paths = [root / 'memory.md', root / 'adapters' / 'cc-bridge' / 'memory.md']
     manifest = load_role_manifest(root)
     for skill in manifest.manifest['skills']['codex']:
         paths.append(root / skill / 'SKILL.md')
@@ -647,7 +647,7 @@ def _combined_role_contract(role_id: str) -> str:
 def test_p1_orchestrator_rolepack_declares_adaptive_bundle_contract() -> None:
     manifest = load_role_manifest(ORCHESTRATOR_ROLE)
     activation = manifest.table('activation')
-    combined = _combined_role_contract('agentroles.cc_bridge_orchestrator')
+    combined = _combined_role_contract('agentroles.cc-bridge_orchestrator')
     template = (
         ORCHESTRATOR_ROLE / 'templates' / 'orchestration-bundle-candidate.md'
     ).read_text(encoding='utf-8')
@@ -672,7 +672,7 @@ def test_p1_orchestrator_rolepack_declares_adaptive_bundle_contract() -> None:
         'integration',
         'policy',
     }
-    assert candidate['schema'] == 'cc_bridge.loop.orchestration_bundle_candidate.v1'
+    assert candidate['schema'] == 'cc-bridge.loop.orchestration_bundle_candidate.v1'
     assert set(candidate['selection']) == {
         'workgroup_count',
         'complexity',
@@ -768,7 +768,7 @@ def test_p1_node_rolepacks_bind_canonical_packet_and_exact_review_tree() -> None
     assert 'do not rely on' in coder_contract.lower()
     coder_root = role_root('agentroles.coder')
     coder_skill = (coder_root / 'skills' / 'assigned-review-chain' / 'SKILL.md').read_text(encoding='utf-8')
-    coder_adapter = (coder_root / 'adapters' / 'cc_bridge' / 'memory.md').read_text(encoding='utf-8')
+    coder_adapter = (coder_root / 'adapters' / 'cc-bridge' / 'memory.md').read_text(encoding='utf-8')
     coder_readme = (coder_root / 'README.md').read_text(encoding='utf-8')
     for required in ('Node:', 'Workgroup:', 'Visible workspace identity:', 'Canonical node work packet ref:', 'Allowed paths:', 'Acceptance refs:', 'Verification refs:', 'Verification results:', 'Changed paths:', 'Blockers:'):
         assert required in coder_skill
@@ -838,17 +838,17 @@ def test_p1_node_rolepacks_bind_canonical_packet_and_exact_review_tree() -> None
 
 
 def test_p1_round_reviewer_is_immaculate_and_rejects_unproven_integration() -> None:
-    root = role_root('agentroles.cc_bridge_round_reviewer')
+    root = role_root('agentroles.cc-bridge_round_reviewer')
     manifest = load_role_manifest(root)
     policy = load_role_command_policy(manifest)
-    combined = _combined_role_contract('agentroles.cc_bridge_round_reviewer')
+    combined = _combined_role_contract('agentroles.cc-bridge_round_reviewer')
     template = (root / 'templates' / 'round-result.md').read_text(encoding='utf-8')
 
     assert manifest.table('activation')['context_lifecycle'] == 'immaculate'
     assert manifest.table('activation')['context_scope'] == 'activation'
     assert manifest.manifest['permissions']['read_files'] is False
     assert manifest.manifest['permissions']['write_files'] is False
-    assert manifest.manifest['adapters']['cc_bridge']['command_surface'] == 'adapters/cc_bridge/command-surface.toml'
+    assert manifest.manifest['adapters']['cc-bridge']['command_surface'] == 'adapters/cc-bridge/command-surface.toml'
     assert policy is not None
     assert policy.mode == 'deny_all_except'
     assert policy.enforcement == 'required'
@@ -861,7 +861,7 @@ def test_p1_round_reviewer_is_immaculate_and_rejects_unproven_integration() -> N
     assert policy.provider_tools == ()
     assert claude_permission_allowlist(policy) == ()
     assert {
-        'shell_exec', 'file_read', 'file_write', 'test_exec', 'generic_cc_bridge',
+        'shell_exec', 'file_read', 'file_write', 'test_exec', 'generic_cc-bridge',
         'wait', 'watch', 'ask', 'authority_mutation',
     } <= set(policy.forbidden_effects)
     assert template.startswith('round result: pass|partial|replan_required|blocked')
@@ -882,9 +882,9 @@ def test_p1_round_reviewer_is_immaculate_and_rejects_unproven_integration() -> N
 
 
 def test_p1_task_detailer_returns_global_impact_and_planner_backfill_evidence() -> None:
-    root = role_root('agentroles.cc_bridge_task_detailer')
+    root = role_root('agentroles.cc-bridge_task_detailer')
     manifest = load_role_manifest(root)
-    combined = _combined_role_contract('agentroles.cc_bridge_task_detailer')
+    combined = _combined_role_contract('agentroles.cc-bridge_task_detailer')
     template = (root / 'templates' / 'detail-packet.md').read_text(encoding='utf-8')
 
     assert manifest.table('activation')['context_lifecycle'] == 'immaculate'
@@ -899,14 +899,14 @@ def test_p1_task_detailer_returns_global_impact_and_planner_backfill_evidence() 
         assert heading in template
     assert 'detail-packet.manifest.json:' in template
     assert '```json' in template
-    assert '"schema": "cc_bridge.detail_packet_manifest.v1"' in template
+    assert '"schema": "cc-bridge.detail_packet_manifest.v1"' in template
 
 
 def test_p2_task_detailer_has_only_restricted_direct_planner_replan_capability() -> None:
-    root = role_root('agentroles.cc_bridge_task_detailer')
+    root = role_root('agentroles.cc-bridge_task_detailer')
     manifest = load_role_manifest(root)
     policy = load_role_command_policy(manifest)
-    combined = _combined_role_contract('agentroles.cc_bridge_task_detailer').lower()
+    combined = _combined_role_contract('agentroles.cc-bridge_task_detailer').lower()
     readme = (root / 'README.md').read_text(encoding='utf-8')
 
     assert manifest.manifest['permissions']['write_files'] is False
@@ -916,12 +916,12 @@ def test_p2_task_detailer_has_only_restricted_direct_planner_replan_capability()
     assert policy.generic_shell is False
     assert policy.generic_cc_bridge is False
     assert policy.allowed_effects == ('detailer_planner_replan_handoff',)
-    assert policy.provider_tools == (('codex', 'cc_bridge_task_detailer_replan_planner'),)
+    assert policy.provider_tools == (('codex', 'cc-bridge_task_detailer_replan_planner'),)
     assert len(policy.allowed) == 1
     command = policy.allowed[0]
     assert command.argv_prefix == ('ask', '--silence', '--compact', '--inline-request', '--task-id')
     assert command.required_args == ('detailer-replan-<request-identity-prefix>', 'planner')
-    assert command.stdin_schema == 'cc_bridge.detailer.replan_request.v1'
+    assert command.stdin_schema == 'cc-bridge.detailer.replan_request.v1'
     assert claude_permission_allowlist(policy) == (
         'Bash(ask --silence --compact --inline-request --task-id *)',
     )
@@ -931,7 +931,7 @@ def test_p2_task_detailer_has_only_restricted_direct_planner_replan_capability()
         'planner_replan_required',
         'needs_clarification',
         'blocked',
-        'cc_bridge.detailer.replan_request.v1',
+        'cc-bridge.detailer.replan_request.v1',
         'exactly one direct',
         'resident `planner`',
         'do not add `--chain`',
@@ -945,10 +945,10 @@ def test_p2_task_detailer_has_only_restricted_direct_planner_replan_capability()
 
 def test_p1_rolepacks_are_provider_neutral_and_keep_project_config_authority() -> None:
     role_ids = (
-        'agentroles.cc_bridge_orchestrator',
+        'agentroles.cc-bridge_orchestrator',
         'agentroles.coder',
         'agentroles.code_reviewer',
-        'agentroles.cc_bridge_round_reviewer',
+        'agentroles.cc-bridge_round_reviewer',
     )
     for role_id in role_ids:
         manifest = load_role_manifest(role_root(role_id))
@@ -963,32 +963,32 @@ def test_p1_rolepacks_are_provider_neutral_and_keep_project_config_authority() -
 def test_round_reviewer_and_orchestrator_templates_share_result_contract() -> None:
     accepted_round_template = (
         WORKFLOW_DRAFTS
-        / 'agentroles.cc_bridge_round_reviewer'
+        / 'agentroles.cc-bridge_round_reviewer'
         / 'templates'
         / 'round-result.md'
     ).read_text(encoding='utf-8')
     accepted_round_memory = (
         WORKFLOW_DRAFTS
-        / 'agentroles.cc_bridge_round_reviewer'
+        / 'agentroles.cc-bridge_round_reviewer'
         / 'memory.md'
     ).read_text(encoding='utf-8')
     accepted_round_adapter = (
         WORKFLOW_DRAFTS
-        / 'agentroles.cc_bridge_round_reviewer'
+        / 'agentroles.cc-bridge_round_reviewer'
         / 'adapters'
-        / 'cc_bridge'
+        / 'cc-bridge'
         / 'memory.md'
     ).read_text(encoding='utf-8')
     accepted_round_skill = (
         WORKFLOW_DRAFTS
-        / 'agentroles.cc_bridge_round_reviewer'
+        / 'agentroles.cc-bridge_round_reviewer'
         / 'skills'
         / 'round-verification'
         / 'SKILL.md'
     ).read_text(encoding='utf-8')
     legacy_round_template = (
         WORKFLOW_DRAFTS
-        / 'agentroles.cc_bridge_round_checker'
+        / 'agentroles.cc-bridge_round_checker'
         / 'templates'
         / 'round-result.md'
     ).read_text(encoding='utf-8')
@@ -1022,7 +1022,7 @@ def test_orchestrator_rolepack_projects_literal_json_bundle_fence_contract(
 ) -> None:
     monkeypatch.setenv('HOME', str(tmp_path / 'home'))
     monkeypatch.setenv('AGENT_ROLES_STORE', str(tmp_path / '.roles'))
-    installed = tmp_path / '.roles' / 'installed' / 'agentroles.cc_bridge_orchestrator' / 'current'
+    installed = tmp_path / '.roles' / 'installed' / 'agentroles.cc-bridge_orchestrator' / 'current'
     installed.parent.mkdir(parents=True)
     shutil.copytree(ORCHESTRATOR_ROLE, installed)
 
@@ -1038,7 +1038,7 @@ def test_orchestrator_rolepack_projects_literal_json_bundle_fence_contract(
                 'main = "orchestrator:codex"',
                 '',
                 '[agents.orchestrator]',
-                'role = "agentroles.cc_bridge_orchestrator"',
+                'role = "agentroles.cc-bridge_orchestrator"',
             ]
         )
         + '\n',
@@ -1081,7 +1081,7 @@ def test_orchestrator_rolepack_projects_literal_json_bundle_fence_contract(
             projected_contract,
         )
         assert (
-            'fenced `cc_bridge.loop.orchestration_bundle_candidate.v1`'
+            'fenced `cc-bridge.loop.orchestration_bundle_candidate.v1`'
             not in projected_contract
         )
 
@@ -1095,9 +1095,9 @@ def test_orchestrator_rolepack_projects_literal_json_bundle_fence_contract(
 def test_planner_rolepack_projects_planner_skill_to_codex_home(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setenv('HOME', str(tmp_path / 'home'))
     monkeypatch.setenv('AGENT_ROLES_STORE', str(tmp_path / '.roles'))
-    installed = tmp_path / '.roles' / 'installed' / 'agentroles.cc_bridge_planner' / 'current'
+    installed = tmp_path / '.roles' / 'installed' / 'agentroles.cc-bridge_planner' / 'current'
     installed.parent.mkdir(parents=True)
-    shutil.copytree(role_root('agentroles.cc_bridge_planner'), installed)
+    shutil.copytree(role_root('agentroles.cc-bridge_planner'), installed)
 
     project = tmp_path / 'project'
     (project / '.cc-bridge').mkdir(parents=True)
@@ -1111,7 +1111,7 @@ def test_planner_rolepack_projects_planner_skill_to_codex_home(tmp_path: Path, m
                 'main = "planner:codex"',
                 '',
                 '[agents.planner]',
-                'role = "agentroles.cc_bridge_planner"',
+                'role = "agentroles.cc-bridge_planner"',
             ]
         )
         + '\n',
@@ -1140,7 +1140,7 @@ def test_planner_rolepack_projects_planner_skill_to_codex_home(tmp_path: Path, m
         projected_template = projected_templates / template_name
         assert projected_template.is_file()
         assert json.loads(projected_template.read_text(encoding='utf-8')) == json.loads(
-            (role_root('agentroles.cc_bridge_planner') / 'templates' / template_name).read_text(encoding='utf-8')
+            (role_root('agentroles.cc-bridge_planner') / 'templates' / template_name).read_text(encoding='utf-8')
         )
     projected_memory = (target_home / 'AGENTS.md').read_text(encoding='utf-8')
     assert 'detailer_replan' in projected_memory and 'task_set_closure' in projected_memory
@@ -1151,9 +1151,9 @@ def test_planner_rolepack_projects_complete_backfill_templates_to_claude_home(
 ) -> None:
     monkeypatch.setenv('HOME', str(tmp_path / 'home'))
     monkeypatch.setenv('AGENT_ROLES_STORE', str(tmp_path / '.roles'))
-    installed = tmp_path / '.roles' / 'installed' / 'agentroles.cc_bridge_planner' / 'current'
+    installed = tmp_path / '.roles' / 'installed' / 'agentroles.cc-bridge_planner' / 'current'
     installed.parent.mkdir(parents=True)
-    shutil.copytree(role_root('agentroles.cc_bridge_planner'), installed)
+    shutil.copytree(role_root('agentroles.cc-bridge_planner'), installed)
 
     project = tmp_path / 'project'
     (project / '.cc-bridge').mkdir(parents=True)
@@ -1167,7 +1167,7 @@ def test_planner_rolepack_projects_complete_backfill_templates_to_claude_home(
                 'main = "planner:claude"',
                 '',
                 '[agents.planner]',
-                'role = "agentroles.cc_bridge_planner"',
+                'role = "agentroles.cc-bridge_planner"',
             ]
         )
         + '\n',
@@ -1189,7 +1189,7 @@ def test_planner_rolepack_projects_complete_backfill_templates_to_claude_home(
         projected_template = closure.parent / 'templates' / template_name
         assert projected_template.is_file()
         assert json.loads(projected_template.read_text(encoding='utf-8')) == json.loads(
-            (role_root('agentroles.cc_bridge_planner') / 'templates' / template_name).read_text(encoding='utf-8')
+            (role_root('agentroles.cc-bridge_planner') / 'templates' / template_name).read_text(encoding='utf-8')
         )
     projected_memory = (layout.claude_dir / 'CLAUDE.md').read_text(encoding='utf-8')
     assert 'detailer_replan' in projected_memory and 'task_set_closure' in projected_memory

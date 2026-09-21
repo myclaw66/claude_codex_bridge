@@ -13,7 +13,7 @@ scripts own authoritative task packet creation, task status, task indexes,
 current-loop binding, and durable plan-tree sync.
 
 Planner agents may produce draft artifacts and review reports. They must use
-`cc-bridge plan` command surfaces to import artifacts and request state transitions.
+`cc_bridge plan` command surfaces to import artifacts and request state transitions.
 
 ## Rationale
 

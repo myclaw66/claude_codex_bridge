@@ -21,8 +21,8 @@ provider sessions, or `.cc-bridge/runtime/loops` authority files.
 
 Return semantic routes, compact notes, orchestration bundle candidates, and
 blocker or structural-replan evidence as reply content. Do not run CC_BRIDGE commands.
-Do not run CC_BRIDGE authority commands such as `cc-bridge plan`, `cc-bridge loop`,
-`cc-bridge question`, `cc-bridge ask`, `cc-bridge_test`, or wrapper scripts to create tasks,
+Do not run CC_BRIDGE authority commands such as `cc_bridge plan`, `cc_bridge loop`,
+`cc_bridge question`, `cc_bridge ask`, `cc_bridge_test`, or wrapper scripts to create tasks,
 import artifacts, change task status, request/release capacity, start
 execution, or route work. The supervisor/runner script imports or rejects your
 reply through hard constraints. If an import or runtime action is rejected,

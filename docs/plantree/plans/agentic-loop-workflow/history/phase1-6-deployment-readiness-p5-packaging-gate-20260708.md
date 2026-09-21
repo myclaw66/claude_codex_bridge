@@ -13,7 +13,7 @@ back to `main`, or enable production/default workflow behavior.
 
 The runtime validation standard remains:
 
-- source validation uses `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`;
+- source validation uses `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`;
 - source runtime commands run from `/home/bfly/yunwei/test_ccb2`;
 - deterministic source-wrapper smoke may use isolated source homes;
 - real-provider validation must inherit the system provider environment;
@@ -25,7 +25,7 @@ The runtime validation standard remains:
 P5 source packaging gate passes for the current source tree after two source
 repairs found by this gate:
 
-1. Role command-surface enforcement blocked deterministic `cc-bridge_test` fake
+1. Role command-surface enforcement blocked deterministic `cc_bridge_test` fake
    provider smoke for `agentroles.cc-bridge_frontdesk`.
 2. Deterministic fake worker replies did not create a declared workspace file,
    so the newer direct-execution project-root promotion guard correctly
@@ -70,14 +70,14 @@ This P5 record does not stage, commit, revert, or publish them.
 Wrapper and source smoke:
 
 ```text
-/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose
+/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose
 allowed_source_test_project: yes
 
 HOME=/home/bfly/yunwei/test_ccb2/source_home \
 CC_BRIDGE_SOURCE_HOME=/home/bfly/yunwei/test_ccb2/source_home \
 python /home/bfly/yunwei/cc-bridge_source/scripts/workflow_closure_smoke.py \
   --test-root /home/bfly/yunwei/test_ccb2 \
-  --cc-bridge-test /home/bfly/yunwei/cc-bridge_source/cc-bridge_test \
+  --cc-bridge-test /home/bfly/yunwei/cc-bridge_source/cc_bridge_test \
   --project-name p5-source-wrapper-smoke-20260708 \
   --provider fake \
   --reset \
@@ -316,7 +316,7 @@ Installed-preview workflow closure smoke:
 project root: /home/bfly/yunwei/test_ccb2/p5-installed-preview-smoke-talk2-202607082220
 installed source: /home/bfly/yunwei/test_ccb2/p5-current-source-release-talk2-202607082205/install-prefix
 command source: <install-prefix>/scripts/workflow_closure_smoke.py
-cc-bridge_test: <install-prefix>/cc-bridge_test
+cc_bridge_test: <install-prefix>/cc_bridge_test
 result: /home/bfly/yunwei/test_ccb2/p5-current-source-release-talk2-202607082205/installed-preview-workflow-smoke-result.json
 ```
 
@@ -336,7 +336,7 @@ Result:
 ```
 
 The installed-preview workflow smoke used the release artifact's own
-`scripts/workflow_closure_smoke.py` and `cc-bridge_test`, not the source checkout
+`scripts/workflow_closure_smoke.py` and `cc_bridge_test`, not the source checkout
 script. It verifies the installed current-source preview artifact can run the
 deterministic project workflow path under `/home/bfly/yunwei/test_ccb2`, mount
 dynamic workers, import a script-owned round pass, release both dynamic agents,
@@ -363,7 +363,7 @@ post-cleanup process scan: no target-project process residue
 ```
 
 This run was started after the package/install checks and used
-`/home/bfly/yunwei/cc-bridge_source/cc-bridge_test` from `/home/bfly/yunwei/test_ccb2`,
+`/home/bfly/yunwei/cc-bridge_source/cc_bridge_test` from `/home/bfly/yunwei/test_ccb2`,
 with inherited system provider home and root-local role store. It verifies
 that the automatic frontdesk -> planner -> auto-runner route-mix path is
 repeatable for the current source tree.

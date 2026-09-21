@@ -14,7 +14,7 @@ changing the normal project startup path first.
   integration.
 - Add an isolated tmux smoke surface that can create placeholder panes in a
   dedicated test session.
-- Validate from `/home/bfly/yunwei/test_ccb2` with the source `cc-bridge_test`
+- Validate from `/home/bfly/yunwei/test_ccb2` with the source `cc_bridge_test`
   wrapper.
 
 ## Non-Goals
@@ -57,7 +57,7 @@ Overflow uses another window with the same 1->6 pattern:
 
 3. Verification worker
    - Run unit tests first.
-   - Run `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test` from
+   - Run `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test` from
      `/home/bfly/yunwei/test_ccb2` for 1, 2, 3, 4, 5, 6, and multi-window
      counts.
    - Confirm no normal source-project runtime state is touched.
@@ -75,11 +75,11 @@ Overflow uses another window with the same 1->6 pattern:
 ## Landed Evidence
 
 - `cc-bridge layout dynamic-smoke --panes 6 --window-prefix frontdesk-dialog --json`
-  passed from `/home/bfly/yunwei/test_ccb2` through source `cc-bridge_test`.
+  passed from `/home/bfly/yunwei/test_ccb2` through source `cc_bridge_test`.
   Observed counts: `1,2,3,4,5,6,5,4,3,2,1`; all retained panes stayed alive;
   cleanup succeeded.
 - `cc-bridge layout dynamic-smoke --panes 8 --window-prefix frontdesk-dialog --json`
-  passed from `/home/bfly/yunwei/test_ccb2` through source `cc-bridge_test`.
+  passed from `/home/bfly/yunwei/test_ccb2` through source `cc_bridge_test`.
   Observed counts: `1,2,3,4,5,6,7,8,7,6,5,4,3,2,1`;
   8 panes produced `frontdesk-dialog` with six panes and
   `frontdesk-dialog-2` with two panes; shrink back to six removed the overflow

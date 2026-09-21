@@ -253,8 +253,8 @@ Forbidden planner-owned imports remain:
 - worker/reviewer handoff detail;
 - provider reply text as authority.
 
-`round_summary` has one additional guard: `cc-bridge plan task-artifact --kind
-round_summary` is rejected. A round result must pass through `cc-bridge plan
+`round_summary` has one additional guard: `cc_bridge plan task-artifact --kind
+round_summary` is rejected. A round result must pass through `cc_bridge plan
 task-import-round`, which binds the loop id, round result, actor metadata, and
 status transition in one script-owned operation.
 

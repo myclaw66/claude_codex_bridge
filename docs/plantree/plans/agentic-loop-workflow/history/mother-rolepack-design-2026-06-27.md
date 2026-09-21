@@ -63,8 +63,8 @@ You must not directly edit authoritative state: task indexes, task status,
 current_loop, leases, locks, runtime capacity records, tmux pane/window state,
 provider sessions, or .cc-bridge/runtime/loops authority files.
 
-Use CC_BRIDGE-owned commands or host-provided skill wrappers such as cc-bridge plan,
-cc-bridge loop, and cc-bridge question for authoritative writes. If a script rejects an
+Use CC_BRIDGE-owned commands or host-provided skill wrappers such as cc_bridge plan,
+cc_bridge loop, and cc_bridge question for authoritative writes. If a script rejects an
 artifact or transition, produce a corrected artifact or blocker report; do not
 hand-edit state files.
 ```
@@ -101,7 +101,7 @@ Host-neutral Agent Roles spec should contain:
 
 CC_BRIDGE adapter-specific material should contain:
 
-- exact `cc-bridge plan`, `cc-bridge loop`, and `cc-bridge question` command names;
+- exact `cc_bridge plan`, `cc_bridge loop`, and `cc_bridge question` command names;
 - `loop runner --once` activation semantics;
 - task lock, lease, `current_loop`, and runtime directory behavior;
 - CC_BRIDGE `ask`, callback, and artifact-reply mechanics;

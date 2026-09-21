@@ -21,7 +21,7 @@ not separately claim five independent user messages into frontdesk.
   `/home/bfly/yunwei/test_ccb2/deploy-p2-frontdesk-pressure-talk2-20260708170920`
 - Project:
   `/home/bfly/yunwei/test_ccb2/deploy-p2-frontdesk-pressure-talk2-20260708170920/p2-frontdesk-pressure-real-provider-lab`
-- Command wrapper: `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test`
+- Command wrapper: `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test`
 - Provider home policy: inherited system environment.
 - Role store:
   `/home/bfly/yunwei/test_ccb2/deploy-p2-frontdesk-pressure-talk2-20260708170920/roles`
@@ -35,7 +35,7 @@ not separately claim five independent user messages into frontdesk.
 P2 passed against a visible real opened project:
 
 - Frontdesk was Codex-backed and received one natural-language operator
-  request through `cc-bridge_test ask frontdesk`.
+  request through `cc_bridge_test ask frontdesk`.
 - Frontdesk returned structured Intake Evidence and did not directly edit
   project artifacts, run tests, create B7 rows, clean runtime, or implement the
   requested work.

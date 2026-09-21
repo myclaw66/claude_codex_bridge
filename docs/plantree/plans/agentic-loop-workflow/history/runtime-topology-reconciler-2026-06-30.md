@@ -4,7 +4,7 @@ Date: 2026-06-30
 
 ## Summary
 
-Landed the first `cc-bridge loop topology` desired-state command surface:
+Landed the first `cc_bridge loop topology` desired-state command surface:
 
 - `propose`: import an orchestrator-authored runtime workflow graph proposal;
 - `validate`: check profiles, capacity limits, duplicate agents, unknown edge
@@ -36,7 +36,7 @@ runtime authority.
   passed: 33 tests after post-review hardening.
 - `PYTHONPATH=lib python -m pytest -q test/test_agent_lifecycle_cli.py test/test_layout_status_cli.py test/test_v2_config_loader.py test/test_v2_cli_router.py test/test_v2_cli_context.py test/test_v2_cli_render.py test/test_loop_topology_cli.py test/test_loop_capacity_cli.py`
   passed: 281 tests after post-review hardening.
-- `/home/bfly/yunwei/cc-bridge_source/cc-bridge_test --diagnose` from
+- `/home/bfly/yunwei/cc-bridge_source/cc_bridge_test --diagnose` from
   `/home/bfly/yunwei/test_ccb2` confirmed the source wrapper and external test
   root.
 - External source-wrapper smoke in

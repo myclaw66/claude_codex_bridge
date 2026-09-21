@@ -65,7 +65,7 @@ Project root:
 
 Provider policy: inherited system environment. Role store: lab-local. All
 roles in this accepted baseline used Codex. The project was opened with the
-source worktree's explicit `cc-bridge_test` and displayed resident and dynamic panes
+source worktree's explicit `cc_bridge_test` and displayed resident and dynamic panes
 through the project-local tmux socket.
 
 Natural Frontdesk intake produced task
@@ -109,7 +109,7 @@ creating commits and integrating in dependency order.
 - Only resident Frontdesk and Planner panes remained before project shutdown.
 
 The supervisor then ran project-root unittest discovery again: `79` passed.
-The project was immediately closed with project-level `cc-bridge_test kill -f`:
+The project was immediately closed with project-level `cc_bridge_test kill -f`:
 `kill_status: ok`, `state: unmounted`. Process, tmux socket, and runtime socket
 scans for the project root were empty.
 

@@ -159,7 +159,7 @@ pane IDs, provider sessions, and CC_BRIDGE slot metadata must remain valid.
   drift while real provider execution remains explicit.
 - Mounted dynamic apply reports now include `pane_identity_report` under the
   `apply` payload for `cc-bridge agent add/remove --json` and
-  `cc-bridge loop capacity ensure/release --json`. The report records added panes,
+  `cc_bridge loop capacity ensure/release --json`. The report records added panes,
   removed panes, preserved before/after panes, reflowed windows, mounted
   agents, and unloaded agents from the reload transaction itself, so scripts
   can verify hot-load/hot-unload effects without immediately re-querying raw
