@@ -112,7 +112,7 @@ def _spec(
 
 def _context(project_root: Path, command: ParsedStartCommand) -> CliContext:
     project_root = project_root.resolve()
-    config_dir = project_root / '.ccb'
+    config_dir = project_root / 'cc-bridge'
     config_dir.mkdir(parents=True, exist_ok=True)
     project = ProjectContext(
         cwd=project_root,
@@ -133,7 +133,7 @@ def _write_provider_profile(runtime_dir: Path, profile: ResolvedProviderProfile)
 
 
 def _project_memory_path(project_root: Path) -> Path:
-    return project_root / '.ccb' / 'ccb_memory.md'
+    return project_root / '.cc-bridge' / 'ccb_memory.md'
 
 
 def _write_project_memory(project_root: Path, text: str) -> None:
@@ -217,7 +217,7 @@ def _codex_prepared_state(runtime_dir: Path, *, agent_name: str = 'agent1') -> d
         'agent_name': agent_name,
         'project_root': project_root,
         'workspace_path': project_root,
-        'agent_events_path': project_root / '.ccb' / 'agents' / agent_name / 'events.jsonl',
+        'agent_events_path': project_root / '.cc-bridge' / 'agents' / agent_name / 'events.jsonl',
     }
 
 
@@ -225,7 +225,7 @@ def _launch_project_root(runtime_dir: Path) -> Path:
     runtime = Path(runtime_dir)
     project_root = runtime.parent
     for parent in runtime.parents:
-        if parent.name == '.ccb':
+        if parent.name == 'cc-bridge':
             project_root = parent.parent
             break
     return project_root
@@ -260,12 +260,12 @@ def _codex_start_cmd(command, spec: AgentSpec, runtime_dir: Path, launch_session
 
 def _opencode_prepared_state(runtime_dir: Path, *, agent_name: str = 'agent1') -> dict[str, object]:
     project_root = _launch_project_root(runtime_dir)
-    state_dir = project_root / '.ccb' / 'agents' / agent_name / 'provider-state' / 'opencode'
+    state_dir = project_root / '.cc-bridge' / 'agents' / agent_name / 'provider-state' / 'opencode'
     return {
         'agent_name': agent_name,
         'project_root': project_root,
         'workspace_path': project_root,
-        'agent_events_path': project_root / '.ccb' / 'agents' / agent_name / 'events.jsonl',
+        'agent_events_path': project_root / '.cc-bridge' / 'agents' / agent_name / 'events.jsonl',
         'opencode_state_dir': state_dir,
         'opencode_config_path': state_dir / 'opencode.json',
         'opencode_data_home': state_dir / 'data',
@@ -650,7 +650,7 @@ def _write_codex_plugin_source(
 
 def test_ensure_agent_runtime_configures_claude_managed_home_without_touching_workspace(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-claude-hooks'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
 
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('agent3',), restore=False, auto_permission=False))
     spec = _spec('agent3', provider='claude')
@@ -696,7 +696,7 @@ def test_ensure_agent_runtime_consumes_prepared_effective_command_without_recomp
     tmp_path: Path,
 ) -> None:
     project_root = tmp_path / 'repo-prepared-effective-command'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     raw_command = ParsedStartCommand(
         project=None,
         agent_names=('reviewer',),
@@ -745,7 +745,7 @@ def test_ensure_agent_runtime_consumes_prepared_effective_command_without_recomp
 
 def test_ensure_agent_runtime_launches_named_codex_session(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('agent1',), restore=False, auto_permission=False))
     spec = _spec('agent1')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -780,7 +780,7 @@ def test_ensure_agent_runtime_launches_named_codex_session(monkeypatch, tmp_path
     class FakePopen:
         def __init__(self, args, **kwargs):
             env = kwargs.get('env') or {}
-            session_file = Path(str(env.get('CCB_SESSION_FILE') or ''))
+            session_file = Path(str(env.get('CC_BRIDGE_SESSION_FILE') or ''))
             assert session_file.is_file()
             spawned.setdefault('calls', []).append((args, kwargs))
             spawned.setdefault('args', args)
@@ -798,7 +798,7 @@ def test_ensure_agent_runtime_launches_named_codex_session(monkeypatch, tmp_path
     assert result.launched is True
     assert result.binding is not None
     assert result.binding.runtime_ref == 'tmux:%42'
-    expected_session = project_root / '.ccb' / '.codex-agent1-session'
+    expected_session = project_root / '.cc-bridge' / '.codex-agent1-session'
     assert result.binding.session_ref == str(expected_session)
     payload = json.loads(expected_session.read_text(encoding='utf-8'))
     expected_codex_home = ctx.paths.agent_provider_state_dir('agent1', 'codex') / 'home'
@@ -818,7 +818,7 @@ def test_ensure_agent_runtime_launches_named_codex_session(monkeypatch, tmp_path
     assert payload['tmux_log'] == payload['bridge_log']
     assert payload['codex_start_cmd'].startswith('export ')
     assert 'disable_paste_burst=true' in payload['codex_start_cmd']
-    assert spawned['kwargs']['env']['CCB_SESSION_FILE'] == str(expected_session)
+    assert spawned['kwargs']['env']['CC_BRIDGE_SESSION_FILE'] == str(expected_session)
     assert spawned['kwargs']['env']['CODEX_TMUX_LOG'] == payload['bridge_log']
     assert spawned['kwargs']['env']['CODEX_HOME'] == str(expected_codex_home)
     assert spawned['kwargs']['env']['CODEX_SESSION_ROOT'] == str(expected_session_root)
@@ -838,7 +838,7 @@ def test_ensure_agent_runtime_launches_named_codex_session(monkeypatch, tmp_path
 
 def test_ensure_agent_runtime_relaunches_provider_identity_mismatch(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-identity-mismatch'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('agent1',), restore=True, auto_permission=False))
     spec = _spec('agent1')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -879,7 +879,7 @@ def test_ensure_agent_runtime_relaunches_provider_identity_mismatch(monkeypatch,
         provider='codex',
         runtime_root=str(ctx.paths.agent_provider_runtime_dir('agent1', 'codex')),
         runtime_pid=4242,
-        session_file=str(project_root / '.ccb' / '.codex-agent1-session'),
+        session_file=str(project_root / '.cc-bridge' / '.codex-agent1-session'),
         session_id='bound-session',
         tmux_socket_name='sock-agent',
         tmux_socket_path='/tmp/ccb-agent.sock',
@@ -901,7 +901,7 @@ def test_ensure_agent_runtime_relaunches_provider_identity_mismatch(monkeypatch,
         provider='codex',
         runtime_root=str(ctx.paths.agent_provider_runtime_dir('agent1', 'codex')),
         runtime_pid=4141,
-        session_file=str(project_root / '.ccb' / '.codex-agent1-session'),
+        session_file=str(project_root / '.cc-bridge' / '.codex-agent1-session'),
         session_id='bound-session',
         tmux_socket_name='sock-agent',
         tmux_socket_path='/tmp/ccb-agent.sock',
@@ -937,7 +937,7 @@ def test_ensure_agent_runtime_relaunches_provider_identity_mismatch(monkeypatch,
 
 def test_ensure_agent_runtime_uses_agent_scoped_session_name_for_codex_agent(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('codex',), restore=False, auto_permission=False))
     spec = _spec('codex')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -968,12 +968,12 @@ def test_ensure_agent_runtime_uses_agent_scoped_session_name_for_codex_agent(mon
     result = ensure_agent_runtime(ctx, ctx.command, spec, plan, None)
 
     assert result.binding is not None
-    assert result.binding.session_ref == str(project_root / '.ccb' / '.codex-codex-session')
+    assert result.binding.session_ref == str(project_root / '.cc-bridge' / '.codex-codex-session')
 
 
 def test_ensure_agent_runtime_passes_profile_codex_home_to_bridge(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-profile-bridge'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('agent1',), restore=False, auto_permission=False))
     spec = _spec('agent1')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -1011,7 +1011,7 @@ def test_ensure_agent_runtime_passes_profile_codex_home_to_bridge(monkeypatch, t
     class FakePopen:
         def __init__(self, args, **kwargs):
             env = kwargs.get('env') or {}
-            if env.get('CCB_SESSION_FILE'):
+            if env.get('CC_BRIDGE_SESSION_FILE'):
                 spawned['env'] = env
             self.pid = 8844
 
@@ -1031,19 +1031,19 @@ def test_ensure_agent_runtime_rewrites_session_file_without_losing_existing_code
     tmp_path: Path,
 ) -> None:
     project_root = tmp_path / 'repo-rewrite-preserve'
-    (project_root / '.ccb').mkdir(parents=True)
-    existing_home = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-state' / 'codex' / 'home'
+    (project_root / 'cc-bridge').mkdir(parents=True)
+    existing_home = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-state' / 'codex' / 'home'
     existing_root = existing_home / 'sessions'
     existing_log = existing_root / '2026' / '04' / '19' / 'rollout-existing-session.jsonl'
     existing_log.parent.mkdir(parents=True, exist_ok=True)
     existing_log.write_text('', encoding='utf-8')
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
     fingerprint = current_provider_authority_fingerprint(None, runtime_dir=runtime_dir)
     (existing_home / '.ccb-session-namespace.json').write_text(
         json.dumps({'provider': 'codex', 'provider_authority_fingerprint': fingerprint}),
         encoding='utf-8',
     )
-    existing_session = project_root / '.ccb' / '.codex-agent1-session'
+    existing_session = project_root / '.cc-bridge' / '.codex-agent1-session'
     existing_session.write_text(
         json.dumps(
             {
@@ -1198,7 +1198,7 @@ def test_herdr_liveness_check_reattaches_persisted_session_without_capability_en
 
 def test_ensure_agent_runtime_resumes_named_codex_session_by_agent_name(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-codex-resume'
-    ccb_dir = project_root / '.ccb'
+    ccb_dir = project_root / 'cc-bridge'
     ccb_dir.mkdir(parents=True)
     runtime_dir = ccb_dir / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
     codex_home = ccb_dir / 'agents' / 'agent1' / 'provider-state' / 'codex' / 'home'
@@ -1267,13 +1267,13 @@ def test_ensure_agent_runtime_resumes_named_codex_session_by_agent_name(monkeypa
     assert result.binding.runtime_ref == 'tmux:%52'
     assert extract_resume_session_id(tmux_state['cmd']) == 'agent1-session-id'
     assert 'agent2-session-id' not in str(tmux_state['cmd'])
-    payload = json.loads((project_root / '.ccb' / '.codex-agent1-session').read_text(encoding='utf-8'))
+    payload = json.loads((project_root / '.cc-bridge' / '.codex-agent1-session').read_text(encoding='utf-8'))
     assert extract_resume_session_id(payload['codex_start_cmd']) == 'agent1-session-id'
 
 
 def test_ensure_agent_runtime_launches_named_gemini_session(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-gemini'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('reviewer',), restore=True, auto_permission=True))
     spec = _spec('reviewer', provider='gemini')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -1310,7 +1310,7 @@ def test_ensure_agent_runtime_launches_named_gemini_session(monkeypatch, tmp_pat
     assert result.launched is True
     assert result.binding is not None
     assert result.binding.runtime_ref == 'tmux:%55'
-    expected_session = project_root / '.ccb' / '.gemini-reviewer-session'
+    expected_session = project_root / '.cc-bridge' / '.gemini-reviewer-session'
     assert result.binding.session_ref == str(expected_session)
     payload = json.loads(expected_session.read_text(encoding='utf-8'))
     assert payload['agent_name'] == 'reviewer'
@@ -1334,7 +1334,7 @@ def test_ensure_agent_runtime_launches_named_gemini_session(monkeypatch, tmp_pat
 
 def test_ensure_agent_runtime_launches_named_claude_session(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-claude'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('reviewer',), restore=True, auto_permission=True))
     spec = _spec('reviewer', provider='claude')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -1380,7 +1380,7 @@ def test_ensure_agent_runtime_launches_named_claude_session(monkeypatch, tmp_pat
     assert result.launched is True
     assert result.binding is not None
     assert result.binding.runtime_ref == 'tmux:%44'
-    expected_session = project_root / '.ccb' / '.claude-reviewer-session'
+    expected_session = project_root / '.cc-bridge' / '.claude-reviewer-session'
     assert result.binding.session_ref == str(expected_session)
     payload = json.loads(expected_session.read_text(encoding='utf-8'))
     expected_claude_home = ctx.paths.agent_provider_state_dir('reviewer', 'claude') / 'home'
@@ -1429,7 +1429,7 @@ def test_ensure_agent_runtime_launches_named_claude_session(monkeypatch, tmp_pat
 
 def test_ensure_agent_runtime_launches_named_opencode_session(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-opencode'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('builder',), restore=True, auto_permission=False))
     spec = _spec('builder', provider='opencode')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -1456,7 +1456,7 @@ def test_ensure_agent_runtime_launches_named_opencode_session(monkeypatch, tmp_p
 
     assert result.launched is True
     assert result.binding is not None
-    expected_session = project_root / '.ccb' / '.opencode-builder-session'
+    expected_session = project_root / '.cc-bridge' / '.opencode-builder-session'
     assert result.binding.session_ref == str(expected_session)
     payload = json.loads(expected_session.read_text(encoding='utf-8'))
     assert payload['pane_title_marker'].startswith('CCB-builder-')
@@ -1479,7 +1479,7 @@ def test_ensure_agent_runtime_launches_named_opencode_session(monkeypatch, tmp_p
 
 def test_ensure_agent_runtime_launches_named_mimo_session(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-mimo'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('mimoer',), restore=True, auto_permission=False))
     spec = _spec('mimoer', provider='mimo')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -1506,7 +1506,7 @@ def test_ensure_agent_runtime_launches_named_mimo_session(monkeypatch, tmp_path:
 
     assert result.launched is True
     assert result.binding is not None
-    expected_session = project_root / '.ccb' / '.mimo-mimoer-session'
+    expected_session = project_root / '.cc-bridge' / '.mimo-mimoer-session'
     assert result.binding.session_ref == str(expected_session)
     payload = json.loads(expected_session.read_text(encoding='utf-8'))
     state_dir = ctx.paths.agent_provider_state_dir('mimoer', 'mimo')
@@ -1523,7 +1523,7 @@ def test_ensure_agent_runtime_launches_named_mimo_session(monkeypatch, tmp_path:
 
 def test_ensure_agent_runtime_launches_named_agy_session(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-agy'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('antigravity',), restore=True, auto_permission=True))
     spec = _spec('antigravity', provider='agy')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -1550,7 +1550,7 @@ def test_ensure_agent_runtime_launches_named_agy_session(monkeypatch, tmp_path: 
 
     assert result.launched is True
     assert result.binding is not None
-    expected_session = project_root / '.ccb' / '.agy-antigravity-session'
+    expected_session = project_root / '.cc-bridge' / '.agy-antigravity-session'
     assert result.binding.session_file == str(expected_session)
     assert result.binding.session_ref == result.binding.ccb_session_id
     assert result.binding.session_ref.startswith('ccb-antigravity-')
@@ -1632,7 +1632,7 @@ def test_agy_launcher_restore_falls_back_to_continue_when_resume_lookup_fails(
 
 def test_ensure_agent_runtime_uses_assigned_tmux_pane(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-assigned'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('agent1',), restore=False, auto_permission=False))
     spec = _spec('agent1')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -1692,7 +1692,7 @@ def test_ensure_agent_runtime_uses_assigned_tmux_pane(monkeypatch, tmp_path: Pat
 
 def test_ensure_agent_runtime_launches_named_droid_session(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-droid'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('mobile',), restore=True, auto_permission=False))
     spec = _spec('mobile', provider='droid')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -1721,7 +1721,7 @@ def test_ensure_agent_runtime_launches_named_droid_session(monkeypatch, tmp_path
 
     assert result.launched is True
     assert result.binding is not None
-    expected_session = project_root / '.ccb' / '.droid-mobile-session'
+    expected_session = project_root / '.cc-bridge' / '.droid-mobile-session'
     assert result.binding.session_ref == str(expected_session)
     payload = json.loads(expected_session.read_text(encoding='utf-8'))
     assert payload['pane_title_marker'].startswith('CCB-mobile-')
@@ -1750,7 +1750,7 @@ def test_ensure_agent_runtime_launches_named_droid_session(monkeypatch, tmp_path
 
 def test_ensure_agent_runtime_falls_back_to_detached_tmux_session(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('agent1',), restore=False, auto_permission=False))
     spec = _spec('agent1')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -1829,7 +1829,7 @@ def test_ensure_agent_runtime_falls_back_to_detached_tmux_session(monkeypatch, t
 
 def test_ensure_agent_runtime_refuses_detached_fallback_inside_project_namespace(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-namespace-no-detached'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('agent1',), restore=False, auto_permission=False))
     spec = _spec('agent1')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -1851,13 +1851,13 @@ def test_ensure_agent_runtime_refuses_detached_fallback_inside_project_namespace
             spec,
             plan,
             None,
-            tmux_socket_path=str(project_root / '.ccb' / 'ccbd' / 'tmux.sock'),
+            tmux_socket_path=str(project_root / '.cc-bridge' / 'ccbd' / 'tmux.sock'),
         )
 
 
 def test_ensure_agent_runtime_relaunches_when_existing_binding_pane_is_dead(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-dead-binding'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('reviewer',), restore=False, auto_permission=False))
     spec = _spec('reviewer', provider='gemini')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -1897,7 +1897,7 @@ def test_ensure_agent_runtime_relaunches_when_existing_binding_pane_is_dead(monk
         plan,
         AgentBinding(
             runtime_ref='tmux:%44',
-            session_ref=str(project_root / '.ccb' / '.gemini-reviewer-session'),
+            session_ref=str(project_root / '.cc-bridge' / '.gemini-reviewer-session'),
             tmux_socket_name='sock-dead',
             pane_id='%44',
             pane_state='dead',
@@ -1912,7 +1912,7 @@ def test_ensure_agent_runtime_relaunches_when_existing_binding_pane_is_dead(monk
 
 def test_ensure_agent_runtime_outside_tmux_relaunches_stale_binding_via_detached_session(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-outside-tmux-stale'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('agent1',), restore=False, auto_permission=False))
     spec = _spec('agent1')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -1982,7 +1982,7 @@ def test_ensure_agent_runtime_outside_tmux_relaunches_stale_binding_via_detached
         plan,
         AgentBinding(
             runtime_ref='tmux:%44',
-            session_ref=str(project_root / '.ccb' / '.codex-agent1-session'),
+            session_ref=str(project_root / '.cc-bridge' / '.codex-agent1-session'),
             tmux_socket_name='sock-dead',
             pane_id='%44',
             pane_state='dead',
@@ -2014,7 +2014,7 @@ def test_ensure_agent_runtime_outside_tmux_relaunches_stale_binding_via_detached
 
 def test_ensure_agent_runtime_relaunches_live_foreign_binding_without_killing_foreign_pane(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-foreign-binding'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('agent1',), restore=False, auto_permission=False))
     spec = _spec('agent1')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -2059,7 +2059,7 @@ def test_ensure_agent_runtime_relaunches_live_foreign_binding_without_killing_fo
         plan,
         AgentBinding(
             runtime_ref='tmux:%44',
-            session_ref=str(project_root / '.ccb' / '.codex-agent1-session'),
+            session_ref=str(project_root / '.cc-bridge' / '.codex-agent1-session'),
             tmux_socket_name='sock-foreign',
             pane_id='%44',
             pane_state='foreign',
@@ -2075,7 +2075,7 @@ def test_ensure_agent_runtime_relaunches_live_foreign_binding_without_killing_fo
 
 def test_ensure_agent_runtime_raises_when_launch_does_not_produce_usable_binding(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-missing-binding'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('agent1',), restore=False, auto_permission=False))
     spec = _spec('agent1')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -2245,7 +2245,7 @@ def test_native_cli_launcher_builds_provider_state_payload(
         source_home.mkdir()
         monkeypatch.setenv('CCB_SOURCE_HOME', str(source_home))
     project_root = tmp_path / f'repo-{provider}-launcher'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     agent_name = f'{provider}1'
     command = ParsedStartCommand(project=None, agent_names=(agent_name,), restore=True, auto_permission=False)
     ctx = _context(project_root, command)
@@ -2450,7 +2450,7 @@ def test_pi_launcher_includes_qualified_agent_model_without_provider_flag(
     monkeypatch.setenv('CCB_SOURCE_HOME', str(source_home))
     monkeypatch.setenv('PI_START_CMD', '/tmp/stub-pi')
     project_root = tmp_path / 'repo-pi-model-launcher'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     command = ParsedStartCommand(
         project=None,
         agent_names=('pi1',),
@@ -2491,7 +2491,7 @@ def test_qoder_launcher_respects_explicit_config_and_permission_options(
 ) -> None:
     monkeypatch.delenv('QODER_START_CMD', raising=False)
     project_root = tmp_path / 'repo-qoder-explicit-options'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     command = ParsedStartCommand(
         project=None,
         agent_names=('qoder1',),
@@ -2547,7 +2547,7 @@ def test_qoderclicn_launcher_uses_one_managed_root_and_merges_update_settings(
 ) -> None:
     monkeypatch.delenv('QODERCLICN_START_CMD', raising=False)
     project_root = tmp_path / 'repo-qoderclicn-managed-root'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     command = ParsedStartCommand(
         project=None,
         agent_names=('qoderclicn1',),
@@ -2617,7 +2617,7 @@ def test_qoderclicn_launcher_does_not_duplicate_explicit_config_or_permissions(
 ) -> None:
     monkeypatch.setenv('QODERCLICN_START_CMD', 'qoderclicn --permission-mode plan')
     project_root = tmp_path / 'repo-qoderclicn-explicit-options'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     command = ParsedStartCommand(
         project=None,
         agent_names=('qoderclicn1',),
@@ -2720,7 +2720,7 @@ def test_grok_launcher_projects_system_login_into_managed_home(
     monkeypatch.setattr(grok_home, 'current_provider_source_home', lambda: source_home)
 
     project_root = tmp_path / 'repo-grok-login-projection'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     agent_name = 'grok1'
     command = ParsedStartCommand(project=None, agent_names=(agent_name,), restore=True, auto_permission=False)
     ctx = _context(project_root, command)
@@ -2821,7 +2821,7 @@ def test_grok_launcher_keeps_control_skills_when_optional_inheritance_is_off(
 
 def test_ensure_agent_runtime_falls_back_when_created_pane_is_too_small(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo'
-    (project_root / '.ccb').mkdir(parents=True)
+    (project_root / 'cc-bridge').mkdir(parents=True)
     ctx = _context(project_root, ParsedStartCommand(project=None, agent_names=('agent1',), restore=False, auto_permission=False))
     spec = _spec('agent1')
     plan = WorkspacePlanner().plan(spec, ctx.project)
@@ -2966,7 +2966,7 @@ def test_codex_launcher_build_start_cmd_does_not_require_toml_parser_for_config_
 
 
 def test_codex_launcher_build_start_cmd_uses_agent_scoped_session_root_by_default(monkeypatch, tmp_path: Path) -> None:
-    runtime_dir = tmp_path / 'repo' / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
+    runtime_dir = tmp_path / 'repo' / 'cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     source_home = tmp_path / 'source-home'
     source_home.mkdir(parents=True, exist_ok=True)
@@ -3046,7 +3046,7 @@ def test_codex_launcher_build_start_cmd_skips_hook_trust_bypass_in_safe_mode(mon
 
 def test_codex_launcher_repairs_activity_hook_trust_for_existing_home(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-codex-existing-hooks'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     source_home = tmp_path / 'source-home'
     system_codex = source_home / '.codex'
@@ -3068,10 +3068,10 @@ def test_codex_launcher_repairs_activity_hook_trust_for_existing_home(monkeypatc
         ),
         encoding='utf-8',
     )
-    codex_home = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-state' / 'codex' / 'home'
+    codex_home = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-state' / 'codex' / 'home'
     (codex_home / 'sessions').mkdir(parents=True, exist_ok=True)
     (codex_home / 'config.toml').write_text('model = "gpt-test"\n', encoding='utf-8')
-    (project_root / '.ccb' / '.codex-agent1-session').write_text(
+    (project_root / '.cc-bridge' / '.codex-agent1-session').write_text(
         json.dumps(
             {
                 'codex_home': str(codex_home),
@@ -3120,9 +3120,9 @@ def test_codex_launcher_repairs_activity_hook_trust_for_existing_home(monkeypatc
 
 def test_codex_launcher_build_start_cmd_uses_agent_scoped_resume_session(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-codex-resume'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
     runtime_dir.mkdir(parents=True, exist_ok=True)
-    ccb_dir = project_root / '.ccb'
+    ccb_dir = project_root / 'cc-bridge'
     ccb_dir.mkdir(parents=True, exist_ok=True)
     spec = _spec('agent1')
     command = ParsedStartCommand(project=None, agent_names=('agent1',), restore=True, auto_permission=False)
@@ -3174,9 +3174,9 @@ def test_codex_launcher_resume_with_permission_overrides_stays_local_cli(monkeyp
     )
 
     project_root = tmp_path / 'repo-codex-resume-remote-policy'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
     runtime_dir.mkdir(parents=True, exist_ok=True)
-    ccb_dir = project_root / '.ccb'
+    ccb_dir = project_root / 'cc-bridge'
     ccb_dir.mkdir(parents=True, exist_ok=True)
     spec = _spec('agent1')
     command = ParsedStartCommand(project=None, agent_names=('agent1',), restore=True, auto_permission=True)
@@ -3282,9 +3282,9 @@ def test_codex_launcher_provider_command_template_wraps_original_resume_command(
     tmp_path: Path,
 ) -> None:
     project_root = tmp_path / 'repo-codex-template'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
     runtime_dir.mkdir(parents=True, exist_ok=True)
-    ccb_dir = project_root / '.ccb'
+    ccb_dir = project_root / 'cc-bridge'
     ccb_dir.mkdir(parents=True, exist_ok=True)
     spec = _spec(
         'agent1',
@@ -3319,7 +3319,7 @@ def test_codex_launcher_provider_command_template_wraps_original_resume_command(
 
 def test_codex_launcher_build_start_cmd_respects_agent_restore_fresh(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-codex-fresh'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     spec = AgentSpec(
         name='agent1',
@@ -3346,9 +3346,9 @@ def test_codex_launcher_build_start_cmd_respects_agent_restore_fresh(monkeypatch
 
 def test_codex_launcher_build_start_cmd_rejects_unfenced_legacy_resume_cmd(tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-codex-agent'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'codex' / 'provider-runtime' / 'codex'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'codex' / 'provider-runtime' / 'codex'
     runtime_dir.mkdir(parents=True, exist_ok=True)
-    ccb_dir = project_root / '.ccb'
+    ccb_dir = project_root / 'cc-bridge'
     ccb_dir.mkdir(parents=True, exist_ok=True)
     demo_home = tmp_path / 'demo-codex-home'
     (ccb_dir / '.codex-codex-session').write_text(
@@ -3909,7 +3909,7 @@ def test_gemini_launcher_build_start_cmd_requires_launch_context(tmp_path: Path)
 
 def test_opencode_workspace_preparation_writes_memory_config(tmp_path: Path, monkeypatch) -> None:
     project_root = tmp_path / 'repo-opencode-memory'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'builder' / 'provider-runtime' / 'opencode'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'builder' / 'provider-runtime' / 'opencode'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     project_root.mkdir(parents=True, exist_ok=True)
     _write_project_memory(project_root, 'shared ask memory\n')
@@ -3931,8 +3931,8 @@ def test_opencode_workspace_preparation_writes_memory_config(tmp_path: Path, mon
         prepared_state=prepared,
     )
 
-    config_path = project_root / '.ccb' / 'agents' / 'builder' / 'provider-state' / 'opencode' / 'opencode.json'
-    bundle_path = project_root / '.ccb' / 'runtime' / 'memory' / 'builder.md'
+    config_path = project_root / '.cc-bridge' / 'agents' / 'builder' / 'provider-state' / 'opencode' / 'opencode.json'
+    bundle_path = project_root / '.cc-bridge' / 'runtime' / 'memory' / 'builder.md'
     config = json.loads(config_path.read_text(encoding='utf-8'))
     assert f'OPENCODE_CONFIG={shlex.quote(str(config_path))}' in cmd
     assert 'OPENCODE_DISABLE_AUTOUPDATE=true' in cmd
@@ -3947,7 +3947,7 @@ def test_opencode_workspace_preparation_writes_memory_config(tmp_path: Path, mon
     bundle_text = bundle_path.read_text(encoding='utf-8')
     assert 'shared ask memory' in bundle_text
     assert 'project opencode memory' not in bundle_text
-    assert (project_root / '.ccb' / 'runtime' / 'skills' / 'builder' / 'opencode' / 'ask.md').is_file()
+    assert (project_root / '.cc-bridge' / 'runtime' / 'skills' / 'builder' / 'opencode' / 'ask.md').is_file()
 
 
 def test_opencode_launcher_inherits_auth_into_private_data_home_one_way(
@@ -3955,7 +3955,7 @@ def test_opencode_launcher_inherits_auth_into_private_data_home_one_way(
     monkeypatch,
 ) -> None:
     project_root = tmp_path / 'repo-opencode-auth'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'builder' / 'provider-runtime' / 'opencode'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'builder' / 'provider-runtime' / 'opencode'
     runtime_dir.mkdir(parents=True)
     source_home = tmp_path / 'source-home'
     source_auth = source_home / '.local' / 'share' / 'opencode' / 'auth.json'
@@ -3982,7 +3982,7 @@ def test_opencode_launcher_inherits_auth_into_private_data_home_one_way(
 
     target_auth = (
         project_root
-        / '.ccb'
+        / 'cc-bridge'
         / 'agents'
         / 'builder'
         / 'provider-state'
@@ -4022,7 +4022,7 @@ def test_opencode_auth_inheritance_honors_external_xdg_data_home(
 
 def test_opencode_workspace_preparation_records_memory_projection_once(tmp_path: Path, monkeypatch) -> None:
     project_root = tmp_path / 'repo-opencode-events'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'opencode'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'opencode'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     project_root.mkdir(parents=True, exist_ok=True)
     _write_project_memory(project_root, 'shared ask memory\n')
@@ -4034,7 +4034,7 @@ def test_opencode_workspace_preparation_records_memory_projection_once(tmp_path:
 
     events = [
         json.loads(line)
-        for line in (project_root / '.ccb' / 'agents' / 'agent1' / 'events.jsonl').read_text(encoding='utf-8').splitlines()
+        for line in (project_root / '.cc-bridge' / 'agents' / 'agent1' / 'events.jsonl').read_text(encoding='utf-8').splitlines()
         if line.strip()
     ]
     memory_events = [event for event in events if str(event.get('event_type', '')).startswith('opencode_memory_projection_')]
@@ -4048,8 +4048,8 @@ def test_opencode_workspace_preparation_records_memory_projection_once(tmp_path:
 
 def test_opencode_workspace_preparation_can_inject_skills_without_memory(tmp_path: Path, monkeypatch) -> None:
     project_root = tmp_path / 'repo-opencode-inherit-memory'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'opencode'
-    config_path = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-state' / 'opencode' / 'opencode.json'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'opencode'
+    config_path = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-state' / 'opencode' / 'opencode.json'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     config_path.parent.mkdir(parents=True, exist_ok=True)
     config_path.write_text('{"instructions":["stale.md"]}\n', encoding='utf-8')
@@ -4078,10 +4078,10 @@ def test_opencode_workspace_preparation_can_inject_skills_without_memory(tmp_pat
     assert f'OPENCODE_CONFIG={shlex.quote(str(config_path))}' in cmd
     config = json.loads(config_path.read_text(encoding='utf-8'))
     assert config['instructions'] == ['.ccb/runtime/skills/agent1/opencode/ask.md']
-    assert not (project_root / '.ccb' / 'runtime' / 'memory' / 'agent1.md').exists()
+    assert not (project_root / '.cc-bridge' / 'runtime' / 'memory' / 'agent1.md').exists()
     events = [
         json.loads(line)
-        for line in (project_root / '.ccb' / 'agents' / 'agent1' / 'events.jsonl').read_text(encoding='utf-8').splitlines()
+        for line in (project_root / '.cc-bridge' / 'agents' / 'agent1' / 'events.jsonl').read_text(encoding='utf-8').splitlines()
         if line.strip()
     ]
     memory_events = [event for event in events if str(event.get('event_type', '')).startswith('opencode_memory_projection_')]
@@ -4095,8 +4095,8 @@ def test_opencode_workspace_preparation_keeps_control_instructions_when_optional
     monkeypatch,
 ) -> None:
     project_root = tmp_path / 'repo-opencode-inherit-context-disabled'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'opencode'
-    config_path = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-state' / 'opencode' / 'opencode.json'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'opencode'
+    config_path = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-state' / 'opencode' / 'opencode.json'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     config_path.parent.mkdir(parents=True, exist_ok=True)
     config_path.write_text('{"instructions":["stale.md"]}\n', encoding='utf-8')
@@ -4126,7 +4126,7 @@ def test_opencode_workspace_preparation_keeps_control_instructions_when_optional
     config = json.loads(config_path.read_text(encoding='utf-8'))
     assert config['instructions'] == ['.ccb/runtime/skills/agent1/opencode/ask.md']
     control_text = (
-        project_root / '.ccb' / 'runtime' / 'skills' / 'agent1' / 'opencode' / 'ask.md'
+        project_root / '.cc-bridge' / 'runtime' / 'skills' / 'agent1' / 'opencode' / 'ask.md'
     ).read_text(encoding='utf-8')
     assert '# CCB Ask Skill' in control_text
     assert '# CCB Clear Skill' in control_text
@@ -4134,7 +4134,7 @@ def test_opencode_workspace_preparation_keeps_control_instructions_when_optional
 
 def test_opencode_start_cmd_respects_explicit_session_without_auto_continue(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-opencode-explicit-session'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'reviewer' / 'provider-runtime' / 'opencode'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'reviewer' / 'provider-runtime' / 'opencode'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     monkeypatch.setenv('OPENCODE_START_CMD', 'opencode')
     spec = _spec('reviewer', provider='opencode', startup_args=('--session', 'ses_reviewer'))
@@ -4155,7 +4155,7 @@ def test_opencode_start_cmd_respects_explicit_session_without_auto_continue(monk
 
 def test_opencode_start_cmd_respects_restore_fresh_without_auto_continue(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-opencode-fresh'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'reviewer' / 'provider-runtime' / 'opencode'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'reviewer' / 'provider-runtime' / 'opencode'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     monkeypatch.setenv('OPENCODE_START_CMD', 'opencode')
     spec = _spec('reviewer', provider='opencode', restore_default=RestoreMode.FRESH)
@@ -4176,7 +4176,7 @@ def test_opencode_start_cmd_respects_restore_fresh_without_auto_continue(monkeyp
 
 def test_opencode_start_cmd_respects_new_context_without_auto_continue(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-opencode-new-context'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'reviewer' / 'provider-runtime' / 'opencode'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'reviewer' / 'provider-runtime' / 'opencode'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     monkeypatch.setenv('OPENCODE_START_CMD', 'opencode')
     spec = _spec('reviewer', provider='opencode')
@@ -4310,9 +4310,9 @@ def test_codex_launcher_build_start_cmd_api_override_clears_global_route_config(
 
 def test_codex_launcher_build_start_cmd_skips_resume_when_explicit_api_authority_changed(tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-codex-authority-change'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
     runtime_dir.mkdir(parents=True, exist_ok=True)
-    profile_home = project_root / '.ccb' / 'provider-profiles' / 'agent1' / 'codex'
+    profile_home = project_root / '.cc-bridge' / 'provider-profiles' / 'agent1' / 'codex'
     current_profile = ResolvedProviderProfile(
         provider='codex',
         agent_name='agent1',
@@ -4336,7 +4336,7 @@ def test_codex_launcher_build_start_cmd_skips_resume_when_explicit_api_authority
         },
     )
     old_fingerprint = codex_home_config.codex_provider_authority_fingerprint(old_profile)
-    ccb_dir = project_root / '.ccb'
+    ccb_dir = project_root / 'cc-bridge'
     ccb_dir.mkdir(parents=True, exist_ok=True)
     (ccb_dir / '.codex-agent1-session').write_text(
         json.dumps(
@@ -4364,9 +4364,9 @@ def test_codex_launcher_build_start_cmd_forks_linked_authority_generation(
     tmp_path: Path,
 ) -> None:
     project_root = tmp_path / 'repo-codex-linked-authority'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
     runtime_dir.mkdir(parents=True, exist_ok=True)
-    profile_home = project_root / '.ccb' / 'provider-profiles' / 'agent1' / 'codex'
+    profile_home = project_root / '.cc-bridge' / 'provider-profiles' / 'agent1' / 'codex'
     profile = ResolvedProviderProfile(
         provider='codex',
         agent_name='agent1',
@@ -4387,7 +4387,7 @@ def test_codex_launcher_build_start_cmd_forks_linked_authority_generation(
     old_log = session_root / '2026' / '08' / '05' / 'old-session.jsonl'
     old_log.parent.mkdir(parents=True, exist_ok=True)
     old_log.write_text('{}\n', encoding='utf-8')
-    session_file = project_root / '.ccb' / '.codex-agent1-session'
+    session_file = project_root / '.cc-bridge' / '.codex-agent1-session'
     session_file.write_text(
         json.dumps(
             {
@@ -4434,14 +4434,14 @@ def test_codex_launcher_build_start_cmd_resumes_when_memory_projection_changed(
     monkeypatch, tmp_path: Path
 ) -> None:
     project_root = tmp_path / 'repo-codex-memory-authority'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     source_home = tmp_path / 'source-home'
     source_home.mkdir(parents=True, exist_ok=True)
     monkeypatch.setenv('CODEX_HOME', str(source_home))
     _write_project_memory(project_root, 'new shared memory\n')
 
-    codex_home = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-state' / 'codex' / 'home'
+    codex_home = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-state' / 'codex' / 'home'
     session_root = codex_home / 'sessions'
     old_log = session_root / '2026' / '05' / '01' / 'legacy-session.jsonl'
     old_log.parent.mkdir(parents=True, exist_ok=True)
@@ -4459,7 +4459,7 @@ def test_codex_launcher_build_start_cmd_resumes_when_memory_projection_changed(
         ),
         encoding='utf-8',
     )
-    ccb_dir = project_root / '.ccb'
+    ccb_dir = project_root / 'cc-bridge'
     ccb_dir.mkdir(parents=True, exist_ok=True)
     session_file = ccb_dir / '.codex-agent1-session'
     resume_cmd = (
@@ -4504,9 +4504,9 @@ def test_codex_launcher_build_start_cmd_resumes_when_memory_projection_changed(
 
 def test_codex_launcher_build_start_cmd_adopts_legacy_explicit_api_binding(tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-codex-binding-proof-missing'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
     runtime_dir.mkdir(parents=True, exist_ok=True)
-    profile_home = project_root / '.ccb' / 'provider-profiles' / 'agent1' / 'codex'
+    profile_home = project_root / '.cc-bridge' / 'provider-profiles' / 'agent1' / 'codex'
     profile = ResolvedProviderProfile(
         provider='codex',
         agent_name='agent1',
@@ -4525,7 +4525,7 @@ def test_codex_launcher_build_start_cmd_adopts_legacy_explicit_api_binding(tmp_p
         runtime_dir,
         profile,
     )
-    ccb_dir = project_root / '.ccb'
+    ccb_dir = project_root / 'cc-bridge'
     ccb_dir.mkdir(parents=True, exist_ok=True)
     fingerprint = codex_home_config.codex_provider_authority_fingerprint(profile)
     (ccb_dir / '.codex-agent1-session').write_text(
@@ -4556,9 +4556,9 @@ def test_codex_launcher_build_start_cmd_adopts_legacy_explicit_session_namespace
     monkeypatch, tmp_path: Path
 ) -> None:
     project_root = tmp_path / 'repo-codex-legacy-explicit-namespace'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
     runtime_dir.mkdir(parents=True, exist_ok=True)
-    profile_home = project_root / '.ccb' / 'provider-profiles' / 'agent1' / 'codex'
+    profile_home = project_root / '.cc-bridge' / 'provider-profiles' / 'agent1' / 'codex'
     source_home = tmp_path / 'source-home'
     source_home.mkdir(parents=True, exist_ok=True)
     monkeypatch.setenv('CODEX_HOME', str(source_home))
@@ -4583,7 +4583,7 @@ def test_codex_launcher_build_start_cmd_adopts_legacy_explicit_session_namespace
     old_log = session_root / '2026' / '04' / '26' / 'legacy-session.jsonl'
     old_log.parent.mkdir(parents=True, exist_ok=True)
     old_log.write_text('', encoding='utf-8')
-    ccb_dir = project_root / '.ccb'
+    ccb_dir = project_root / 'cc-bridge'
     ccb_dir.mkdir(parents=True, exist_ok=True)
     fingerprint = codex_home_config.codex_provider_authority_fingerprint(profile)
     resume_cmd = (
@@ -4775,11 +4775,11 @@ def test_codex_launcher_build_start_cmd_refreshes_managed_home_projection(monkey
 
 def test_codex_launcher_build_start_cmd_reuses_legacy_codex_home_from_persisted_start_cmd(tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-codex-legacy-home'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     legacy_home = tmp_path / 'legacy-codex-home'
     (legacy_home / 'sessions').mkdir(parents=True, exist_ok=True)
-    ccb_dir = project_root / '.ccb'
+    ccb_dir = project_root / 'cc-bridge'
     ccb_dir.mkdir(parents=True, exist_ok=True)
     (ccb_dir / '.codex-agent1-session').write_text(
         json.dumps(
@@ -4803,13 +4803,13 @@ def test_codex_launcher_build_start_cmd_reuses_legacy_codex_home_from_persisted_
 
 def test_codex_launcher_build_start_cmd_reuses_legacy_session_root_from_persisted_log_path(tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-codex-legacy-root'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'agent1' / 'provider-runtime' / 'codex'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     legacy_root = tmp_path / 'legacy-codex-home' / 'sessions'
     legacy_log = legacy_root / '2026' / '04' / '19' / 'rollout-legacy-session.jsonl'
     legacy_log.parent.mkdir(parents=True, exist_ok=True)
     legacy_log.write_text('', encoding='utf-8')
-    ccb_dir = project_root / '.ccb'
+    ccb_dir = project_root / 'cc-bridge'
     ccb_dir.mkdir(parents=True, exist_ok=True)
     (ccb_dir / '.codex-agent1-session').write_text(
         json.dumps(
@@ -4998,7 +4998,7 @@ def test_claude_launcher_build_start_cmd_exports_user_session_transport_without_
     tmp_path: Path,
 ) -> None:
     project_root = tmp_path / 'repo-claude-transport'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'reviewer' / 'provider-runtime' / 'claude'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'reviewer' / 'provider-runtime' / 'claude'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     source_home = tmp_path / 'source-home'
     (source_home / '.claude').mkdir(parents=True, exist_ok=True)
@@ -5028,7 +5028,7 @@ def test_claude_launcher_build_start_cmd_exports_user_session_transport_without_
         prepared_state=_claude_prepared_state(runtime_dir),
     )
 
-    managed_projects = project_root / '.ccb' / 'agents' / 'reviewer' / 'provider-state' / 'claude' / 'home' / '.claude' / 'projects'
+    managed_projects = project_root / '.cc-bridge' / 'agents' / 'reviewer' / 'provider-state' / 'claude' / 'home' / '.claude' / 'projects'
     assert f'HTTPS_PROXY={shlex.quote("http://127.0.0.1:7890")}' in start_cmd
     assert f'NODE_EXTRA_CA_CERTS={shlex.quote("/tmp/node-ca.pem")}' in start_cmd
     assert f'WSL_INTEROP={shlex.quote("/run/WSL/1234_interop")}' in start_cmd
@@ -5040,7 +5040,7 @@ def test_claude_launcher_build_start_cmd_exports_user_session_transport_without_
 
 def test_claude_workspace_preparation_refreshes_managed_home_projection(monkeypatch, tmp_path: Path) -> None:
     project_root = tmp_path / 'repo-claude-refresh'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'reviewer' / 'provider-runtime' / 'claude'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'reviewer' / 'provider-runtime' / 'claude'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     home_dir = tmp_path / 'home'
     source_claude_dir = home_dir / '.claude'
@@ -5074,7 +5074,7 @@ def test_claude_workspace_preparation_refreshes_managed_home_projection(monkeypa
         prepared_state=prepared,
     )
 
-    managed_claude_dir = project_root / '.ccb' / 'agents' / 'reviewer' / 'provider-state' / 'claude' / 'home' / '.claude'
+    managed_claude_dir = project_root / '.cc-bridge' / 'agents' / 'reviewer' / 'provider-state' / 'claude' / 'home' / '.claude'
     assert (managed_claude_dir / 'skills' / 'review' / 'SKILL.md').read_text(encoding='utf-8') == 'skill-v1\n'
     assert (managed_claude_dir / 'commands' / 'check.md').read_text(encoding='utf-8') == 'command-v1\n'
     claude_memory_v1 = (managed_claude_dir / 'CLAUDE.md').read_text(encoding='utf-8')
@@ -5162,7 +5162,7 @@ def test_claude_launcher_build_start_cmd_preserves_managed_auth_when_system_home
     monkeypatch, tmp_path: Path
 ) -> None:
     project_root = tmp_path / 'repo-claude-auth-refresh'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'reviewer' / 'provider-runtime' / 'claude'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'reviewer' / 'provider-runtime' / 'claude'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     home_dir = tmp_path / 'home'
     source_claude_dir = home_dir / '.claude'
@@ -5180,7 +5180,7 @@ def test_claude_launcher_build_start_cmd_preserves_managed_auth_when_system_home
         ),
         encoding='utf-8',
     )
-    managed_settings = project_root / '.ccb' / 'agents' / 'reviewer' / 'provider-state' / 'claude' / 'home' / '.claude' / 'settings.json'
+    managed_settings = project_root / '.cc-bridge' / 'agents' / 'reviewer' / 'provider-state' / 'claude' / 'home' / '.claude' / 'settings.json'
     managed_settings.parent.mkdir(parents=True, exist_ok=True)
     managed_settings.write_text(
         json.dumps(
@@ -5223,7 +5223,7 @@ def test_claude_launcher_build_start_cmd_preserves_managed_auth_when_system_home
     assert payload['env']['ANTHROPIC_BASE_URL'] == 'https://claude.example.test'
     assert payload['theme'] == 'light'
     assert payload['hooks']['Stop'][0]['hooks'][0]['command'] == 'echo hook'
-    assert f'HOME={shlex.quote(str(project_root / ".ccb" / "agents" / "reviewer" / "provider-state" / "claude" / "home"))}' in start_cmd
+    assert f'HOME={shlex.quote(str(project_root / ".cc-bridge" / "agents" / "reviewer" / "provider-state" / "claude" / "home"))}' in start_cmd
 
 
 def test_claude_launcher_build_start_cmd_projects_official_login_auth_into_managed_home(
@@ -5234,7 +5234,7 @@ def test_claude_launcher_build_start_cmd_projects_official_login_auth_into_manag
         lambda: 'Linux',
     )
     project_root = tmp_path / 'repo-claude-login-auth'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'reviewer' / 'provider-runtime' / 'claude'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'reviewer' / 'provider-runtime' / 'claude'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     home_dir = tmp_path / 'home'
     source_credentials = home_dir / '.claude' / '.credentials.json'
@@ -5267,7 +5267,7 @@ def test_claude_launcher_build_start_cmd_projects_official_login_auth_into_manag
 
     managed_auth = (
         project_root
-        / '.ccb'
+        / 'cc-bridge'
         / 'agents'
         / 'reviewer'
         / 'provider-state'
@@ -5314,7 +5314,7 @@ def test_gemini_launcher_build_start_cmd_exports_user_session_transport_without_
     tmp_path: Path,
 ) -> None:
     project_root = tmp_path / 'repo-gemini-transport'
-    runtime_dir = project_root / '.ccb' / 'agents' / 'reviewer' / 'provider-runtime' / 'gemini'
+    runtime_dir = project_root / '.cc-bridge' / 'agents' / 'reviewer' / 'provider-runtime' / 'gemini'
     runtime_dir.mkdir(parents=True, exist_ok=True)
     ambient_root = tmp_path / 'ambient-gemini-root'
     monkeypatch.setenv('HTTPS_PROXY', 'http://127.0.0.1:7890')
@@ -5334,7 +5334,7 @@ def test_gemini_launcher_build_start_cmd_exports_user_session_transport_without_
         prepared_state={'project_root': project_root},
     )
 
-    managed_home = project_root / '.ccb' / 'agents' / 'reviewer' / 'provider-state' / 'gemini' / 'home'
+    managed_home = project_root / '.cc-bridge' / 'agents' / 'reviewer' / 'provider-state' / 'gemini' / 'home'
     managed_root = managed_home / '.gemini' / 'tmp'
     assert f'HTTPS_PROXY={shlex.quote("http://127.0.0.1:7890")}' in start_cmd
     assert f'REQUESTS_CA_BUNDLE={shlex.quote("/tmp/requests-ca.pem")}' in start_cmd
