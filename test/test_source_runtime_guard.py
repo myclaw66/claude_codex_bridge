@@ -19,6 +19,10 @@ def _run_source_cc_bridge(args: list[str], *, cwd: Path, extra_env: dict[str, st
     env.pop("CC_BRIDGE_SOURCE_ALLOWED_ROOTS", None)
     if extra_env:
         env.update(extra_env)
+    if 'PYTHONPATH' not in env:
+        extra = [p for p in sys.path if 'site-packages' in p or 'dist-packages' in p]
+        if extra:
+            env['PYTHONPATH'] = os.pathsep.join(extra)
     return subprocess.run(
         [sys.executable, str(CC_BRIDGE), *args],
         cwd=str(cwd),
@@ -37,6 +41,10 @@ def _run_cc_bridge_test(args: list[str], *, cwd: Path, extra_env: dict[str, str]
     env.pop("CC_BRIDGE_TEST_ROOTS", None)
     if extra_env:
         env.update(extra_env)
+    if 'PYTHONPATH' not in env:
+        extra = [p for p in sys.path if 'site-packages' in p or 'dist-packages' in p]
+        if extra:
+            env['PYTHONPATH'] = os.pathsep.join(extra)
     return subprocess.run(
         [sys.executable, str(CC_BRIDGE_TEST), *args],
         cwd=str(cwd),
@@ -144,7 +152,7 @@ def test_cc_bridge_test_rejects_source_checkout_cwd() -> None:
     proc = _run_cc_bridge_test(["doctor"], cwd=REPO_ROOT)
 
     assert proc.returncode == 1
-    assert "Refusing to run `cc_bridge_test` from the CC_BRIDGE source checkout" in proc.stderr
+    assert "Refusing to run `cc-bridge_test` from the CC_BRIDGE source checkout" in proc.stderr
     assert "cd /home/bfly/yunwei/test_ccb2 && /home/bfly/yunwei/cc_bridge_source/cc_bridge_test config validate" in proc.stderr
 
 
@@ -157,7 +165,7 @@ def test_cc_bridge_test_rejects_external_project_without_allowed_root(tmp_path: 
     proc = _run_cc_bridge_test(["config", "validate"], cwd=project)
 
     assert proc.returncode == 1
-    assert "Refusing to run `cc_bridge_test` outside an allowed source-test project" in proc.stderr
+    assert "Refusing to run `cc-bridge_test` outside an allowed source-test project" in proc.stderr
     assert f"Allowed source-test roots: {REPO_ROOT.parent / 'test_ccb2'}" in proc.stderr
 
 
@@ -193,7 +201,7 @@ def test_cc_bridge_test_rejects_legacy_sibling_project_arg_without_override(tmp_
     proc = _run_cc_bridge_test(["--project", str(legacy_project), "doctor"], cwd=external)
 
     assert proc.returncode == 1
-    assert "Refusing to run `cc_bridge_test` outside an allowed source-test project" in proc.stderr
+    assert "Refusing to run `cc-bridge_test` outside an allowed source-test project" in proc.stderr
     assert f"Checked project path: {legacy_project}" in proc.stderr
 
 
@@ -223,7 +231,7 @@ def test_cc_bridge_test_rejects_project_arg_inside_source_checkout(tmp_path: Pat
     proc = _run_cc_bridge_test(["--project", str(REPO_ROOT), "doctor"], cwd=external)
 
     assert proc.returncode == 1
-    assert "Refusing to run `cc_bridge_test` against a project inside the CC_BRIDGE source checkout" in proc.stderr
+    assert "Refusing to run `cc-bridge_test` against a project inside the CC_BRIDGE source checkout" in proc.stderr
 
 
 def test_cc_bridge_test_diagnose_reports_wrapper_roots_and_allowance(tmp_path: Path) -> None:
@@ -234,7 +242,7 @@ def test_cc_bridge_test_diagnose_reports_wrapper_roots_and_allowance(tmp_path: P
 
     assert proc.returncode == 0
     assert f"wrapper: {CC_BRIDGE_TEST}" in proc.stdout
-    assert f"source_cc_bridge: {CC_BRIDGE}" in proc.stdout
+    assert f"source_cc-bridge: {CC_BRIDGE}" in proc.stdout
     assert f"cwd: {project}" in proc.stdout
     assert f"default_roots: {REPO_ROOT.parent / 'test_ccb2'}" in proc.stdout
     assert f"effective_roots: {REPO_ROOT.parent / 'test_ccb2'}" in proc.stdout

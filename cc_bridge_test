@@ -152,7 +152,7 @@ def _preflight(argv: list[str], cwd: Path) -> tuple[bool, str, list[Path]]:
             False,
             "Refusing to run `cc-bridge_test` from the CC_BRIDGE source checkout.\n"
             "Run source validation from an external test project, for example:\n"
-            "  cd /home/bfly/yunwei/test_ccb2 && /home/bfly/yunwei/cc-bridge_source/cc-bridge_test config validate",
+            "  cd /home/bfly/yunwei/test_ccb2 && /home/bfly/yunwei/cc_bridge_source/cc_bridge_test config validate",
             project_paths,
         )
     for project_path in project_paths:
@@ -172,7 +172,7 @@ def _preflight(argv: list[str], cwd: Path) -> tuple[bool, str, list[Path]]:
                 False,
                 "Refusing to run `cc-bridge_test` outside an allowed source-test project.\n"
                 "Run source validation from the dedicated test project, for example:\n"
-                "  cd /home/bfly/yunwei/test_ccb2 && /home/bfly/yunwei/cc-bridge_source/cc-bridge_test config validate\n"
+                "  cd /home/bfly/yunwei/test_ccb2 && /home/bfly/yunwei/cc_bridge_source/cc_bridge_test config validate\n"
                 f"Current directory: {cwd}\n"
                 f"Checked project path: {path}\n"
                 f"Allowed source-test roots: {rendered}\n"
