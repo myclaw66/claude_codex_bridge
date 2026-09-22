@@ -187,7 +187,7 @@ def _planner_proposal(
     evidence = [f'docs/plantree/plans/demo/task-sets/{task_set_id}/closure.json']
     next_milestone = {'kind': 'workflow_terminal', 'ref': 'done', 'rationale': 'Done.'}
     payload = {
-        'schema': 'cc_bridge.planner.backfill_proposal.v1',
+        'schema': 'cc-bridge.planner.backfill_proposal.v1',
         'mode': 'task_set_closure',
         'expected_plan_revision': plan_revision,
         'task_or_task_set_id': task_set_id,
@@ -208,7 +208,7 @@ def _planner_proposal(
         'next_milestone': next_milestone,
         'frontdesk_notification_required': notification_required,
         'frontdesk_status': {
-            'schema': 'cc_bridge.planner.frontdesk_status.v1',
+            'schema': 'cc-bridge.planner.frontdesk_status.v1',
             'notification_identity': f'{task_set_id}-r1',
             'aggregate_result': 'pass',
             'accepted_scope': ['landed'],

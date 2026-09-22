@@ -733,7 +733,7 @@ def test_dispatcher_frontdesk_direct_silence_ask_records_activation_without_rewr
         'act-frontdesk-frontdesk-auto-1.direct-handoff.transaction.json'
     )
     transaction = json.loads(transaction_path.read_text(encoding='utf-8'))
-    assert transaction['schema'] == 'cc_bridge.frontdesk.direct_handoff_admission_transaction.v1'
+    assert transaction['schema'] == 'cc-bridge.frontdesk.direct_handoff_admission_transaction.v1'
     assert transaction['status'] == 'committed'
     assert transaction['request'] == stored.request.to_record()
     assert transaction['source_task_id'] == 'frontdesk-auto-1'

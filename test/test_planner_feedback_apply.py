@@ -27,13 +27,13 @@ def _proposal(
 ):
     evidence = [f'docs/plantree/plans/demo/task-sets/{identity}/closure.json']
     status = {
-        'schema': 'cc_bridge.planner.frontdesk_status.v1', 'notification_identity': f'{identity}-r1',
+        'schema': 'cc-bridge.planner.frontdesk_status.v1', 'notification_identity': f'{identity}-r1',
         'aggregate_result': 'pass', 'accepted_scope': ['landed'], 'unresolved_scope': [],
         'blockers': [], 'next_milestone': {'kind': 'workflow_terminal', 'ref': 'done', 'rationale': 'Done.'},
         'evidence_refs': evidence, 'user_report_body': 'Done.',
     }
     payload = {
-        'schema': 'cc_bridge.planner.backfill_proposal.v1', 'mode': 'task_set_closure',
+        'schema': 'cc-bridge.planner.backfill_proposal.v1', 'mode': 'task_set_closure',
         'expected_plan_revision': plan_revision, 'task_or_task_set_id': identity,
         'task_or_task_set_revision': identity_revision, 'closure_evidence_digest': _digest('a'),
         'aggregate_result': 'pass', 'result': 'closure_complete', 'brief_summary': 'Closed.',

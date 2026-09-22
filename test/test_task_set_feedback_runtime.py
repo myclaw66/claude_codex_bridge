@@ -73,7 +73,7 @@ def _authority(tmp_path: Path, *, revision: int = 1) -> tuple[dict[str, object],
 
 def _planner_reply(*, notify: bool = True) -> str:
     status = {
-        'schema': 'cc_bridge.planner.frontdesk_status.v1',
+        'schema': 'cc-bridge.planner.frontdesk_status.v1',
         'notification_identity': 'notice-a',
         'aggregate_result': 'pass',
         'accepted_scope': ['all required children'],
@@ -88,7 +88,7 @@ def _planner_reply(*, notify: bool = True) -> str:
         'user_report_body': 'All required work passed validated closure.',
     }
     proposal = {
-        'schema': 'cc_bridge.planner.backfill_proposal.v1',
+        'schema': 'cc-bridge.planner.backfill_proposal.v1',
         'mode': 'task_set_closure',
         'expected_plan_revision': 'sha256:' + 'c' * 64,
         'task_or_task_set_id': 'set-a',
@@ -129,7 +129,7 @@ def _mixed_terminal_planner_reply(
         'rationale': 'The mixed terminal set requires a bounded Planner replan.',
     }
     status = {
-        'schema': 'cc_bridge.planner.frontdesk_status.v1',
+        'schema': 'cc-bridge.planner.frontdesk_status.v1',
         'notification_identity': 'mixed-terminal-notice',
         'aggregate_result': 'replan_required',
         'accepted_scope': accepted_scope,
@@ -140,7 +140,7 @@ def _mixed_terminal_planner_reply(
         'user_report_body': 'Bounded terminal work is preserved; Planner replan is required.',
     }
     proposal = {
-        'schema': 'cc_bridge.planner.backfill_proposal.v1',
+        'schema': 'cc-bridge.planner.backfill_proposal.v1',
         'mode': 'task_set_closure',
         'expected_plan_revision': task_set['plan_revision']['digest'],
         'task_or_task_set_id': task_set['task_set_id'],

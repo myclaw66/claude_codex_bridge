@@ -22,7 +22,7 @@ from storage.atomic import atomic_write_json
 from storage.locks import file_lock
 
 
-REPLAN_REQUEST_SCHEMA = 'cc_bridge.detailer.replan_request.v1'
+REPLAN_REQUEST_SCHEMA = 'cc-bridge.detailer.replan_request.v1'
 _DIGEST_RE = re.compile(r'^sha256:[0-9a-f]{64}$')
 _TASK_ID_RE = re.compile(r'^detailer-replan-([0-9a-f]{32})$')
 _SOURCE_ROLES = frozenset({'task_detailer', 'cc_bridge_task_detailer'})
@@ -336,7 +336,7 @@ def _validate_request(
     if not _looks_like_handoff(request):
         raise dispatcher._dispatch_error(
             'Task Detailer may only submit one direct silent inline ask to resident Planner '
-            'using cc_bridge.detailer.replan_request.v1'
+            'using cc-bridge.detailer.replan_request.v1'
         )
     if request.body_artifact:
         raise dispatcher._dispatch_error('Detailer replan request must remain inline')

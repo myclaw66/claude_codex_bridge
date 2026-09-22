@@ -69,7 +69,7 @@ def _request_body(
         {'task_id': task_id, 'task_revision': task_revision, 'detail_digest': detail_digest}
     )
     payload = {
-        'schema': 'cc_bridge.detailer.replan_request.v1',
+        'schema': 'cc-bridge.detailer.replan_request.v1',
         'request_identity': identity,
         'task_id': task_id,
         'task_revision': task_revision,
@@ -260,7 +260,7 @@ def _envelope(dispatcher, source_job_id: str, *, body: str | None = None, silenc
 def _detailer_replan_proposal(authority: dict[str, object]) -> dict[str, object]:
     milestone = {'kind': 'selected', 'ref': 'replanned-task-a', 'rationale': 'Use the corrected interface.'}
     return {
-        'schema': 'cc_bridge.planner.backfill_proposal.v1', 'mode': 'detailer_replan',
+        'schema': 'cc-bridge.planner.backfill_proposal.v1', 'mode': 'detailer_replan',
         'expected_plan_revision': authority['expected_plan_revision'], 'task_or_task_set_id': authority['task_id'],
         'task_or_task_set_revision': authority['task_revision'], 'closure_evidence_digest': authority['closure_evidence_digest'],
         'aggregate_result': 'replan_required', 'result': 'task_set_replanned', 'brief_summary': 'Revise the macro task.',
@@ -268,7 +268,7 @@ def _detailer_replan_proposal(authority: dict[str, object]) -> dict[str, object]
         'evidence_refs': authority['evidence_refs'], 'accepted_scope': ['preserved fact'], 'unresolved_scope': ['replanned scope'],
         'blockers': [], 'replan_inputs': ['detailer macro impact'], 'next_milestone': milestone,
         'frontdesk_notification_required': False,
-        'frontdesk_status': {'schema': 'cc_bridge.planner.frontdesk_status.v1', 'notification_identity': 'task-a-replan',
+        'frontdesk_status': {'schema': 'cc-bridge.planner.frontdesk_status.v1', 'notification_identity': 'task-a-replan',
             'aggregate_result': 'replan_required', 'accepted_scope': ['preserved fact'], 'unresolved_scope': ['replanned scope'],
             'blockers': [], 'next_milestone': milestone, 'evidence_refs': authority['evidence_refs'], 'user_report_body': 'Replanned.'},
     }

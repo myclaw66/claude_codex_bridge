@@ -491,7 +491,7 @@ def test_planner_and_frontdesk_command_surfaces_remain_narrow() -> None:
     assert {'shell_exec', 'generic_cc_bridge', 'file_write', 'test_exec', 'wait', 'watch', 'arbitrary_target', 'notification_send'} <= set(planner_policy.forbidden_effects)
     assert frontdesk_policy is not None and len(frontdesk_policy.allowed) == 1
     assert frontdesk_policy.allowed[0].required_args[-1] == 'planner'
-    assert frontdesk_policy.allowed[0].stdin_schema == 'inline:cc_bridge.frontdesk.intake.v1'
+    assert frontdesk_policy.allowed[0].stdin_schema == 'inline:cc-bridge.frontdesk.intake.v1'
     assert frontdesk_policy.provider_tools == (('codex', 'cc_bridge_frontdesk_ask_planner'),)
     assert claude_permission_allowlist(frontdesk_policy) == ('Bash(ask --silence --compact --inline-request --task-id *)',)
 
@@ -502,7 +502,7 @@ def test_frontdesk_rolepack_renders_only_validated_status_and_never_forwards_it(
         'memory.md', 'adapters/cc_bridge/memory.md', 'skills/frontdesk-intake/SKILL.md',
         'templates/workflow-status-report.md',
     ))
-    assert 'validated `cc_bridge.planner.frontdesk_status.v1`' in combined
+    assert 'validated `cc-bridge.planner.frontdesk_status.v1`' in combined
     assert 'byte-for-byte' in combined
     assert 'render only `user_report_body`' in combined.lower()
     assert 'never forward' in combined.lower()

@@ -1887,7 +1887,7 @@ def _write_frontdesk_task_set_parent_authority(
         'activation_digest': activation_digest,
     }
     admission = {
-        'schema': 'cc_bridge.frontdesk.direct_handoff_admission_transaction.v1',
+        'schema': 'cc-bridge.frontdesk.direct_handoff_admission_transaction.v1',
         'record_type': 'cc_bridge_frontdesk_direct_handoff_admission_transaction',
         'status': 'committed',
         **admission_authority,
@@ -2880,7 +2880,7 @@ def _write_production_generated_b7_authority(
     evidence_ref = str(closure_path.relative_to(project))
     next_milestone = {'kind': 'selected', 'ref': 'replan', 'rationale': 'Closure requires replan.'}
     frontdesk_status = {
-        'schema': 'cc_bridge.planner.frontdesk_status.v1',
+        'schema': 'cc-bridge.planner.frontdesk_status.v1',
         'notification_identity': f'{task_set_id}-r1',
         'aggregate_result': 'replan_required',
         'accepted_scope': ['direct children complete'],
@@ -2892,7 +2892,7 @@ def _write_production_generated_b7_authority(
     }
     planner_reply = '**planner-backfill.json**\n```json\n' + json.dumps(
         {
-            'schema': 'cc_bridge.planner.backfill_proposal.v1', 'mode': 'task_set_closure',
+            'schema': 'cc-bridge.planner.backfill_proposal.v1', 'mode': 'task_set_closure',
             'expected_plan_revision': task_set['plan_revision']['digest'],
             'task_or_task_set_id': task_set_id, 'task_or_task_set_revision': 1,
             'closure_evidence_digest': closure['ordered_terminal_evidence_digest'],

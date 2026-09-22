@@ -150,7 +150,7 @@ def test_task_detailer_tool_submits_exact_silent_planner_request(monkeypatch, tm
     monkeypatch.setenv('CC_BRIDGE_CALLER_ACTOR', 'task_detailer')
     monkeypatch.setenv('CC_BRIDGE_CALLER_PROJECT_ROOT', str(project_root))
     request = {
-        'schema': 'cc_bridge.detailer.replan_request.v1',
+        'schema': 'cc-bridge.detailer.replan_request.v1',
         'request_identity': 'sha256:' + 'a' * 64,
         'task_id': 'task-a',
         'task_revision': 3,
@@ -203,4 +203,4 @@ def test_task_detailer_tool_rejects_wrong_actor_target_or_schema(monkeypatch) ->
         {'activation_id': 'act-detailer-task-a', 'request': '{}'}
     )
     assert invalid_schema['isError'] is True
-    assert 'cc_bridge.detailer.replan_request.v1' in invalid_schema['content'][0]['text']
+    assert 'cc-bridge.detailer.replan_request.v1' in invalid_schema['content'][0]['text']
